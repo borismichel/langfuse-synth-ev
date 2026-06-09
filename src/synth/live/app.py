@@ -83,10 +83,8 @@ def create_app(cfg: Config):
         application = Application(applicant_id="playground_applicant", approved_line_eur=line,
                                   vehicle=Vehicle(type=vehicle, list_price_eur=price), application_date="")
         res = submit(cfg, application)
-        d, e = res["decision"], res["expected"]
+        d = res["decision"]
         cls = "approve" if d.decision == "approve" else "reject"
-        mismatch = ("<div class='mismatch'>⚠ Production disagrees with the fix (v2) — "
-                    "this is the silent regression.</div>") if d.decision != e.decision else ""
         card = f"""
         <div class="card">
           <div class="verdict {cls}">{d.decision.upper()}
@@ -94,8 +92,6 @@ def create_app(cfg: Config):
           <div class="kv"><span>Applied grant</span><span>€{d.applied_grant_eur:,}</span></div>
           <div class="kv"><span>Financed principal</span><span>€{d.financed_principal_eur:,}</span></div>
           <div class="kv"><span>List price / line</span><span>€{price:,} / €{line:,}</span></div>
-          <div class="kv"><span>Expected under v2 (the fix)</span><span>{e.decision.upper()} · €{e.financed_principal_eur:,}</span></div>
-          {mismatch}
           <div class="kv"><span>Trace</span><span><a href="{res['trace_url']}" target="_blank">open in Langfuse →</a></span></div>
         </div>
         <p><a href="/">← submit another</a></p>"""
