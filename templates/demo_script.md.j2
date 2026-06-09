@@ -30,8 +30,11 @@ Open trace **`{{ disputed_example.trace_id }}`**{{ disputed_trace_link }}
 **€{{ '{:,}'.format(disputed_example.approved_line_eur) }}**).
 - Decision: **{{ disputed_example.decision }}**, `applied_grant_eur = {{ disputed_example.applied_grant_eur }}`,
   `financed_principal_eur = €{{ '{:,}'.format(disputed_example.financed_principal_eur) }}`.
-- The `decision` generation is linked to prompt **{{ prompt_name }} v{{ prompt_versions.v1 }}** — *every bad
-  decision used v1*. The rationale is clear and never mentions the grant.
+- Walk the **agent graph**: `credit_agent` → `check_subsidy_eligibility` returns *no subsidy* (the stale
+  policy window) → `compute_affordability` runs on the **gross** price → `decision` rejects. The tool calls
+  show exactly where the grant is silently dropped.
+- The `decision` generation is linked to prompt **{{ prompt_name }} v{{ prompt_versions.v1 }}** (label `production`) —
+  *every bad decision used v1*. The rationale is clear and never mentions the grant.
 
 ### 3 · Build the decision-correctness judge → red
 Create a **managed LLM-as-judge** in the UI ({{ judge_model }}, temperature 0). Paste this prompt:
@@ -61,26 +64,15 @@ Reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}** — registered at 
   to BEVs ≤ **€{{ '{:,}'.format(price_cap_eur) }}** (effective `{{ grant_effective_date }}`).
 
 ### 6 · Run production → red, validate development → green, then promote
-The experiment runs whatever prompt carries the label you pass (default `production`).
+```bash
+synth experiment --config config/demo.yaml                      # production (v{{ prompt_versions.v1 }}, stale) → RED
+synth experiment --config config/demo.yaml --label development   # development (v{{ prompt_versions.v2 }}, the fix) → GREEN
+# → promote v2 to `production` in the UI, then re-run the first command → GREEN
 ```
-synth experiment --config config/demo.yaml
-```
-`production` == **v{{ prompt_versions.v1 }}** (the stale prompt) → run `ev-grant-production-v{{ prompt_versions.v1 }}`
-goes **red** — the managed judge fails every disputed item (no grant applied).
-
-Now prove the fix **without touching production** — run the `development` label (v2):
-```
-synth experiment --config config/demo.yaml --label development
-```
-`development` == **v{{ prompt_versions.v2 }}** (the fix) → run `ev-grant-development-v{{ prompt_versions.v2 }}` →
-**every item, including the just-added one, comes back green**. Worked case:
-{{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }},
-line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances
-€{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
-
-Confident it's safe, **promote v2 to `production`** (Prompts → `{{ prompt_name }}` → set the `production` label on
-v{{ prompt_versions.v2 }}) and re-run the production command → green. The runs sit side-by-side in the dataset
-comparison view: `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
+- The eval runs whatever prompt carries the label. `production` == v{{ prompt_versions.v1 }} fails every disputed item (no grant applied).
+- `development` == v{{ prompt_versions.v2 }} proves the fix **without touching production**. Worked case:
+  {{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }}, line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances €{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
+- After promotion the same first command goes green — the runs sit side-by-side: `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
 
 ### 7 · The landing line
 > "Quality scores were green the whole time — but appeals were climbing. We built a correctness judge, pulled the

@@ -45,36 +45,51 @@ cp .env.example .env      # fill LANGFUSE_BASE_URL + keys; ANTHROPIC_API_KEY onl
 
 # 3. preview, then seed
 synth plan     --config config/demo.yaml     # dry run: volumes, golden-path dates, dataset summary (no network)
-synth seed     --config config/demo.yaml     # ingest backdated data, register prompts, build dataset, emit DEMO_SCRIPT.md
+synth seed     --config config/demo.yaml     # spool backdated data to disk → batch-import, register prompts, build dataset, emit DEMO_SCRIPT.md
 synth verify   --config config/demo.yaml     # query back via the v2 API and assert the golden path
 
-# 4. follow DEMO_SCRIPT.md for the live presentation; step 5 runs:
-synth experiment --config config/demo.yaml   # run the hosted dataset with prompt v2 (the live fix) — makes real model calls
+# 4. follow DEMO_SCRIPT.md for the live presentation; the experiment runs the *labelled* prompt:
+synth experiment --config config/demo.yaml                     # production (v1, stale) → RED
+synth experiment --config config/demo.yaml --label development  # development (v2, the fix) → GREEN
+# then promote v2 to `production` in the UI and re-run the production command → green
 ```
 
 `synth seed` writes **`DEMO_SCRIPT.md`** — a presenter's runbook filled with *this run's real*
 dates, trace IDs, figures and deep links. Re-seeding regenerates a matching script
-(`synth script` regenerates it from existing run state).
+(`synth script` regenerates it from existing run state). After seeding, confirm the data
+matches the narrative with **[`VERIFICATION.md`](VERIFICATION.md)** (`synth verify` + live
+coverage / drift / tag checks). If a large import stalls, the generated data is safe on disk
+— resume with `synth import-spool`.
 
 ---
 
 ## What gets created
 
 - **~4,000 traces** over 30 days with diurnal/weekly shape; realistic latency (log-normal),
-  tokens, cost (token × per-model price), and a baseline error rate.
-- A realistic **model mix** — Opus plans (~25%), Sonnet decides (1×/trace), Haiku does the
-  cheap high-volume steps — so the **cost view and volume view disagree** (Haiku dominates by
+  **production-scale token usage** with **prompt caching** (cache-read / cache-creation split),
+  multi-turn context growth, and Opus reasoning that feeds the decision step's input; cost
+  (token × per-model price, incl. cache rates), and a baseline error rate.
+- Each trace is an **agent graph**: a `credit_agent` orchestrator over a planner (Opus, ~25%),
+  a `retrieve_policy` retriever, two tool calls (`check_subsidy_eligibility`,
+  `compute_affordability`), the Sonnet `decision` (carrying `tool_calls`), and a Haiku `explain`.
+  (Tool/retriever carry their type in metadata; native agent-graph observation types are
+  OTel-only, so they're rendered as spans to spare a small self-hosted ClickHouse.)
+- A realistic **model mix** — so the **cost view and volume view disagree** (Haiku dominates by
   call count; Sonnet/Opus dominate spend).
-- **Scores** on a realistic fraction: `answer_quality` (NUMERIC), `tone` /
-  `format_compliance` (CATEGORICAL), `user_disagreement` (BOOLEAN, the lagging signal that
-  drifts), and per-session `csat`. **No** decision-correctness score — that gap is the point.
+- **Scores by instrument kind** (best-practice coverage): deterministic `format_compliance` on
+  **100%** of traces; an LLM-judge pass (`answer_quality` + `tone`) on a thin **~15%** sample;
+  `user_disagreement` (BOOLEAN) — an **LLM-judge over the interaction** that flags customer
+  pushback, sampled ~15% and **forced true on the disputed false-negatives** (it drifts, and its
+  verdict *drives the `disputed` tag*); and per-session `csat` at a ~30% response rate. **No**
+  decision-correctness score — that gap is the point.
 - **Sessions** (single- and multi-turn), a **user population** with Zipf-ish power users
   (loan officers), and `production`/`staging` environments.
-- The **golden path**: a drift window of eligible false-negatives (wrongly rejected) plus
-  correct-rejection controls; prompt **v1** (stale) and **v2** (fixed) registered, with every
-  `decision` generation linked to **v1**; the hosted **`ev-grant-disputed-rejections`**
-  dataset (eligible false-negatives + controls, each with `sourceTraceId`); and a **reserved
-  pool** of fresh false-negatives kept *out* of the dataset for the live "add from trace" beat.
+- The **golden path**: a drift window of eligible false-negatives (wrongly rejected, ramping to
+  demo day) plus correct-rejection controls; prompt **v1** labelled **`production`** (stale) and
+  **v2** labelled **`development`** (the fix), with every `decision` generation linked to **v1**;
+  the hosted **`ev-grant-disputed-rejections`** dataset (eligible false-negatives + controls,
+  each with `sourceTraceId`); and a **reserved pool** of fresh false-negatives kept *out* of the
+  dataset for the live "add from trace" beat.
 - **Ambient incidents** (toggleable): a cost spike, an error burst, optional latency degradation.
 
 Everything is **deterministic** (single `seed`) and **model-free at seed time** — a large seed
@@ -101,21 +116,29 @@ posts them to **`POST /api/public/ingestion`** with explicit `timestamp` / `star
 `endTime` and the `x-langfuse-ingestion-version: 4` header (real-time visibility on the v2
 endpoints). Datasets, prompts and the experiment use the v4 SDK (separate API surfaces).
 
+Ingestion is **two-phase and recoverable**: generation streams every event to an NDJSON
+**spool on disk** first, then a separate pass **batch-imports** it in chunks. A wedged or slow
+upload can't lose the (deterministic, expensive) generated data — resume with
+`synth import-spool`. The spool lives under `.synth_spool/` (gitignored).
+
 ```
 config/demo.yaml ──▶ generator (deterministic plan)
                           │
-        score configs ─▶ prompts v1/v2 ─▶ backdated traces+scores ─▶ hosted dataset+items
+        score configs ─▶ prompts (v1→production, v2→development) ─▶ spool→batch-import traces+scores ─▶ dataset+items
                           │                                                │
                           └────────────── .synth_state.json ──────────────┘
                                                   │
                               DEMO_SCRIPT.md  ◀────┘   (synth script)
 
-demo time:  synth experiment ──▶ run_experiment(task = decide(item.input, "v2"))  + managed judge
+demo time:  synth experiment [--label production|development] ──▶ run_experiment(task = decide(item.input, label))  + managed judge
 ```
 
 `decide(application, prompt_label) -> Decision` is the **single agent function** — seeding and
-the experiment both route through it; the **only lever** is `prompt_label` (`"v1"` vs `"v2"`).
-See [`src/synth/`](src/synth/) and the layout in spec §15.
+the experiment both route through it. At seed time the label selects the arithmetic (`"v1"`
+stale vs `"v2"` fixed); at demo time the experiment passes a **Langfuse label**
+(`production` / `development`) that's resolved to the live prompt at runtime — so promoting v2
+to `production` in the UI changes what the eval runs, no code change. See
+[`src/synth/`](src/synth/) and the layout in spec §15.
 
 ### Repo layout
 
@@ -125,8 +148,8 @@ prompts/credit_decision.v{1,2}.txt
 src/synth/
   agent.py                # decide(application, prompt_label) -> Decision  ← the one lever
   config.py rng.py models.py pricing.py timegen.py distributions.py content.py
-  seed/                   # ingest, events, traces, sessions, scores, golden_path, prompts, datasets, run
-  experiment/run.py       # run_experiment(task = lambda i: decide(i.input, "v2"))
+  seed/                   # ingest (spool+batch), events, traces, sessions, scores, golden_path, prompts, datasets, run
+  experiment/run.py       # run_experiment(label) → decide(i.input, label)  ← production | development
   verify.py script.py cli.py
 templates/demo_script.md.j2
 fixtures/golden_v1_decisions.json   # committed v1 outputs for offline provenance
@@ -147,8 +170,12 @@ the `seed` for a different-but-reproducible run.
 - The seeder **refuses to run** unless the target project's name contains `target.project_hint`
   (default `demo`). Point it only at demo/sandbox projects.
 - Data is append-only within Langfuse's 30-day merge window, and seed IDs are deterministic, so
-  re-running **upserts** rather than duplicates. **Teardown is project-level**: spin up a fresh
-  project and re-seed.
+  re-running **upserts** rather than duplicates. Prompt registration is **idempotent on content**
+  (no version churn — v1 stays version 1), and the `production`→v1 / `development`→v2 labels are
+  **re-asserted on every seed**, so the red→green flip always resets.
+- **Teardown is project-level**: spin up a fresh project and re-seed. A fresh project is also
+  required to *change coverage* (which scores get emitted) — append-only ingestion never deletes,
+  so dropped scores would otherwise linger as orphans.
 
 ## CI/CD regression gate (optional)
 
