@@ -84,9 +84,9 @@ def verify(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
 
 @app.command()
 def experiment(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
-               baseline: bool = typer.Option(False, "--baseline", help="Also run a v1 baseline for side-by-side."),
                gate: float = typer.Option(None, "--gate", help="CI mode: exit non-zero if offline PASS-rate < threshold.")):
-    """Run the hosted dataset with prompt v2 (the live fix) via run_experiment."""
+    """Run the current `production` prompt against the hosted dataset. Run once (production
+    == v1) for red, promote v2 to `production` in the UI, then run again for green."""
     cfg = _load(config)
 
     if gate is not None:
@@ -101,7 +101,7 @@ def experiment(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
 
     from .experiment.run import run_experiment as _run
 
-    _run(cfg, baseline=baseline, log=lambda m: typer.echo(m))
+    _run(cfg, log=lambda m: typer.echo(m))
 
 
 @app.command()

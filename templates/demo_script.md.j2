@@ -53,23 +53,32 @@ false-negative live: trace **`{{ reserved_example.trace_id }}`**{{ reserved_trac
 **€{{ '{:,}'.format(reserved_example.list_price_eur) }}**, line **€{{ '{:,}'.format(reserved_example.approved_line_eur) }}**).
 > ⚠️ Map the **input only** — do **not** copy the v1 rejection in as the expected output.
 
-### 5 · Author prompt v2 — the one-clause diff
-Author / reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}**. Only the first POLICY bullet changes:
+### 5 · The fix is already written: prompt v2
+Reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}** — registered at seed time but **not yet promoted**;
+`production` still points at **v{{ prompt_versions.v1 }}**. Only the first POLICY bullet changes:
 - **v1:** `financed_principal = list price`; `applied_grant = 0`.
 - **v2:** `financed_principal = list price − qualifying grant`; EV Purchase Grant gives **€{{ '{:,}'.format(grant_amount_eur) }}**
   to BEVs ≤ **€{{ '{:,}'.format(price_cap_eur) }}** (effective `{{ grant_effective_date }}`).
 
-### 6 · Run the experiment → green
+### 6 · Run production → red, promote v2 → green
+The experiment always runs **whatever prompt is labelled `production`**.
 ```
 synth experiment --config config/demo.yaml
 ```
-This runs **v2** as the task (same agent fn, label flipped) against the **hosted** dataset, so it renders as a
-**Dataset Run** with a comparison view. The **same managed judge** (scoped to this dataset's new runs) scores it →
-**every item, including the just-added one, comes back green**. Worked case:
+Right now `production` == **v{{ prompt_versions.v1 }}** (the stale prompt), so this run (`ev-grant-prod-v{{ prompt_versions.v1 }}`)
+goes **red** — the managed judge fails every disputed item (no grant applied).
+
+Now **promote v2 to `production`** (Prompts → `{{ prompt_name }}` → set the `production` label on v{{ prompt_versions.v2 }}),
+and run the **same command** again:
+```
+synth experiment --config config/demo.yaml
+```
+This run (`ev-grant-prod-v{{ prompt_versions.v2 }}`) pulls the fixed prompt → **every item, including the just-added one,
+comes back green**. Worked case:
 {{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }},
 line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances
 €{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
-*(Optional: `synth experiment --baseline` also runs v1 for a side-by-side red/green column.)*
+The two runs sit side-by-side in the dataset comparison view: `prod-v{{ prompt_versions.v1 }}` red vs `prod-v{{ prompt_versions.v2 }}` green.
 
 ### 7 · The landing line
 > "Quality scores were green the whole time — but appeals were climbing. We built a correctness judge, pulled the
@@ -79,8 +88,10 @@ line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances
 ---
 
 ## Break-glass fallback
-- Prompt **v2** is pre-registered (label `v2`) and the experiment is idempotent — if a live step misbehaves, run
-  `synth experiment` and jump straight to the green comparison view.
+- Prompt **v2** is pre-registered (label `v2`); promoting it to `production` is one click. If a live step
+  misbehaves, promote v2 and re-run `synth experiment` to jump straight to the green run.
+- `production` starts on **v{{ prompt_versions.v1 }}** out of a fresh seed — re-seeding resets it, so the
+  red → green flip is always reproducible.
 - Controls prove the judge reasons rather than rubber-stamps: e.g. control
   `{{ control_example.trace_id }}` ({{ control_example.vehicle_type }} €{{ '{:,}'.format(control_example.list_price_eur) }})
   stays correctly **{{ control_example.expected_v2_decision }}** under v2.

@@ -63,13 +63,20 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     versions = {"v1": 1, "v2": 2}
     if cfg.golden_path.enabled and not dry_run:
         from ..lfclient import get_langfuse
-        from .prompts import register_prompts
+        from .prompts import register_prompts, set_production_label
 
         lf = get_langfuse(cfg)
         versions = register_prompts(lf, cfg, plan.golden.effective_date,
                                     register_v1=cfg.golden_path.prompt_v1_register,
                                     register_v2=cfg.golden_path.prompt_v2_register)
         log(f"✓ prompts registered: {versions}")
+        # v1 is the incumbent: (re)assert production -> v1 so the demo starts stale.
+        if cfg.golden_path.prompt_v1_register and versions.get("v1"):
+            try:
+                set_production_label(base_url, cfg.golden_path.prompt_name, versions["v1"])
+                log(f"✓ production label -> {cfg.golden_path.prompt_name} v{versions['v1']}")
+            except Exception as exc:  # noqa: BLE001 — non-fatal; set it in the UI
+                log(f"⚠ could not set production label (set it in the UI): {exc}")
     else:
         lf = None
     v1_version = versions.get("v1") if cfg.golden_path.prompt_v1_register else None

@@ -102,7 +102,9 @@ def _decide_live(
     prompt_name: str,
     model: str,
 ) -> Decision:
-    prompt = lf.get_prompt(prompt_name, label=prompt_label, type="chat")
+    # cache_ttl_seconds=0: always pull the *current* labelled version, so promoting a new
+    # prompt to `production` in the UI takes effect on the very next experiment run.
+    prompt = lf.get_prompt(prompt_name, label=prompt_label, type="chat", cache_ttl_seconds=0)
     application_json = app.model_dump_json()
     messages = prompt.compile(application=application_json)
 
