@@ -87,11 +87,15 @@ def span_event(
             "timestamp": iso(start), "body": body}
 
 
-# The agent-graph observation types (AGENT | TOOL | RETRIEVER | CHAIN | ...) exist in the
-# current Langfuse OpenAPI, but older self-hosted servers' ingestion only accept
-# SPAN | GENERATION | EVENT and 400 on anything else. Default to the compatible path
-# (emit as SPAN, carry the intended type in metadata); flip this True once the target
-# server is new enough to accept the rich types via /api/public/ingestion.
+# The agent-graph observation types (AGENT | TOOL | RETRIEVER | CHAIN | ...) are an
+# OTel-only feature: they're set via the ``langfuse.observation.type`` span attribute on
+# the ``/api/public/otel`` endpoint. The batch ``/api/public/ingestion`` API we use (for
+# backdating) rejects them — its ObservationBody.type accepts only SPAN | GENERATION |
+# EVENT (confirmed 400 on server 3.179.1). We deliberately keep the batch path: routing
+# every observation through OTLP would add the OTel→Langfuse mapping layer and load to a
+# small self-hosted ClickHouse backend. So emit these as SPAN, carrying the intended type
+# and tool-call links in ``metadata`` (named, nested, filterable — just no native badge).
+# Flip True only if a future batch ingestion gains the richer ObservationType enum.
 RICH_OBSERVATION_TYPES = False
 
 
