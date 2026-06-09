@@ -140,6 +140,22 @@ def submit(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
 
 
 @app.command()
+def playground(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+               host: str = typer.Option("127.0.0.1", "--host"),
+               port: int = typer.Option(8000, "--port")):
+    """Serve the live decision configurator UI (needs the `playground` extra: pip install -e '.[playground]')."""
+    cfg = _load(config)
+    try:
+        import uvicorn
+        from .live.app import create_app
+    except ImportError:
+        typer.echo("playground deps missing — run: pip install -e '.[playground]'", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(f"→ playground on http://{host}:{port}  (production prompt is pulled live per submission)")
+    uvicorn.run(create_app(cfg), host=host, port=port, log_level="warning")
+
+
+@app.command()
 def script(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
     """(Re)generate DEMO_SCRIPT.md from the current run state."""
     from .script import render_script
