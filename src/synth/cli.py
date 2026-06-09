@@ -107,6 +107,39 @@ def experiment(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
 
 
 @app.command()
+def submit(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+           prefab: str = typer.Option(None, "--prefab", help="One of: eligible, overcap, phev, approvable, rejected."),
+           vehicle: str = typer.Option("BEV", "--vehicle", help="Custom: BEV | PHEV | ICE."),
+           price: int = typer.Option(None, "--price", help="Custom: vehicle list price (EUR)."),
+           line: int = typer.Option(None, "--line", help="Approved credit line (EUR); overrides the prefab default.")):
+    """Submit one application through the live production prompt and emit its trace."""
+    from .live.prefabs import PREFABS, PREFABS_BY_KEY
+    from .live.submit import submit as _submit
+    from .models import Application, Vehicle
+
+    cfg = _load(config)
+    if prefab:
+        p = PREFABS_BY_KEY.get(prefab)
+        if not p:
+            typer.echo(f"unknown prefab {prefab!r}; choose from: {', '.join(k for k in PREFABS_BY_KEY)}", err=True)
+            raise typer.Exit(code=2)
+        app_in = p.application(approved_line_eur=line)
+    else:
+        if price is None or line is None:
+            typer.echo("custom submission needs --price and --line (or use --prefab)", err=True)
+            raise typer.Exit(code=2)
+        app_in = Application(applicant_id="playground_applicant", approved_line_eur=line,
+                             vehicle=Vehicle(type=vehicle, list_price_eur=price), application_date="")
+
+    res = _submit(cfg, app_in, log=lambda m: typer.echo(m))
+    d, e = res["decision"], res["expected"]
+    typer.echo(f"\n— DECISION (production prompt v{res['prompt_version']}) —")
+    typer.echo(f"  {d.decision.upper()}  ·  grant €{d.applied_grant_eur:,}  ·  financed €{d.financed_principal_eur:,}")
+    typer.echo(f"  expected under v2: {e.decision.upper()}  ·  financed €{e.financed_principal_eur:,}")
+    typer.echo(f"  trace → {res['trace_url']}")
+
+
+@app.command()
 def script(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
     """(Re)generate DEMO_SCRIPT.md from the current run state."""
     from .script import render_script

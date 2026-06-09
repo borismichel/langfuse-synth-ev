@@ -63,7 +63,11 @@ class _Cursor:
         return s, e
 
 
-def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None) -> list[dict]:
+def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None,
+                       decision_usage: tuple[int, int] | None = None) -> list[dict]:
+    """Build the agent-graph event tree. Seed path leaves ``decision_usage`` None (tokens are
+    sampled); the live playground passes the *real* model ``(input, output)`` token counts so
+    the decision generation reflects the actual call."""
     r = rng.sub("trace", spec.trace_id)
     app = spec.application
     env = spec.environment
@@ -170,8 +174,11 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
     # -- decision generation (Sonnet) — decide(), links to prompt v1 ------
     # Input = base prompt + multi-turn history + the planner's reasoning (if any).
     s, e = cur.advance(sample_latency_ms(r, "work", spec.slow_factor))
-    it, ot = sample_tokens(r, "work", context_tokens=history_tokens + plan_reasoning_tokens)
-    ti, cr, cc = cache_split(r, "work", it)
+    if decision_usage is not None:               # live: real token counts, no cache split
+        ti, ot, cr, cc = decision_usage[0], decision_usage[1], 0, 0
+    else:                                        # seed: sampled tokens + prompt-cache split
+        it, ot = sample_tokens(r, "work", context_tokens=history_tokens + plan_reasoning_tokens)
+        ti, cr, cc = cache_split(r, "work", it)
     dec_id = r.obs_id("decision", tid)
     spec.decision_obs_id = dec_id
     events.append(generation_event(
