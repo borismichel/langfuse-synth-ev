@@ -87,6 +87,58 @@ def span_event(
             "timestamp": iso(start), "body": body}
 
 
+# The agent-graph observation types (AGENT | TOOL | RETRIEVER | CHAIN | ...) exist in the
+# current Langfuse OpenAPI, but older self-hosted servers' ingestion only accept
+# SPAN | GENERATION | EVENT and 400 on anything else. Default to the compatible path
+# (emit as SPAN, carry the intended type in metadata); flip this True once the target
+# server is new enough to accept the rich types via /api/public/ingestion.
+RICH_OBSERVATION_TYPES = False
+
+
+def observation_event(
+    *,
+    obs_id: str,
+    trace_id: str,
+    name: str,
+    obs_type: str,  # ObservationType: AGENT | TOOL | RETRIEVER | CHAIN | GUARDRAIL | ...
+    start: datetime,
+    end: datetime | None = None,
+    parent_id: str | None = None,
+    environment: str = "production",
+    input=None,
+    output=None,
+    level: str | None = None,
+    status_message: str | None = None,
+    metadata: dict | None = None,
+) -> dict:
+    """A typed agent-graph observation (AGENT/TOOL/RETRIEVER/…). Emits a native typed
+    ``observation-create`` when ``RICH_OBSERVATION_TYPES`` is on; otherwise degrades to a
+    ``span-create`` that records the intended type in ``metadata.observation_type`` so the
+    structure (agent nesting, tool calls) and filterability survive on older servers."""
+    md = dict(metadata or {})
+    base = {
+        "id": obs_id,
+        "traceId": trace_id,
+        "name": name,
+        "startTime": iso(start),
+        "endTime": iso(end) if end else None,
+        "parentObservationId": parent_id,
+        "environment": environment,
+        "input": input,
+        "output": output,
+        "level": level,
+        "statusMessage": status_message,
+    }
+    if RICH_OBSERVATION_TYPES:
+        body = _clean({**base, "type": obs_type, "metadata": md or None})
+        return {"id": _envelope_id(obs_id, "observation-create"), "type": "observation-create",
+                "timestamp": iso(start), "body": body}
+    md.setdefault("observation_type", obs_type.lower())
+    body = _clean({**base, "metadata": md})
+    return {"id": _envelope_id(obs_id, "span-create"), "type": "span-create",
+            "timestamp": iso(start), "body": body}
+
+
 def generation_event(
     *,
     obs_id: str,

@@ -94,9 +94,10 @@ def _assign_sessions(cfg: Config, rng: Rng, specs: list[TraceSpec]) -> None:
             length = r.randint(2, 4)
             group = specs_sorted[i : i + length]
             sid = r.trace_id("session", s.trace_id)
-            for g in group:
+            for turn, g in enumerate(group):
                 g.session_id = sid
                 g.user_id = group[0].user_id
+                g.turn_index = turn  # later turns carry more accumulated context
             i += len(group)
         else:
             s.session_id = r.trace_id("session", s.trace_id)

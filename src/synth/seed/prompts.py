@@ -28,24 +28,47 @@ def _chat_prompt(system_text: str) -> list[dict]:
     ]
 
 
+def _norm(msgs) -> list[tuple]:
+    # Langfuse stores chat messages with an extra ``type: "message"`` key, so compare on
+    # (role, content) only — otherwise the round-tripped prompt never equals what we built.
+    return [(m.get("role"), m.get("content")) for m in (msgs or [])]
+
+
+def _reuse_or_create(lf, name: str, prompt: list[dict], label: str, commit: str) -> int:
+    """Return the version for ``label``: reuse the existing labelled version if its content
+    already matches (idempotent re-seed — no version churn), else create a new version.
+
+    Without this, every re-seed appends a fresh version (v1/v2 drift to 3/4, 5/6, …); the
+    demo wants ``decision`` generations to link to a stable v1 == version 1."""
+    try:
+        existing = lf.get_prompt(name, label=label, type="chat", cache_ttl_seconds=0)
+        if _norm(getattr(existing, "prompt", None)) == _norm(prompt):
+            return getattr(existing, "version", None)
+    except Exception:  # noqa: BLE001 — not found / first run: fall through to create
+        pass
+    created = lf.create_prompt(name=name, type="chat", prompt=prompt,
+                               labels=[label], commit_message=commit)
+    return getattr(created, "version", None)
+
+
 def register_prompts(lf, cfg, effective_date: datetime, *, register_v1: bool = True,
                      register_v2: bool = True) -> dict[str, int]:
-    """Create v1 then v2; return {'v1': version, 'v2': version}. Idempotent-ish: re-runs add
-    new versions but labels move to the latest, which is fine for a fresh demo project."""
+    """Create v1 then v2; return {'v1': version, 'v2': version}. Idempotent on content: a
+    re-seed reuses the existing versions instead of appending duplicates (so v1 stays == 1)."""
     from ..timegen import iso_date
 
     name = cfg.golden_path.prompt_name
     versions: dict[str, int] = {}
 
     if register_v1:
-        v1 = lf.create_prompt(name=name, type="chat", prompt=_chat_prompt(_read("v1")),
-                              labels=["v1"], commit_message="stale prompt: gross-price affordability")
-        versions["v1"] = getattr(v1, "version", 1)
+        versions["v1"] = _reuse_or_create(
+            lf, name, _chat_prompt(_read("v1")), "v1",
+            "stale prompt: gross-price affordability")
 
     if register_v2:
         v2_text = _read("v2").replace("{{grant_date}}", iso_date(effective_date))
-        v2 = lf.create_prompt(name=name, type="chat", prompt=_chat_prompt(v2_text),
-                              labels=["v2"], commit_message="fix: apply EV purchase grant before affordability")
-        versions["v2"] = getattr(v2, "version", 2)
+        versions["v2"] = _reuse_or_create(
+            lf, name, _chat_prompt(v2_text), "v2",
+            "fix: apply EV purchase grant before affordability")
 
     return versions
