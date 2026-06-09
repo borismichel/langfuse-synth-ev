@@ -49,12 +49,20 @@ def sample_timestamps(rng: Rng, run_date: datetime, window_days: int, n: int) ->
     return out
 
 
-def sample_in_range(rng: Rng, start: datetime, end: datetime, n: int, label: str = "range") -> list[datetime]:
-    """Sample ``n`` diurnally/weekly-weighted timestamps within an arbitrary [start, end)."""
+def sample_in_range(rng: Rng, start: datetime, end: datetime, n: int, label: str = "range",
+                    ramp: float | None = None) -> list[datetime]:
+    """Sample ``n`` diurnally/weekly-weighted timestamps within an arbitrary [start, end).
+
+    If ``ramp`` is given (0 < ramp <= 1), multiply in a linear weight rising from
+    ``ramp`` at ``start`` to 1.0 at ``end`` — biasing the draw toward ``end`` so the
+    resulting volume *climbs* across the range (e.g. an appeal rate trending up to now)."""
     start = start.replace(minute=0, second=0, microsecond=0)
     total_hours = max(1, int((end - start).total_seconds() // 3600))
     hours = [start + timedelta(hours=h) for h in range(total_hours)]
     weights = [hour_weight(h) for h in hours] or [1.0]
+    if ramp is not None and total_hours > 1:
+        span = total_hours - 1
+        weights = [w * (ramp + (1.0 - ramp) * (i / span)) for i, w in enumerate(weights)]
     rsub = rng.sub("timegen", label)
     out = []
     for h in rsub.choices(hours, weights, k=n):

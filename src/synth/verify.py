@@ -78,7 +78,7 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
     # -- dataset items + sourceTraceId links ------------------------------
     try:
         items = _get(base, "/api/public/dataset-items",
-                     {"datasetName": state.dataset_name, "limit": 200}).get("data", [])
+                     {"datasetName": state.dataset_name, "limit": 100}).get("data", [])
         n = len(items)
         with_src = sum(1 for it in items if it.get("sourceTraceId"))
         ok = n == state.dataset_items and with_src == n

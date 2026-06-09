@@ -84,21 +84,27 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
     n_overcap = max(n_control_needed, 4) + 3
     n_phev = max(n_control_needed, 4) + 3
 
-    total = n_eligible + n_overcap + n_phev
-    times = sample_in_range(r, drift_start, drift_end, total, label="disputed")
+    # The eligible false-negatives are the *only* drift signal (each forces a user
+    # appeal), so ramp their timestamps UP toward run_date — the dashboard then reads
+    # as "appeals climbing to today" rather than a burst that ended days ago. Controls
+    # raise no appeals, so they spread evenly across the window.
+    elig_times = sample_in_range(r, drift_start, drift_end, n_eligible,
+                                 label="disputed_elig", ramp=0.12)
+    ctrl_times = sample_in_range(r, drift_start, drift_end, n_overcap + n_phev,
+                                 label="disputed_ctrl")
 
     # power users (loan officers) dominate the disputed volume
     officers = [u for u in users if u["is_power"]] or users
     n = id_start
-    idx = 0
+    cidx = 0
 
     def next_officer(key) -> str:
         return r.sub("offsel", key).choice(officers)["userId"]
 
     # -- eligible false-negatives ----------------------------------------
     eligible_specs: list[TraceSpec] = []
-    for _ in range(n_eligible):
-        ts = times[idx]; idx += 1
+    for i in range(n_eligible):
+        ts = elig_times[i]
         app = eligible_borderline_application(r, n, iso_date(ts), rule)
         dec_v1 = decide(app, "v1", rule=rule)   # the wrong rejection (gross price)
         tid = r.trace_id("golden", n)
@@ -115,7 +121,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
     # -- controls: over-cap BEV + PHEV (correctly rejected under both) ----
     overcap_specs: list[TraceSpec] = []
     for _ in range(n_overcap):
-        ts = times[idx]; idx += 1
+        ts = ctrl_times[cidx]; cidx += 1
         app = control_overcap_application(r, n, iso_date(ts), rule)
         dec_v1 = decide(app, "v1", rule=rule)
         spec = TraceSpec(trace_id=r.trace_id("golden", n), timestamp=ts, application=app,
@@ -127,7 +133,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
 
     phev_specs: list[TraceSpec] = []
     for _ in range(n_phev):
-        ts = times[idx]; idx += 1
+        ts = ctrl_times[cidx]; cidx += 1
         app = control_phev_application(r, n, iso_date(ts), rule)
         dec_v1 = decide(app, "v1", rule=rule)
         spec = TraceSpec(trace_id=r.trace_id("golden", n), timestamp=ts, application=app,
