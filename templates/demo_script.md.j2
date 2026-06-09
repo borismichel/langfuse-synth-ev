@@ -60,25 +60,27 @@ Reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}** — registered at 
 - **v2:** `financed_principal = list price − qualifying grant`; EV Purchase Grant gives **€{{ '{:,}'.format(grant_amount_eur) }}**
   to BEVs ≤ **€{{ '{:,}'.format(price_cap_eur) }}** (effective `{{ grant_effective_date }}`).
 
-### 6 · Run production → red, promote v2 → green
-The experiment always runs **whatever prompt is labelled `production`**.
+### 6 · Run production → red, validate development → green, then promote
+The experiment runs whatever prompt carries the label you pass (default `production`).
 ```
 synth experiment --config config/demo.yaml
 ```
-Right now `production` == **v{{ prompt_versions.v1 }}** (the stale prompt), so this run (`ev-grant-prod-v{{ prompt_versions.v1 }}`)
+`production` == **v{{ prompt_versions.v1 }}** (the stale prompt) → run `ev-grant-production-v{{ prompt_versions.v1 }}`
 goes **red** — the managed judge fails every disputed item (no grant applied).
 
-Now **promote v2 to `production`** (Prompts → `{{ prompt_name }}` → set the `production` label on v{{ prompt_versions.v2 }}),
-and run the **same command** again:
+Now prove the fix **without touching production** — run the `development` label (v2):
 ```
-synth experiment --config config/demo.yaml
+synth experiment --config config/demo.yaml --label development
 ```
-This run (`ev-grant-prod-v{{ prompt_versions.v2 }}`) pulls the fixed prompt → **every item, including the just-added one,
-comes back green**. Worked case:
+`development` == **v{{ prompt_versions.v2 }}** (the fix) → run `ev-grant-development-v{{ prompt_versions.v2 }}` →
+**every item, including the just-added one, comes back green**. Worked case:
 {{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }},
 line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances
 €{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
-The two runs sit side-by-side in the dataset comparison view: `prod-v{{ prompt_versions.v1 }}` red vs `prod-v{{ prompt_versions.v2 }}` green.
+
+Confident it's safe, **promote v2 to `production`** (Prompts → `{{ prompt_name }}` → set the `production` label on
+v{{ prompt_versions.v2 }}) and re-run the production command → green. The runs sit side-by-side in the dataset
+comparison view: `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
 
 ### 7 · The landing line
 > "Quality scores were green the whole time — but appeals were climbing. We built a correctness judge, pulled the
@@ -88,10 +90,10 @@ The two runs sit side-by-side in the dataset comparison view: `prod-v{{ prompt_v
 ---
 
 ## Break-glass fallback
-- Prompt **v2** is pre-registered (label `v2`); promoting it to `production` is one click. If a live step
-  misbehaves, promote v2 and re-run `synth experiment` to jump straight to the green run.
-- `production` starts on **v{{ prompt_versions.v1 }}** out of a fresh seed — re-seeding resets it, so the
-  red → green flip is always reproducible.
+- Prompt **v2** is pre-registered and labelled **`development`** — `synth experiment --label development`
+  jumps straight to the green run with no UI step at all.
+- A fresh seed sets **`production`→v{{ prompt_versions.v1 }}** and **`development`→v{{ prompt_versions.v2 }}**
+  automatically, and re-seeding re-asserts them — so the red → green flip is always reproducible.
 - Controls prove the judge reasons rather than rubber-stamps: e.g. control
   `{{ control_example.trace_id }}` ({{ control_example.vehicle_type }} €{{ '{:,}'.format(control_example.list_price_eur) }})
   stays correctly **{{ control_example.expected_v2_decision }}** under v2.

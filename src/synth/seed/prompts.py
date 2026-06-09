@@ -20,18 +20,19 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
 
 
-def set_production_label(base_url: str, name: str, version: int) -> None:
-    """Point the ``production`` label at a specific version (PATCH /versions/{version}).
+def set_version_labels(base_url: str, name: str, version: int, labels: list[str]) -> None:
+    """Set the labels on a specific prompt version (PATCH /versions/{version}).
 
-    Run on every seed so ``production`` is (re)asserted to v1 — the demo's red→green flip
-    always starts from the stale prompt, even on a re-seed where idempotent registration
-    reused v1 without re-applying labels. ``newLabels`` replaces the version's labels and
-    is unique across versions, so this also moves ``production`` off v2 if it was promoted."""
+    Run on every seed so the demo's environment labels are (re)asserted — ``production``→v1
+    (stale) and ``development``→v2 (the fix) — even on a re-seed where idempotent
+    registration reused the versions without re-applying labels. ``newLabels`` replaces the
+    version's labels and is unique across versions, so re-asserting also moves a label back
+    if it was promoted elsewhere (e.g. ``production`` flipped to v2 during a prior demo)."""
     pub = os.environ.get("LANGFUSE_PUBLIC_KEY", "")
     sec = os.environ.get("LANGFUSE_SECRET_KEY", "")
     resp = requests.patch(
         f"{base_url.rstrip('/')}/api/public/v2/prompts/{name}/versions/{version}",
-        json={"newLabels": ["v1", "production"]}, auth=(pub, sec), timeout=15)
+        json={"newLabels": labels}, auth=(pub, sec), timeout=15)
     resp.raise_for_status()
 
 

@@ -1,10 +1,11 @@
 """The experiment runner the presenter runs in step 6 (spec §7).
 
-Loads the hosted ``ev-grant-disputed-rejections`` dataset and runs **whatever prompt is
-labelled ``production``** as the task via the v4 ``run_experiment`` API. The task is the
-SAME agent function used at seed time, pulling the live ``production`` prompt — so the
-demo is: run it (production == v1) → red; promote v2 to ``production`` in the UI; run it
-again (production == v2) → green. REAL model calls (temperature 0).
+Loads the hosted ``ev-grant-disputed-rejections`` dataset and runs **whatever prompt
+carries the requested label** (default ``production``) as the task via the v4
+``run_experiment`` API. The task is the SAME agent function used at seed time, pulling the
+live labelled prompt — so the demo is: run ``production`` (== v1) → red; run
+``development`` (== v2) → green to validate the fix **without touching production**; then
+promote v2 to ``production`` and re-run. REAL model calls (temperature 0).
 
 The managed UI judge (scoped to this dataset's new runs) scores each Dataset Run. We
 leave ``evaluators`` empty so the managed judge is what scores it; an optional local
@@ -19,28 +20,26 @@ from ..config import Config
 from ..models import Application
 from ..state import RunState
 
-PRODUCTION_LABEL = "production"
 
-
-def _make_task(lf, anth, cfg: Config) -> Callable:
+def _make_task(lf, anth, cfg: Config, label: str) -> Callable:
     prompt_name = cfg.golden_path.prompt_name
     model = cfg.golden_path.task_model
 
     def task(*args, **kwargs):
         item = kwargs.get("item") if "item" in kwargs else (args[0] if args else None)
-        # SAME agent fn as seeding; runs whatever is labelled `production` right now.
-        decision = decide(item.input, PRODUCTION_LABEL, live=True, lf=lf, anth=anth,
+        # SAME agent fn as seeding; runs whatever carries `label` right now.
+        decision = decide(item.input, label, live=True, lf=lf, anth=anth,
                           prompt_name=prompt_name, model=model)
         return decision.model_dump()
 
     return task
 
 
-def run_experiment(cfg: Config, *, run_name: str = "ev-grant",
+def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "ev-grant",
                    log: Callable[[str], None] = print):
-    """Run the current ``production`` prompt against the hosted dataset. The run is named
-    by the production version (``…-prod-v{n}``) so the two demo runs (v1 red, v2 green)
-    land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
+    """Run the prompt carrying ``label`` against the hosted dataset. The run is named by
+    label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
+    v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
     from ..lfclient import get_anthropic, get_langfuse
 
     lf = get_langfuse(cfg)
@@ -48,27 +47,27 @@ def run_experiment(cfg: Config, *, run_name: str = "ev-grant",
     prompt_name = cfg.golden_path.prompt_name
 
     try:
-        prod = lf.get_prompt(prompt_name, label=PRODUCTION_LABEL, type="chat", cache_ttl_seconds=0)
+        prompt = lf.get_prompt(prompt_name, label=label, type="chat", cache_ttl_seconds=0)
     except Exception as exc:  # noqa: BLE001
         raise RuntimeError(
-            f"No {prompt_name!r} prompt labelled {PRODUCTION_LABEL!r}. Re-seed (v1 is seeded "
-            f"as production) or set the label in the UI before running the experiment."
+            f"No {prompt_name!r} prompt labelled {label!r}. Re-seed (v1→production, "
+            f"v2→development are set automatically) or set the label in the UI first."
         ) from exc
-    ver = getattr(prod, "version", "?")
-    name = f"{run_name}-prod-v{ver}"
+    ver = getattr(prompt, "version", "?")
+    name = f"{run_name}-{label}-v{ver}"
 
     dataset = lf.get_dataset(cfg.golden_path.dataset.name)
-    log(f"· production = {prompt_name} v{ver}; running it against "
+    log(f"· {label} = {prompt_name} v{ver}; running it against "
         f"{cfg.golden_path.dataset.name!r} as {name!r} …")
     res = dataset.run_experiment(
         name=name,
-        description=f"Production prompt ({prompt_name} v{ver}) against the disputed dataset.",
-        task=_make_task(lf, anth, cfg),
+        description=f"{label.capitalize()} prompt ({prompt_name} v{ver}) against the disputed dataset.",
+        task=_make_task(lf, anth, cfg, label),
         # evaluators left empty: the managed UI judge (scoped to dataset runs) scores it.
     )
     log(res.format())
     lf.flush()
-    return {"production_version": ver, "result": res}
+    return {"label": label, "version": ver, "result": res}
 
 
 # -- CI/CD regression-gate fallback (optional, offline arithmetic) ----------
