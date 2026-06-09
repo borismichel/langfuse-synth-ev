@@ -63,11 +63,32 @@ class _Cursor:
         return s, e
 
 
+def _subsidy_eligibility(cfg: Config, spec: TraceSpec) -> tuple[dict, bool]:
+    """What ``check_subsidy_eligibility`` reports, and whether the agent ignored it.
+
+    For a *live* submission the policy is active today, so an eligible BEV sees the **real
+    grant** — and a v1 decision that didn't apply it is flagged ``ignored_by_agent`` (the bug
+    made visible). Seed traces keep the stale-window / no-subsidy text that the §7 regression
+    relies on."""
+    if spec.kind == "live":
+        app = spec.application
+        if app.vehicle.type == "BEV" and app.vehicle.list_price_eur <= cfg.golden_path.price_cap_eur:
+            g = cfg.golden_path.grant_amount_eur
+            out = {"applicable_subsidies": [{"name": "EV Purchase Grant", "amount_eur": g}],
+                   "note": f"BEV ≤ €{cfg.golden_path.price_cap_eur:,} qualifies for the €{g:,} EV purchase grant"}
+            return out, spec.decision.applied_grant_eur == 0   # grant offered but not applied
+        return {"applicable_subsidies": [], "note": "no subsidy applies to this vehicle"}, False
+    if spec.stale_grant_window:
+        return {"applicable_subsidies": [], "note": "no subsidy programs configured for this policy version"}, True
+    return {"applicable_subsidies": [], "note": "no active subsidy at application date"}, False
+
+
 def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None,
-                       decision_usage: tuple[int, int] | None = None) -> list[dict]:
-    """Build the agent-graph event tree. Seed path leaves ``decision_usage`` None (tokens are
-    sampled); the live playground passes the *real* model ``(input, output)`` token counts so
-    the decision generation reflects the actual call."""
+                       decision_usage: tuple[int, int] | None = None,
+                       decision_latency_ms: int | None = None) -> list[dict]:
+    """Build the agent-graph event tree. Seed path leaves the overrides None (tokens + latency
+    are sampled); the live playground passes the *real* model ``(input, output)`` token counts
+    and the measured call latency so the decision generation reflects the actual call."""
     r = rng.sub("trace", spec.trace_id)
     app = spec.application
     env = spec.environment
@@ -145,10 +166,7 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
     # -- check_subsidy_eligibility (TOOL, load-bearing) ------------------
     fail_here = spec.error_step == "check_subsidy_eligibility"
     s, e = cur.advance(tool_latency_ms(r, 90, 0.4, spec.slow_factor))
-    if spec.stale_grant_window:
-        elig_out = {"applicable_subsidies": [], "note": "no subsidy programs configured for this policy version"}
-    else:
-        elig_out = {"applicable_subsidies": [], "note": "no active subsidy at application date"}
+    elig_out, ignored_by_agent = _subsidy_eligibility(cfg, spec)
     events.append(observation_event(
         obs_id=r.obs_id("eligib", tid), trace_id=tid, name="check_subsidy_eligibility",
         obs_type="TOOL", start=s, end=e, parent_id=agent_id, environment=env,
@@ -156,7 +174,7 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         output=elig_out, level="ERROR" if fail_here else None,
         status_message="subsidy service timeout" if fail_here else None,
         metadata={"tool": "subsidy_lookup", "toolCallId": elig_call_id,
-                  "ignored_by_agent": spec.stale_grant_window}))
+                  "ignored_by_agent": ignored_by_agent}))
 
     # -- compute_affordability (TOOL) ------------------------------------
     fail_aff = spec.error_step == "compute_affordability"
@@ -173,7 +191,8 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
 
     # -- decision generation (Sonnet) — decide(), links to prompt v1 ------
     # Input = base prompt + multi-turn history + the planner's reasoning (if any).
-    s, e = cur.advance(sample_latency_ms(r, "work", spec.slow_factor))
+    s, e = cur.advance(decision_latency_ms if decision_latency_ms is not None
+                       else sample_latency_ms(r, "work", spec.slow_factor))
     if decision_usage is not None:               # live: real token counts, no cache split
         ti, ot, cr, cc = decision_usage[0], decision_usage[1], 0, 0
     else:                                        # seed: sampled tokens + prompt-cache split

@@ -7,6 +7,7 @@ identical to the seeded data and lands at the top of the timeline.
 """
 from __future__ import annotations
 
+import time
 import uuid
 from datetime import datetime, timezone
 from typing import Callable
@@ -25,7 +26,7 @@ PRODUCTION_LABEL = "production"
 
 def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
     """Pull the current ``production`` prompt (cache_ttl=0 → a promotion is caught) and run it.
-    Returns ``(decision, input_tokens, output_tokens, prompt_version)``."""
+    Returns ``(decision, input_tokens, output_tokens, prompt_version, latency_ms)``."""
     name = cfg.golden_path.prompt_name
     prompt = lf.get_prompt(name, label=PRODUCTION_LABEL, type="chat", cache_ttl_seconds=0)
     application_json = app.model_dump_json()
@@ -33,11 +34,13 @@ def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
     system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
     turns = [m for m in messages if m.get("role") != "system"] or \
         [{"role": "user", "content": application_json}]
+    t0 = time.monotonic()
     resp = anth.messages.create(model=cfg.golden_path.task_model, system=system,
                                 messages=turns, temperature=0, max_tokens=512)
+    latency_ms = int((time.monotonic() - t0) * 1000)
     text = "".join(b.text for b in resp.content if b.type == "text")
     return (parse_decision(text, app), resp.usage.input_tokens, resp.usage.output_tokens,
-            getattr(prompt, "version", None))
+            getattr(prompt, "version", None), latency_ms)
 
 
 def submit(cfg: Config, application: Application, *, log: Callable[[str], None] = print) -> dict:
@@ -55,9 +58,9 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
 
     lf = get_langfuse(cfg)
     anth = get_anthropic()
-    decision, in_tok, out_tok, version = _live_decision(cfg, lf, anth, application)
+    decision, in_tok, out_tok, version, latency_ms = _live_decision(cfg, lf, anth, application)
     log(f"· production prompt v{version} decided: {decision.decision} "
-        f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,})")
+        f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,}; {latency_ms}ms)")
 
     # Emit a native-looking agent-graph trace at *now*, with the real decision + usage.
     trace_id = uuid.uuid4().hex
@@ -67,7 +70,7 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
         kind="live", stale_grant_window=False, plan_step=False,
         tags=["ev-grant", "playground"])
     events = build_trace_events(Rng(cfg.generation.seed), cfg, spec, version,
-                                decision_usage=(in_tok, out_tok))
+                                decision_usage=(in_tok, out_tok), decision_latency_ms=latency_ms)
     ing = Ingestor.from_env(base_url)
     ing.extend(events)
     ing.flush()
