@@ -1,0 +1,60 @@
+# Langfuse demo-data synthesiser — the EV-subsidy regression scenario.
+# Every value here is auditable; the run is fully determined by (this file + seed).
+
+target:
+  host: http://localhost:3000          # self-hosted base URL (overridable via LANGFUSE_BASE_URL)
+  # keys via env: LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY
+  project_hint: demo                   # guardrail: refuse to seed unless the project name contains this
+
+generation:
+  seed: 42
+  archetype: credit_approval_agent
+  total_traces: 4000
+  window_days: 30
+  population:
+    users: 120
+    multi_turn_ratio: 0.35
+    power_user_share: 0.06             # loan officers generating disproportionate volume (Zipf-ish)
+  environments:
+    production_share: 0.92             # rest tagged `staging`
+
+models:                                # price per 1k tokens (Anthropic API, May 2026)
+  - { name: claude-opus-4.8,   role: plan,  input_per_1k: 0.005, output_per_1k: 0.025 }
+  - { name: claude-sonnet-4.6, role: work,  input_per_1k: 0.003, output_per_1k: 0.015 }
+  - { name: claude-haiku-4.5,  role: light, input_per_1k: 0.001, output_per_1k: 0.005 }
+
+model_mix:                             # realistic per-trace distribution
+  plan_step_share: 0.25                # fraction of traces that invoke the Opus planner
+  light_calls_per_trace: [1, 2]        # Haiku extraction + explanation (most calls by count)
+  # the Sonnet decision step is exactly one per trace
+
+golden_path:                           # the flagship narrative (§7)
+  enabled: true
+  prompt_name: credit_decision
+  judge_model: claude-sonnet-4.6       # managed LLM-as-judge (swap to Opus for a stronger judge)
+  task_model: claude-sonnet-4.6        # v2 task = production 'work' model; temperature 0
+  task_provider: anthropic             # anthropic | bedrock
+  grant_effective_day_offset: -7       # relative to run date
+  drift_window_days: 5
+  grant_amount_eur: 6000
+  price_cap_eur: 50000
+  dti_threshold: 0.45                  # included in the rule surface; arithmetic uses principal vs line
+  prompt_v1_register: true             # register stale prompt + link decision generations
+  prompt_v2_register: true             # register fixed prompt (or author live in the UI for the reveal)
+  borderline_clustering: true
+  baseline_disagreement_rate: 0.03     # healthy appeal rate outside the drift window
+  drift_disagreement_rate: 0.55        # appeal rate on eligible false-negatives in the drift window
+  dataset:
+    name: ev-grant-disputed-rejections
+    n_items: 24
+    eligible_share: 0.7                # rest are correct-rejection controls (over-cap BEV, PHEV)
+    n_reserved_for_live_add: 3         # eligible false-negatives kept OUT of the dataset
+
+ambient_incidents:
+  cost_spike:      { enabled: true,  day_offset: -12, duration_hours: 8 }
+  latency_degrade: { enabled: false, day_offset: -9, duration_hours: 12, factor: 3.0 }
+  error_burst:     { enabled: true,  day_offset: -3, duration_hours: 6 }
+
+scoring:
+  auto_score_ratio: 0.6                # fraction of traces with auto quality/tone/format scores
+  human_annotation_ratio: 0.1         # fraction with a human user_disagreement signal

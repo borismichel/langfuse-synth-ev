@@ -1,0 +1,1366 @@
+[
+  {
+    "trace_id": "d4794385da97b6eb9d550075abab7792",
+    "applicant_id": "anon_0000",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0000",
+      "approved_line_eur": 32000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 38000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38000,
+      "approved_line_eur": 32000,
+      "reason": "Financed amount of EUR 38,000 exceeds the approved line of EUR 32,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 38000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 32000,
+      "approved_line_eur": 32000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 32,000, within the approved line of EUR 32,000."
+    }
+  },
+  {
+    "trace_id": "78b7bae29b0b82a7ee42b8d8e99d850b",
+    "applicant_id": "anon_0001",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0001",
+      "approved_line_eur": 44000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 46000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 46000,
+      "approved_line_eur": 44000,
+      "reason": "Financed amount of EUR 46,000 exceeds the approved line of EUR 44,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 40000,
+      "approved_line_eur": 44000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 40,000, within the approved line of EUR 44,000."
+    }
+  },
+  {
+    "trace_id": "af6971fe7aecb82b04affb7c3a3bce8c",
+    "applicant_id": "anon_0002",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0002",
+      "approved_line_eur": 41000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 46000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 46000,
+      "approved_line_eur": 41000,
+      "reason": "Financed amount of EUR 46,000 exceeds the approved line of EUR 41,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 40000,
+      "approved_line_eur": 41000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 40,000, within the approved line of EUR 41,000."
+    }
+  },
+  {
+    "trace_id": "dd05f94026cc55cc2c2300402a3a10af",
+    "applicant_id": "anon_0003",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0003",
+      "approved_line_eur": 35500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 41000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 41000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 41000,
+      "approved_line_eur": 35500,
+      "reason": "Financed amount of EUR 41,000 exceeds the approved line of EUR 35,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 41000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 35000,
+      "approved_line_eur": 35500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 35,000, within the approved line of EUR 35,500."
+    }
+  },
+  {
+    "trace_id": "88cfce173322887bc97f3a0a2e20ae02",
+    "applicant_id": "anon_0004",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0004",
+      "approved_line_eur": 32000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 37000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 32000,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 32,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 31000,
+      "approved_line_eur": 32000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 31,000, within the approved line of EUR 32,000."
+    }
+  },
+  {
+    "trace_id": "4fc825257bd6f5fd600b863627368b35",
+    "applicant_id": "anon_0005",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0005",
+      "approved_line_eur": 32500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 38500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38500,
+      "approved_line_eur": 32500,
+      "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 32,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 38500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 32500,
+      "approved_line_eur": 32500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 32,500, within the approved line of EUR 32,500."
+    }
+  },
+  {
+    "trace_id": "cc58a8078b74bf216bde0f8b545e58b6",
+    "applicant_id": "anon_0006",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0006",
+      "approved_line_eur": 34500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 37000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 34500,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 34,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 31000,
+      "approved_line_eur": 34500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 31,000, within the approved line of EUR 34,500."
+    }
+  },
+  {
+    "trace_id": "f64939e3b74da2641f0b104c36631a30",
+    "applicant_id": "anon_0007",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0007",
+      "approved_line_eur": 33500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 37500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37500,
+      "approved_line_eur": 33500,
+      "reason": "Financed amount of EUR 37,500 exceeds the approved line of EUR 33,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 37500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 31500,
+      "approved_line_eur": 33500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 31,500, within the approved line of EUR 33,500."
+    }
+  },
+  {
+    "trace_id": "880664eb143ff1c81f818a4ed6565fc6",
+    "applicant_id": "anon_0008",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0008",
+      "approved_line_eur": 42500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 45500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 45500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 45500,
+      "approved_line_eur": 42500,
+      "reason": "Financed amount of EUR 45,500 exceeds the approved line of EUR 42,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 45500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 39500,
+      "approved_line_eur": 42500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 39,500, within the approved line of EUR 42,500."
+    }
+  },
+  {
+    "trace_id": "1c6b9e67a6881de9b292c8839fec3b45",
+    "applicant_id": "anon_0009",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0009",
+      "approved_line_eur": 35500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 36500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 36500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 36500,
+      "approved_line_eur": 35500,
+      "reason": "Financed amount of EUR 36,500 exceeds the approved line of EUR 35,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 36500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 30500,
+      "approved_line_eur": 35500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 30,500, within the approved line of EUR 35,500."
+    }
+  },
+  {
+    "trace_id": "9dbd9c38895d0348df09e2623d915ad3",
+    "applicant_id": "anon_0010",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0010",
+      "approved_line_eur": 40000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 45500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 45500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 45500,
+      "approved_line_eur": 40000,
+      "reason": "Financed amount of EUR 45,500 exceeds the approved line of EUR 40,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 45500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 39500,
+      "approved_line_eur": 40000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 39,500, within the approved line of EUR 40,000."
+    }
+  },
+  {
+    "trace_id": "7e9bb7cf4ff77010caba7632d97d0d57",
+    "applicant_id": "anon_0011",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0011",
+      "approved_line_eur": 40500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 43000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 43000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43000,
+      "approved_line_eur": 40500,
+      "reason": "Financed amount of EUR 43,000 exceeds the approved line of EUR 40,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 43000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 40500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 37,000, within the approved line of EUR 40,500."
+    }
+  },
+  {
+    "trace_id": "65f4f39d70596cd4567af65d4d535d36",
+    "applicant_id": "anon_0012",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0012",
+      "approved_line_eur": 36500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 39000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 39000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 39000,
+      "approved_line_eur": 36500,
+      "reason": "Financed amount of EUR 39,000 exceeds the approved line of EUR 36,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 39000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 33000,
+      "approved_line_eur": 36500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 33,000, within the approved line of EUR 36,500."
+    }
+  },
+  {
+    "trace_id": "3cb43d842e37b5b87d78bea0ad31cd67",
+    "applicant_id": "anon_0013",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0013",
+      "approved_line_eur": 43500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 47500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 47500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 47500,
+      "approved_line_eur": 43500,
+      "reason": "Financed amount of EUR 47,500 exceeds the approved line of EUR 43,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 47500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 41500,
+      "approved_line_eur": 43500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 41,500, within the approved line of EUR 43,500."
+    }
+  },
+  {
+    "trace_id": "bb643243cc3c7e1cfbacf8400321ee21",
+    "applicant_id": "anon_0014",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0014",
+      "approved_line_eur": 32000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 38000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38000,
+      "approved_line_eur": 32000,
+      "reason": "Financed amount of EUR 38,000 exceeds the approved line of EUR 32,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 38000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 32000,
+      "approved_line_eur": 32000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 32,000, within the approved line of EUR 32,000."
+    }
+  },
+  {
+    "trace_id": "7e1c1b799cb8049e21a13d6ae79f2f59",
+    "applicant_id": "anon_0015",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0015",
+      "approved_line_eur": 33500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 39000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 39000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 39000,
+      "approved_line_eur": 33500,
+      "reason": "Financed amount of EUR 39,000 exceeds the approved line of EUR 33,500."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 39000,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 33000,
+      "approved_line_eur": 33500,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 33,000, within the approved line of EUR 33,500."
+    }
+  },
+  {
+    "trace_id": "d8c6c8e9252b009785eee822e861c1a0",
+    "applicant_id": "anon_0016",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0016",
+      "approved_line_eur": 37000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 42500
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 42500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 42500,
+      "approved_line_eur": 37000,
+      "reason": "Financed amount of EUR 42,500 exceeds the approved line of EUR 37,000."
+    },
+    "expected_v2": {
+      "decision": "approve",
+      "list_price_eur": 42500,
+      "applied_grant_eur": 6000,
+      "financed_principal_eur": 36500,
+      "approved_line_eur": 37000,
+      "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 36,500, within the approved line of EUR 37,000."
+    }
+  },
+  {
+    "trace_id": "18d0351f69d2d43d47895eac3df2ce5d",
+    "applicant_id": "anon_0017",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0017",
+      "approved_line_eur": 32000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 37000
+      },
+      "application_date": "2026-06-04"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 32000,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 32,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "f6c99920a671dd8ef7fd960bf6ea247b",
+    "applicant_id": "anon_0018",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0018",
+      "approved_line_eur": 40500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 43500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 43500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43500,
+      "approved_line_eur": 40500,
+      "reason": "Financed amount of EUR 43,500 exceeds the approved line of EUR 40,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "4bda2abca65e74228f66dba187631a1a",
+    "applicant_id": "anon_0019",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0019",
+      "approved_line_eur": 42000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 44000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 44000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 44000,
+      "approved_line_eur": 42000,
+      "reason": "Financed amount of EUR 44,000 exceeds the approved line of EUR 42,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "b6de8377b6903f1b1491f5946325b84b",
+    "applicant_id": "anon_0020",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0020",
+      "approved_line_eur": 42500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 47500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 47500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 47500,
+      "approved_line_eur": 42500,
+      "reason": "Financed amount of EUR 47,500 exceeds the approved line of EUR 42,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "c19f1b4ecd6bd8e74388e9e4ce12f117",
+    "applicant_id": "anon_0021",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0021",
+      "approved_line_eur": 37500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 40500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 40500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 40500,
+      "approved_line_eur": 37500,
+      "reason": "Financed amount of EUR 40,500 exceeds the approved line of EUR 37,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "fc3d9a5f768a2aef26257b27252ad95b",
+    "applicant_id": "anon_0022",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0022",
+      "approved_line_eur": 42500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 47000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 47000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 47000,
+      "approved_line_eur": 42500,
+      "reason": "Financed amount of EUR 47,000 exceeds the approved line of EUR 42,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "89e9e00ddcfb61f5803a2c3e42a7555a",
+    "applicant_id": "anon_0023",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0023",
+      "approved_line_eur": 37000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 43000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 43000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43000,
+      "approved_line_eur": 37000,
+      "reason": "Financed amount of EUR 43,000 exceeds the approved line of EUR 37,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "1549688fc9e35d15290282250cd44922",
+    "applicant_id": "anon_0024",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0024",
+      "approved_line_eur": 33500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 39500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 39500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 39500,
+      "approved_line_eur": 33500,
+      "reason": "Financed amount of EUR 39,500 exceeds the approved line of EUR 33,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "a327018f2f42f3d7dee1cd2ef2ddff89",
+    "applicant_id": "anon_0025",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0025",
+      "approved_line_eur": 31500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 37000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 31500,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 31,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "2f470e8b097cdcdd6f140916934f5cfd",
+    "applicant_id": "anon_0026",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0026",
+      "approved_line_eur": 40000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 46000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 46000,
+      "approved_line_eur": 40000,
+      "reason": "Financed amount of EUR 46,000 exceeds the approved line of EUR 40,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "074a9508f16ef2f8e2365dbd420ef016",
+    "applicant_id": "anon_0027",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0027",
+      "approved_line_eur": 41500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 46000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 46000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 46000,
+      "approved_line_eur": 41500,
+      "reason": "Financed amount of EUR 46,000 exceeds the approved line of EUR 41,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "d302ca6133b6f6acf9004b274c6efa6a",
+    "applicant_id": "anon_0028",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0028",
+      "approved_line_eur": 43000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 44500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 44500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 44500,
+      "approved_line_eur": 43000,
+      "reason": "Financed amount of EUR 44,500 exceeds the approved line of EUR 43,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "bc4afcbe0e4090193a387b52af8d8229",
+    "applicant_id": "anon_0029",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0029",
+      "approved_line_eur": 38500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 40000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 40000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 40000,
+      "approved_line_eur": 38500,
+      "reason": "Financed amount of EUR 40,000 exceeds the approved line of EUR 38,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "684405be61ec7f99ebef919a39379b5b",
+    "applicant_id": "anon_0030",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0030",
+      "approved_line_eur": 42500,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 45500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 45500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 45500,
+      "approved_line_eur": 42500,
+      "reason": "Financed amount of EUR 45,500 exceeds the approved line of EUR 42,500."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "1ec00b2367152952125d508ace99ffe5",
+    "applicant_id": "anon_0031",
+    "kind": "golden_eligible",
+    "application": {
+      "applicant_id": "anon_0031",
+      "approved_line_eur": 34000,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 38500
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38500,
+      "approved_line_eur": 34000,
+      "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 34,000."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "6f519acb2c76b01f66030582d01458e6",
+    "applicant_id": "anon_0032",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0032",
+      "approved_line_eur": 49771,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 57000
+      },
+      "application_date": "2026-06-05"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 57000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 57000,
+      "approved_line_eur": 49771,
+      "reason": "Financed amount of EUR 57,000 exceeds the approved line of EUR 49,771."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 57000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 57000,
+      "approved_line_eur": 49771,
+      "reason": "Financed amount of EUR 57,000 exceeds the approved line of EUR 49,771."
+    }
+  },
+  {
+    "trace_id": "c2e1cfdfb846095f3b781c1fed6ec3a0",
+    "applicant_id": "anon_0033",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0033",
+      "approved_line_eur": 57566,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 61500
+      },
+      "application_date": "2026-06-06"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 61500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 61500,
+      "approved_line_eur": 57566,
+      "reason": "Financed amount of EUR 61,500 exceeds the approved line of EUR 57,566."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 61500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 61500,
+      "approved_line_eur": 57566,
+      "reason": "Financed amount of EUR 61,500 exceeds the approved line of EUR 57,566."
+    }
+  },
+  {
+    "trace_id": "d1c930d7a22d842eee1d96476a16eb5b",
+    "applicant_id": "anon_0034",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0034",
+      "approved_line_eur": 57632,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 60500
+      },
+      "application_date": "2026-06-06"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 60500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 60500,
+      "approved_line_eur": 57632,
+      "reason": "Financed amount of EUR 60,500 exceeds the approved line of EUR 57,632."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 60500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 60500,
+      "approved_line_eur": 57632,
+      "reason": "Financed amount of EUR 60,500 exceeds the approved line of EUR 57,632."
+    }
+  },
+  {
+    "trace_id": "5d50f6f44a7953c3369b36de381c131b",
+    "applicant_id": "anon_0035",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0035",
+      "approved_line_eur": 44350,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 52000
+      },
+      "application_date": "2026-06-07"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 52000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 52000,
+      "approved_line_eur": 44350,
+      "reason": "Financed amount of EUR 52,000 exceeds the approved line of EUR 44,350."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 52000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 52000,
+      "approved_line_eur": 44350,
+      "reason": "Financed amount of EUR 52,000 exceeds the approved line of EUR 44,350."
+    }
+  },
+  {
+    "trace_id": "cfbfd55b00fc6ecd9b99582fe15fc0cc",
+    "applicant_id": "anon_0036",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0036",
+      "approved_line_eur": 48440,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 54500
+      },
+      "application_date": "2026-06-07"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 54500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 54500,
+      "approved_line_eur": 48440,
+      "reason": "Financed amount of EUR 54,500 exceeds the approved line of EUR 48,440."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "49188302cf79dbe98827e82d4dc4a31a",
+    "applicant_id": "anon_0037",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0037",
+      "approved_line_eur": 46873,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 52500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 52500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 52500,
+      "approved_line_eur": 46873,
+      "reason": "Financed amount of EUR 52,500 exceeds the approved line of EUR 46,873."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "66ebc78559a290c9384fe8c455d17dd2",
+    "applicant_id": "anon_0038",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0038",
+      "approved_line_eur": 48114,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 55500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 55500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 55500,
+      "approved_line_eur": 48114,
+      "reason": "Financed amount of EUR 55,500 exceeds the approved line of EUR 48,114."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "56701e86d3eb1779428ede3346ba89da",
+    "applicant_id": "anon_0039",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0039",
+      "approved_line_eur": 58508,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 62500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 62500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 62500,
+      "approved_line_eur": 58508,
+      "reason": "Financed amount of EUR 62,500 exceeds the approved line of EUR 58,508."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "1519711cf6cc629f91b37a35a9c5d481",
+    "applicant_id": "anon_0040",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0040",
+      "approved_line_eur": 46242,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 52500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 52500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 52500,
+      "approved_line_eur": 46242,
+      "reason": "Financed amount of EUR 52,500 exceeds the approved line of EUR 46,242."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "46b73a4bf89a4d28f8f2cd53ec536388",
+    "applicant_id": "anon_0041",
+    "kind": "control_overcap",
+    "application": {
+      "applicant_id": "anon_0041",
+      "approved_line_eur": 54409,
+      "vehicle": {
+        "type": "BEV",
+        "list_price_eur": 62000
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 62000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 62000,
+      "approved_line_eur": 54409,
+      "reason": "Financed amount of EUR 62,000 exceeds the approved line of EUR 54,409."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "1ddbcd0d6bf6bf1b6569d5c5579d7e8b",
+    "applicant_id": "anon_0042",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0042",
+      "approved_line_eur": 40017,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 43500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 43500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43500,
+      "approved_line_eur": 40017,
+      "reason": "Financed amount of EUR 43,500 exceeds the approved line of EUR 40,017."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 43500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43500,
+      "approved_line_eur": 40017,
+      "reason": "Financed amount of EUR 43,500 exceeds the approved line of EUR 40,017."
+    }
+  },
+  {
+    "trace_id": "2c471618dca52ea1fe235801a0150266",
+    "applicant_id": "anon_0043",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0043",
+      "approved_line_eur": 30156,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 36000
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 36000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 36000,
+      "approved_line_eur": 30156,
+      "reason": "Financed amount of EUR 36,000 exceeds the approved line of EUR 30,156."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 36000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 36000,
+      "approved_line_eur": 30156,
+      "reason": "Financed amount of EUR 36,000 exceeds the approved line of EUR 30,156."
+    }
+  },
+  {
+    "trace_id": "31a6097fe631c780bdf89f607327f84e",
+    "applicant_id": "anon_0044",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0044",
+      "approved_line_eur": 33397,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 37000
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 33397,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 33,397."
+    },
+    "expected_v2": {
+      "decision": "reject",
+      "list_price_eur": 37000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37000,
+      "approved_line_eur": 33397,
+      "reason": "Financed amount of EUR 37,000 exceeds the approved line of EUR 33,397."
+    }
+  },
+  {
+    "trace_id": "afb061e2557759a147752e278434f80e",
+    "applicant_id": "anon_0045",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0045",
+      "approved_line_eur": 35239,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 37500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 37500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 37500,
+      "approved_line_eur": 35239,
+      "reason": "Financed amount of EUR 37,500 exceeds the approved line of EUR 35,239."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "d6f88fc021a3eaf3107cb578cd8f0067",
+    "applicant_id": "anon_0046",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0046",
+      "approved_line_eur": 32569,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 36500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 36500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 36500,
+      "approved_line_eur": 32569,
+      "reason": "Financed amount of EUR 36,500 exceeds the approved line of EUR 32,569."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "d255198ab1bee7b0294451d1ef9ce5c4",
+    "applicant_id": "anon_0047",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0047",
+      "approved_line_eur": 35128,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 41000
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 41000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 41000,
+      "approved_line_eur": 35128,
+      "reason": "Financed amount of EUR 41,000 exceeds the approved line of EUR 35,128."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "2f18445fe1f5badf224d44a1b5cc0a1b",
+    "applicant_id": "anon_0048",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0048",
+      "approved_line_eur": 35050,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 41000
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 41000,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 41000,
+      "approved_line_eur": 35050,
+      "reason": "Financed amount of EUR 41,000 exceeds the approved line of EUR 35,050."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "54eb834ab8c806e8e1e305b5e221b132",
+    "applicant_id": "anon_0049",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0049",
+      "approved_line_eur": 32762,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 38500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38500,
+      "approved_line_eur": 32762,
+      "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 32,762."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "cf4bd87e3a3a3ae0da1569de81f11ce7",
+    "applicant_id": "anon_0050",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0050",
+      "approved_line_eur": 39718,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 43500
+      },
+      "application_date": "2026-06-08"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 43500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 43500,
+      "approved_line_eur": 39718,
+      "reason": "Financed amount of EUR 43,500 exceeds the approved line of EUR 39,718."
+    },
+    "expected_v2": null
+  },
+  {
+    "trace_id": "c1c2abd00394c8dfa0a6bf05a3dd33c1",
+    "applicant_id": "anon_0051",
+    "kind": "control_phev",
+    "application": {
+      "applicant_id": "anon_0051",
+      "approved_line_eur": 34110,
+      "vehicle": {
+        "type": "PHEV",
+        "list_price_eur": 38500
+      },
+      "application_date": "2026-06-09"
+    },
+    "decision_v1": {
+      "decision": "reject",
+      "list_price_eur": 38500,
+      "applied_grant_eur": 0,
+      "financed_principal_eur": 38500,
+      "approved_line_eur": 34110,
+      "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 34,110."
+    },
+    "expected_v2": null
+  }
+]
