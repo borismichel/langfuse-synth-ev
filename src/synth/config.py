@@ -95,8 +95,12 @@ class AmbientIncidents(BaseModel):
 
 
 class Scoring(BaseModel):
-    auto_score_ratio: float = 0.6
-    human_annotation_ratio: float = 0.1
+    # Coverage by instrument kind (spec §6): deterministic checks run on everything,
+    # LLM-judges on a thin sample, customer surveys at a response rate.
+    format_check_coverage: float = 1.0       # deterministic schema check — every trace
+    quality_judge_ratio: float = 0.15        # LLM judge: answer_quality + tone (bundled)
+    disagreement_judge_ratio: float = 0.15   # LLM judge: user_disagreement (ambient sample)
+    csat_response_ratio: float = 0.3         # per-session customer survey response rate
 
 
 class Config(BaseModel):

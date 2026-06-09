@@ -1,15 +1,19 @@
 """Scores & configs (spec §6).
 
-A spread that exercises every scoring path so eval dashboards populate. Crucially:
-- ``answer_quality`` / ``tone`` / ``format_compliance`` stay **green** through the
-  golden-path window — the rejections read perfectly well; they're just *wrong*.
-- ``user_disagreement`` is the blunt, lagging human signal that **drifts** on the
-  eligible false-negatives in the drift window.
+Coverage follows the *kind* of instrument, not one blanket ratio:
+- ``format_compliance`` is a **deterministic** schema check — cheap, so it runs on
+  **every** trace (sampling a rule check is the giveaway it's fake).
+- ``answer_quality`` / ``tone`` are an **LLM-judge** pass — graded on a thin sample,
+  and they stay **green** through the golden-path window (the rejections read fine;
+  they're just *wrong*).
+- ``user_disagreement`` is an **LLM-judge** over the interaction that flags customer
+  pushback — sampled, and **forced true on the disputed false-negatives** so the
+  appeal rate **drifts** in the window. Its verdict drives the ``disputed`` tag.
+- ``csat`` is a per-session **customer survey** — present at a response rate, not a grade.
 - There is **no** score for decision-correctness-under-the-new-grant. That gap is the
   whole point — it's what the managed judge in §7 fills, live, during the demo.
 
-Configs are created first (so scores are comparable); we score only a realistic
-fraction (fully-scored data looks fake).
+Configs are created first (so scores are comparable).
 """
 from __future__ import annotations
 
@@ -31,18 +35,27 @@ SCORE_CONFIGS: list[dict] = [
      "categories": [{"label": "pass", "value": 1}, {"label": "fail", "value": 0}],
      "description": "Decision output conforms to the required JSON schema."},
     {"name": "user_disagreement", "dataType": "BOOLEAN",
-     "description": "Lagging human signal: applicant appeal / loan-officer override. Drifts in the golden path."},
+     "description": "LLM-judge over the interaction: did the customer push back on the decision? Drives the 'disputed' tag; drifts in the golden path."},
     {"name": "csat", "dataType": "NUMERIC", "minValue": 1, "maxValue": 5,
      "description": "Per-session customer satisfaction rollup."},
 ]
 
 
-def quality_scores_for_trace(rng: Rng, trace_id: str, decision_obs_id: str, ts: datetime,
-                             environment: str, auto_ratio: float) -> list[dict]:
-    """Auto quality/tone/format scores on a realistic fraction of traces. Always green."""
-    if not rng.chance(auto_ratio):
-        return []
+def format_compliance_score(rng: Rng, trace_id: str, ts: datetime, environment: str) -> list[dict]:
+    """Deterministic schema check — runs on EVERY trace. Almost always pass."""
+    s = rng.sub("fmtscore", trace_id)
+    fmt = s.choices(["pass", "fail"], [0.98, 0.02], k=1)[0]
+    return [score_event(score_id=s.score_id("fmt", trace_id), name="format_compliance",
+                        value=fmt, data_type="CATEGORICAL", timestamp=ts, trace_id=trace_id,
+                        environment=environment)]
+
+
+def quality_judge_scores(rng: Rng, trace_id: str, decision_obs_id: str, ts: datetime,
+                         environment: str, sample_ratio: float) -> list[dict]:
+    """LLM-judge pass (answer_quality + tone), bundled, on a thin sample. Always green."""
     s = rng.sub("qscore", trace_id)
+    if not s.chance(sample_ratio):
+        return []
     events = []
     # answer_quality: green, gently varying
     aq = round(min(0.99, max(0.55, s.gauss(0.86, 0.06))), 3)
@@ -54,30 +67,26 @@ def quality_scores_for_trace(rng: Rng, trace_id: str, decision_obs_id: str, ts: 
     events.append(score_event(score_id=s.score_id("tone", trace_id), name="tone",
                               value=tone, data_type="CATEGORICAL", timestamp=ts, trace_id=trace_id,
                               environment=environment))
-    # format_compliance: almost always pass
-    fmt = s.choices(["pass", "fail"], [0.98, 0.02], k=1)[0]
-    events.append(score_event(score_id=s.score_id("fmt", trace_id), name="format_compliance",
-                              value=fmt, data_type="CATEGORICAL", timestamp=ts, trace_id=trace_id,
-                              environment=environment))
     return events
 
 
 def disagreement_score(rng: Rng, trace_id: str, ts: datetime, environment: str,
-                       disagree_rate: float, human_ratio: float,
-                       force: bool = False) -> list[dict]:
-    """The lagging human signal. Emitted on a fraction of traces; elevated in the drift window.
+                       disagree_rate: float, sample_ratio: float,
+                       force: bool = False, force_disagree: bool = False) -> tuple[list[dict], bool]:
+    """LLM-judge that flags customer pushback. Returns ``(events, disagree)`` so the caller
+    can apply the ``disputed`` tag when the verdict is true.
 
-    ``force=True`` guarantees the score exists (used so the drift is legible on the
-    specific disputed traces), otherwise it appears at ``human_ratio`` coverage.
-    """
+    ``force`` guarantees the judge ran (used on the disputed cases); ``force_disagree``
+    pins the verdict to true (the false-negatives are the cases customers contest)."""
     s = rng.sub("dscore", trace_id)
-    if not force and not s.chance(human_ratio):
-        return []
-    disagree = s.chance(disagree_rate)
-    return [score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
-                        value=1 if disagree else 0, data_type="BOOLEAN", timestamp=ts,
-                        trace_id=trace_id, environment=environment,
-                        comment="applicant appeal" if disagree else None)]
+    if not force and not s.chance(sample_ratio):
+        return [], False
+    disagree = True if force_disagree else s.chance(disagree_rate)
+    ev = score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
+                     value=1 if disagree else 0, data_type="BOOLEAN", timestamp=ts,
+                     trace_id=trace_id, environment=environment,
+                     comment="customer pushed back in chat" if disagree else None)
+    return [ev], disagree
 
 
 def csat_score(rng: Rng, session_id: str, ts: datetime, environment: str) -> dict:

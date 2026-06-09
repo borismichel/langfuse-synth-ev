@@ -56,5 +56,7 @@ ambient_incidents:
   error_burst:     { enabled: true,  day_offset: -3, duration_hours: 6 }
 
 scoring:
-  auto_score_ratio: 0.6                # fraction of traces with auto quality/tone/format scores
-  human_annotation_ratio: 0.1         # fraction with a human user_disagreement signal
+  format_check_coverage: 1.0           # deterministic schema check — runs on every trace
+  quality_judge_ratio: 0.15            # LLM judge (answer_quality + tone) — thin sample
+  disagreement_judge_ratio: 0.15       # LLM judge (user_disagreement) — sample; forced on disputed
+  csat_response_ratio: 0.3             # per-session customer survey response rate

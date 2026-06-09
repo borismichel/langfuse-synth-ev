@@ -112,7 +112,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
             trace_id=tid, timestamp=ts, application=app, decision=dec_v1,
             user_id=next_officer(n), session_id=r.trace_id("gsession", n),
             environment="production", kind="golden_eligible", stale_grant_window=True,
-            plan_step=r.chance(0.5), tags=["ev-grant", "disputed"])
+            plan_step=r.chance(0.5), tags=["ev-grant"])  # `disputed` added by the judge verdict
         eligible_specs.append(spec)
         out.disputed_specs.append(spec)
         out.disputed_trace_ids.append(tid)

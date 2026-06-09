@@ -22,7 +22,8 @@ from .scores import (
     SCORE_CONFIGS,
     csat_score,
     disagreement_score,
-    quality_scores_for_trace,
+    format_compliance_score,
+    quality_judge_scores,
 )
 from .traces import build_trace_events
 
@@ -118,34 +119,46 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
     No network here: generation is CPU-bound and deterministic, so we stream it to
     disk and let :meth:`Ingestor.import_spool` do the uploading in a separate pass."""
     gp = cfg.golden_path
-    auto_ratio = cfg.scoring.auto_score_ratio
-    human_ratio = cfg.scoring.human_annotation_ratio
+    sc = cfg.scoring
     rng = plan.rng
     total = 0
 
     ing.open_spool()
     try:
         for i, spec in enumerate(plan.specs):
+            # 1. disagreement judge first — its verdict drives the `disputed` tag, which has
+            #    to be set on the trace *before* we build it. The eligible false-negatives are
+            #    the cases customers contest, so the judge is forced true on them.
+            if spec.kind == "golden_eligible":
+                dis_events, disagree = disagreement_score(
+                    rng, spec.trace_id, spec.timestamp, spec.environment,
+                    gp.drift_disagreement_rate, sc.disagreement_judge_ratio,
+                    force=True, force_disagree=True)
+            else:
+                dis_events, disagree = disagreement_score(
+                    rng, spec.trace_id, spec.timestamp, spec.environment,
+                    gp.baseline_disagreement_rate, sc.disagreement_judge_ratio)
+            if disagree and "disputed" not in spec.tags:
+                spec.tags = [*spec.tags, "disputed"]
+
+            # 2. build the trace (now carries `disputed` iff the judge fired true)
             events = build_trace_events(rng, cfg, spec, v1_version)
             ing.extend(events)
             total += len(events)
 
-            # quality scores (always green) on a realistic fraction
-            ing.extend(quality_scores_for_trace(rng, spec.trace_id, spec.decision_obs_id,
-                                                spec.timestamp, spec.environment, auto_ratio))
-            # lagging human signal: elevated + guaranteed on the eligible false-negatives
-            if spec.kind == "golden_eligible":
-                ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
-                                              gp.drift_disagreement_rate, human_ratio, force=True))
-            else:
-                ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
-                                              gp.baseline_disagreement_rate, human_ratio))
+            # 3. deterministic format check on every trace; quality judge on a thin sample
+            ing.extend(format_compliance_score(rng, spec.trace_id, spec.timestamp, spec.environment))
+            ing.extend(quality_judge_scores(rng, spec.trace_id, spec.decision_obs_id,
+                                            spec.timestamp, spec.environment, sc.quality_judge_ratio))
+            ing.extend(dis_events)
 
-        # session-level csat on multi-turn sessions
+        # per-session csat survey at a response rate
         spec_by_id = {s.trace_id: s for s in plan.specs}
         for sid, trace_ids in plan.sessions.items():
             members = [spec_by_id[t] for t in trace_ids if t in spec_by_id]
             if not members:
+                continue
+            if not rng.sub("csatsample", sid).chance(sc.csat_response_ratio):
                 continue
             last = max(members, key=lambda s: s.timestamp)
             ing.add(csat_score(rng, sid, last.timestamp, last.environment))
