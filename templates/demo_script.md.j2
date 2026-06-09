@@ -33,9 +33,9 @@ Open trace **`{{ disputed_example.trace_id }}`**{{ disputed_trace_link }}
 - Walk the **agent graph**: `credit_agent` → `check_subsidy_eligibility` returns *no subsidy* (the stale
   policy window) → `compute_affordability` runs on the **gross** price → `decision` rejects. The tool calls
   show exactly where the grant is silently dropped.
-- The **`customer_reply`** event spells out the dispute in the applicant's own words — e.g.
-  *"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should put me under my line"* — and the
-  `user_disagreement` score quotes the same line. The customers are telling you what's wrong.
+- Each flagged trace's **`user_disagreement` score carries the customer's own words** as its
+  comment — e.g. *"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should put me under my
+  line"* — so the signal says *why*, not just *that*. The customers are telling you what's wrong.
 - The `decision` generation is linked to prompt **{{ prompt_name }} v{{ prompt_versions.v1 }}** (label `production`) —
   *every bad decision used v1*. The rationale is clear and never mentions the grant.
 

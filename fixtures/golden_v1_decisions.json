@@ -70,7 +70,7 @@
         "type": "BEV",
         "list_price_eur": 46000
       },
-      "application_date": "2026-06-04"
+      "application_date": "2026-06-05"
     },
     "decision_v1": {
       "decision": "reject",
@@ -100,7 +100,7 @@
         "type": "BEV",
         "list_price_eur": 41000
       },
-      "application_date": "2026-06-04"
+      "application_date": "2026-06-05"
     },
     "decision_v1": {
       "decision": "reject",
@@ -130,7 +130,7 @@
         "type": "BEV",
         "list_price_eur": 37000
       },
-      "application_date": "2026-06-04"
+      "application_date": "2026-06-05"
     },
     "decision_v1": {
       "decision": "reject",
@@ -220,7 +220,7 @@
         "type": "BEV",
         "list_price_eur": 37500
       },
-      "application_date": "2026-06-05"
+      "application_date": "2026-06-06"
     },
     "decision_v1": {
       "decision": "reject",
@@ -280,7 +280,7 @@
         "type": "BEV",
         "list_price_eur": 36500
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -310,7 +310,7 @@
         "type": "BEV",
         "list_price_eur": 45500
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -340,7 +340,7 @@
         "type": "BEV",
         "list_price_eur": 43000
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -370,7 +370,7 @@
         "type": "BEV",
         "list_price_eur": 39000
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -400,7 +400,7 @@
         "type": "BEV",
         "list_price_eur": 47500
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -490,7 +490,7 @@
         "type": "BEV",
         "list_price_eur": 42500
       },
-      "application_date": "2026-06-07"
+      "application_date": "2026-06-08"
     },
     "decision_v1": {
       "decision": "reject",
@@ -773,7 +773,7 @@
         "type": "BEV",
         "list_price_eur": 44500
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",
@@ -796,7 +796,7 @@
         "type": "BEV",
         "list_price_eur": 40000
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",
@@ -819,7 +819,7 @@
         "type": "BEV",
         "list_price_eur": 45500
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",
@@ -842,7 +842,7 @@
         "type": "BEV",
         "list_price_eur": 38500
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1031,7 +1031,7 @@
         "type": "BEV",
         "list_price_eur": 55500
       },
-      "application_date": "2026-06-05"
+      "application_date": "2026-06-06"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1054,7 +1054,7 @@
         "type": "BEV",
         "list_price_eur": 62500
       },
-      "application_date": "2026-06-05"
+      "application_date": "2026-06-06"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1077,7 +1077,7 @@
         "type": "BEV",
         "list_price_eur": 52500
       },
-      "application_date": "2026-06-06"
+      "application_date": "2026-06-07"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1100,7 +1100,7 @@
         "type": "BEV",
         "list_price_eur": 62000
       },
-      "application_date": "2026-06-07"
+      "application_date": "2026-06-08"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1123,7 +1123,7 @@
         "type": "PHEV",
         "list_price_eur": 43500
       },
-      "application_date": "2026-06-07"
+      "application_date": "2026-06-08"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1153,7 +1153,7 @@
         "type": "PHEV",
         "list_price_eur": 36000
       },
-      "application_date": "2026-06-07"
+      "application_date": "2026-06-08"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1305,7 +1305,7 @@
         "type": "PHEV",
         "list_price_eur": 38500
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",
@@ -1328,7 +1328,7 @@
         "type": "PHEV",
         "list_price_eur": 43500
       },
-      "application_date": "2026-06-08"
+      "application_date": "2026-06-09"
     },
     "decision_v1": {
       "decision": "reject",

@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from ..config import Config
-from ..content import customer_appeal, explain_io, extract_io, model_label, plan_io, retrieve_io
+from ..content import explain_io, extract_io, model_label, plan_io, retrieve_io
 from ..distributions import cache_split, sample_latency_ms, sample_tokens, tool_latency_ms
 from ..models import Application, Decision
 from ..pricing import cost_details, usage_details
@@ -200,17 +200,8 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         parent_id=agent_id, model=haiku.name, usage_details=usage_details(ti, ot, cr, cc),
         cost_details=cost_details(haiku, ti, ot, cr, cc), environment=env, input=ein2, output=eout2))
 
-    # -- customer pushback on the (wrong) rejection -----------------------
-    # Only the eligible false-negatives: a concrete, varied appeal that names the missing
-    # grant — the quote that puts the audience on the track to the bug (spec §7).
-    if spec.kind == "golden_eligible":
-        msg = customer_appeal(rng, tid, app, cfg.golden_path.grant_amount_eur)
-        s_reply, _ = cur.advance(tool_latency_ms(r, 1500, 0.5, spec.slow_factor))
-        events.append(event_event(
-            obs_id=r.obs_id("reply", tid), trace_id=tid, name="customer_reply",
-            start=s_reply, parent_id=agent_id, environment=env,
-            input={"role": "user", "message": msg},
-            metadata={"channel": "appeal", "sentiment": "dispute"}))
+    # (The customer's pushback for disputed false-negatives is surfaced as the comment on
+    # the `user_disagreement` score — see run.py / scores.py — not as a trace observation.)
 
     # -- root AGENT observation (spans the whole orchestration) -----------
     events.insert(0, observation_event(
