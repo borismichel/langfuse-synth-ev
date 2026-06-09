@@ -15,6 +15,7 @@ from ..agent import GrantRule, decide, parse_decision
 from ..config import Config
 from ..models import Application
 from ..rng import Rng
+from ..seed.events import score_event
 from ..seed.ingest import Ingestor, assert_demo_project
 from ..seed.traces import TraceSpec, build_trace_events
 from ..timegen import day_anchor, iso_date
@@ -86,3 +87,23 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
         "trace_url": trace_url,
         "project_name": project_name,
     }
+
+
+def dispute(cfg: Config, trace_id: str, comment: str, *, log: Callable[[str], None] = print) -> dict:
+    """Attach a ``user_disagreement = true`` score (with the submitter's free-text comment)
+    to a previously-emitted trace — the same lagging signal the dashboard's appeal rate
+    tracks. Idempotent per trace (the score id is derived from the trace id), so re-disputing
+    updates the comment rather than duplicating."""
+    base_url = cfg.target.base_url
+    project_id, _ = assert_demo_project(base_url, cfg.target.project_hint)
+    note = (comment or "").strip() or "customer disputed the decision"
+    s = Rng(cfg.generation.seed).sub("dispute", trace_id)
+    ev = score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
+                     value=1, data_type="BOOLEAN", timestamp=datetime.now(timezone.utc),
+                     trace_id=trace_id, environment="production", comment=note)
+    ing = Ingestor.from_env(base_url)
+    ing.add(ev)
+    ing.flush()
+    log(f"· dispute logged on {trace_id[:12]}…: {note[:60]}")
+    return {"trace_id": trace_id, "comment": note,
+            "trace_url": f"{base_url.rstrip('/')}/project/{project_id}/traces/{trace_id}"}

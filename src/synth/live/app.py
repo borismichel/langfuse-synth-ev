@@ -12,7 +12,7 @@ import json
 from ..config import Config
 from ..models import Application, Vehicle
 from .prefabs import PREFABS
-from .submit import submit
+from .submit import dispute, submit
 
 _CSS = """
 *{box-sizing:border-box} body{font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;
@@ -27,7 +27,12 @@ select,input{width:100%;padding:10px;border:1px solid #2a2f3a;border-radius:8px;
 .verdict{font-size:28px;font-weight:700;letter-spacing:.5px} .approve{color:#22c55e} .reject{color:#ef4444}
 .kv{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #232834;font-size:14px}
 .kv span:first-child{color:#9aa3b2} a{color:#60a5fa} .pill{display:inline-block;font-size:12px;padding:2px 8px;
-  border-radius:999px;background:#232834;color:#9aa3b2;margin-left:8px} .mismatch{color:#f59e0b;font-size:13px;margin-top:10px}
+  border-radius:999px;background:#232834;color:#9aa3b2;margin-left:8px}
+textarea{width:100%;padding:10px;border:1px solid #2a2f3a;border-radius:8px;background:#171a22;color:#e6e8ee;font:inherit;resize:vertical}
+.dispute button{background:#7c3aed} .dispute button:hover{background:#6d28d9}
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,17,23,.88);align-items:center;justify-content:center;flex-direction:column;z-index:50}
+.spinner{width:44px;height:44px;border:4px solid #2a2f3a;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}} .overlay p{color:#9aa3b2;margin-top:14px}
 """
 
 
@@ -63,7 +68,12 @@ def _page(body: str) -> str:
             f"<style>{_CSS}</style></head><body><div class='wrap'>"
             f"<h1>EV Credit Decision Playground</h1>"
             f"<p class='sub'>Your application runs the <b>current production prompt</b>, live.</p>"
-            f"{body}</div></body></html>")
+            f"{body}</div>"
+            f"<div class='overlay' id='overlay'><div class='spinner'></div><p id='ovmsg'>Processing decision…</p></div>"
+            f"<script>document.addEventListener('submit',function(e){{"
+            f"document.getElementById('ovmsg').textContent=e.target.action.endsWith('/dispute')?'Logging dispute…':'Processing decision…';"
+            f"document.getElementById('overlay').style.display='flex';}});</script>"
+            f"</body></html>")
 
 
 def create_app(cfg: Config):
@@ -94,7 +104,27 @@ def create_app(cfg: Config):
           <div class="kv"><span>List price / line</span><span>€{price:,} / €{line:,}</span></div>
           <div class="kv"><span>Trace</span><span><a href="{res['trace_url']}" target="_blank">open in Langfuse →</a></span></div>
         </div>
+        <form method="post" action="/dispute" class="dispute card">
+          <input type="hidden" name="trace_id" value="{res['trace_id']}">
+          <label>Disagree with this decision? Tell us why:</label>
+          <textarea name="comment" rows="3" placeholder="e.g. the €6,000 EV grant should put me under my line"></textarea>
+          <button type="submit">Dispute this decision</button>
+        </form>
         <p><a href="/">← submit another</a></p>"""
         return _page(card)
+
+    @app.post("/dispute", response_class=HTMLResponse)
+    def do_dispute(trace_id: str = Form(...), comment: str = Form("")) -> str:
+        res = dispute(cfg, trace_id, comment)
+        body = f"""
+        <div class="card">
+          <h2 style="margin:0 0 8px">✓ Dispute recorded</h2>
+          <p class="sub" style="margin:0 0 12px">A <b>user_disagreement</b> appeal was logged on this
+            decision — it shows up in the dashboard's appeal rate.</p>
+          <div class="kv"><span>Your comment</span><span>{html.escape(res['comment'])}</span></div>
+          <div class="kv"><span>Trace</span><span><a href="{res['trace_url']}" target="_blank">open in Langfuse →</a></span></div>
+        </div>
+        <p><a href="/">← submit another</a></p>"""
+        return _page(body)
 
     return app
