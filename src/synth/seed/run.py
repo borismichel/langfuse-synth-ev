@@ -27,12 +27,15 @@ from .scores import (
 from .traces import build_trace_events
 
 FIXTURES_DIR = REPO_ROOT / "fixtures"
+DEFAULT_SPOOL = REPO_ROOT / ".synth_spool" / "events.ndjson"
 
 
 def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
-             run_date: datetime | None = None, log: Callable[[str], None] = print) -> RunState:
+             run_date: datetime | None = None, spool_path: str | Path | None = None,
+             do_import: bool = True, log: Callable[[str], None] = print) -> RunState:
     run_date = run_date or now_utc()
     base_url = cfg.target.base_url
+    spool_path = Path(spool_path) if spool_path else DEFAULT_SPOOL
 
     # -- guardrail: never touch a non-demo project (spec §12) -------------
     project_name = "(dry-run)"
@@ -71,10 +74,21 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     v1_version = versions.get("v1") if cfg.golden_path.prompt_v1_register else None
 
     # -- 3. backdated traces + scores -------------------------------------
-    ing = Ingestor.from_env(base_url, dry_run=dry_run)
-    n_events = _ingest_traces_and_scores(cfg, plan, v1_version, ing, log)
-    log(f"✓ ingested {n_events} events across {len(plan.specs)} traces "
-        f"({'dry-run, nothing sent' if dry_run else f'{ing.sent} sent'})")
+    # Phase 3a: generate every event straight to an NDJSON spool on disk.
+    # Phase 3b: batch-import that file in chunks. Decoupling the two means a
+    # wedged/slow upload never loses the generated data — re-import to resume.
+    ing = Ingestor.from_env(base_url, dry_run=dry_run, spool_path=spool_path)
+    n_events = _spool_traces_and_scores(cfg, plan, v1_version, ing, log)
+    log(f"✓ generated {ing.spooled} events across {len(plan.specs)} traces "
+        f"→ spooled to {spool_path}")
+    if dry_run:
+        log("  dry-run: spool written, nothing imported")
+    elif not do_import:
+        log("  --no-import: spool written, skipping batch import (resume with `synth import-spool`)")
+    else:
+        log(f"· batch-importing {ing.spooled} events from disk (chunks of {ing.chunk_size}) …")
+        ing.import_spool(log=log)
+        log(f"✓ batch-imported {ing.sent} events")
 
     # -- 4. hosted dataset + items ----------------------------------------
     dataset_info = {"name": cfg.golden_path.dataset.name, "items_created": len(plan.golden.dataset_plan)}
@@ -97,44 +111,63 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     return state
 
 
-def _ingest_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
-                              log: Callable[[str], None]) -> int:
+def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
+                             log: Callable[[str], None]) -> int:
+    """Phase 3a — write every trace/score event to the NDJSON spool on disk.
+
+    No network here: generation is CPU-bound and deterministic, so we stream it to
+    disk and let :meth:`Ingestor.import_spool` do the uploading in a separate pass."""
     gp = cfg.golden_path
     auto_ratio = cfg.scoring.auto_score_ratio
     human_ratio = cfg.scoring.human_annotation_ratio
     rng = plan.rng
     total = 0
 
-    for i, spec in enumerate(plan.specs):
-        events = build_trace_events(rng, cfg, spec, v1_version)
-        ing.extend(events)
-        total += len(events)
+    ing.open_spool()
+    try:
+        for i, spec in enumerate(plan.specs):
+            events = build_trace_events(rng, cfg, spec, v1_version)
+            ing.extend(events)
+            total += len(events)
 
-        # quality scores (always green) on a realistic fraction
-        ing.extend(quality_scores_for_trace(rng, spec.trace_id, spec.decision_obs_id,
-                                            spec.timestamp, spec.environment, auto_ratio))
-        # lagging human signal: elevated + guaranteed on the eligible false-negatives
-        if spec.kind == "golden_eligible":
-            ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
-                                          gp.drift_disagreement_rate, human_ratio, force=True))
-        else:
-            ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
-                                          gp.baseline_disagreement_rate, human_ratio))
+            # quality scores (always green) on a realistic fraction
+            ing.extend(quality_scores_for_trace(rng, spec.trace_id, spec.decision_obs_id,
+                                                spec.timestamp, spec.environment, auto_ratio))
+            # lagging human signal: elevated + guaranteed on the eligible false-negatives
+            if spec.kind == "golden_eligible":
+                ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
+                                              gp.drift_disagreement_rate, human_ratio, force=True))
+            else:
+                ing.extend(disagreement_score(rng, spec.trace_id, spec.timestamp, spec.environment,
+                                              gp.baseline_disagreement_rate, human_ratio))
 
-        if ing.pending >= 400:
-            ing.flush()
-
-    # session-level csat on multi-turn sessions
-    spec_by_id = {s.trace_id: s for s in plan.specs}
-    for sid, trace_ids in plan.sessions.items():
-        members = [spec_by_id[t] for t in trace_ids if t in spec_by_id]
-        if not members:
-            continue
-        last = max(members, key=lambda s: s.timestamp)
-        ing.add(csat_score(rng, sid, last.timestamp, last.environment))
-
-    ing.flush()
+        # session-level csat on multi-turn sessions
+        spec_by_id = {s.trace_id: s for s in plan.specs}
+        for sid, trace_ids in plan.sessions.items():
+            members = [spec_by_id[t] for t in trace_ids if t in spec_by_id]
+            if not members:
+                continue
+            last = max(members, key=lambda s: s.timestamp)
+            ing.add(csat_score(rng, sid, last.timestamp, last.environment))
+    finally:
+        ing.close_spool()
     return total
+
+
+def import_spool_file(cfg: Config, spool_path: str | Path | None = None,
+                      log: Callable[[str], None] = print) -> int:
+    """Recovery / resume entry point: batch-import an existing spool without regenerating.
+
+    Use after an interrupted upload — idempotent ids make the re-import upsert."""
+    base_url = cfg.target.base_url
+    path = Path(spool_path) if spool_path else DEFAULT_SPOOL
+    _project_id, project_name = assert_demo_project(base_url, cfg.target.project_hint)
+    log(f"✓ guardrail passed: project {project_name!r} matches hint {cfg.target.project_hint!r}")
+    ing = Ingestor.from_env(base_url, spool_path=path)
+    log(f"· batch-importing from {path} (chunks of {ing.chunk_size}) …")
+    ing.import_spool(log=log)
+    log(f"✓ batch-imported {ing.sent} events")
+    return ing.sent
 
 
 def _write_fixtures(plan: Plan) -> None:

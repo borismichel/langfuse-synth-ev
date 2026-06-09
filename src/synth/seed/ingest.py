@@ -8,12 +8,21 @@ the v2 query/metrics endpoints (spec §12).
 
 Idempotent on re-run: every object carries a deterministic id, so re-seeding upserts
 within Langfuse's 30-day merge window rather than duplicating (spec §9, §11).
+
+Two-phase by design (spec §2, hardened): generation **spools every event to an
+NDJSON file on disk first**, then a separate pass **batch-imports** that file in
+``chunk_size`` POSTs. Network never runs interleaved with generation, so a wedged
+or slow upload can't lose the (expensive, deterministic) generated data — re-run
+``import_spool`` against the same file to resume. Never one-request-per-event.
 """
 from __future__ import annotations
 
+import json
 import os
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Callable
 
 import requests
 
@@ -32,7 +41,10 @@ class Ingestor:
     dry_run: bool = False
     timeout: int = 30
     max_retries: int = 5
+    spool_path: Path | None = None
     _events: list[dict] = field(default_factory=list)
+    _spool_fh: object = field(default=None, repr=False)
+    spooled: int = 0
     sent: int = 0
 
     @classmethod
@@ -45,18 +57,71 @@ class Ingestor:
             )
         return cls(base_url=base_url.rstrip("/"), public_key=pub or "", secret_key=sec or "", **kw)
 
-    # -- accumulate -------------------------------------------------------
+    # -- phase 1: accumulate / spool to disk ------------------------------
+    def open_spool(self) -> None:
+        """Begin streaming events to ``spool_path`` as NDJSON (one event per line).
+
+        Writing straight to disk keeps memory flat across the full run and means the
+        generated data survives a wedged or failed upload."""
+        if self.spool_path is None:
+            raise IngestError("open_spool: no spool_path set")
+        self.spool_path.parent.mkdir(parents=True, exist_ok=True)
+        self._spool_fh = self.spool_path.open("w", encoding="utf-8")
+        self.spooled = 0
+
+    def close_spool(self) -> None:
+        if self._spool_fh is not None:
+            self._spool_fh.flush()
+            self._spool_fh.close()
+            self._spool_fh = None
+
     def add(self, event: dict) -> None:
-        self._events.append(event)
+        if self._spool_fh is not None:
+            self._spool_fh.write(json.dumps(event, separators=(",", ":")) + "\n")
+            self.spooled += 1
+        else:
+            self._events.append(event)
 
     def extend(self, events) -> None:
-        self._events.extend(events)
+        for event in events:
+            self.add(event)
 
     @property
     def pending(self) -> int:
         return len(self._events)
 
-    # -- send -------------------------------------------------------------
+    # -- phase 2: batch-import --------------------------------------------
+    def import_spool(self, path: Path | None = None,
+                     log: Callable[[str], None] = lambda _m: None) -> int:
+        """Read a spooled NDJSON file and POST it in ``chunk_size`` batches.
+
+        Re-runnable: idempotent ids mean a re-import upserts rather than duplicating,
+        so this is the recovery path after an interrupted upload."""
+        path = path or self.spool_path
+        if path is None:
+            raise IngestError("import_spool: no spool path")
+        if not path.exists():
+            raise IngestError(f"import_spool: spool file not found: {path}")
+        chunk: list[dict] = []
+        with path.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                chunk.append(json.loads(line))
+                if len(chunk) >= self.chunk_size:
+                    self._flush_chunk(chunk, log)
+                    chunk = []
+        if chunk:
+            self._flush_chunk(chunk, log)
+        return self.sent
+
+    def _flush_chunk(self, chunk: list[dict], log: Callable[[str], None]) -> None:
+        self._post_chunk(chunk)
+        self.sent += len(chunk)
+        log(f"  · imported {self.sent} events")
+
+    # -- in-memory send (back-compat; the seed path uses spool/import) ----
     def flush(self) -> None:
         """Send all accumulated events in chunks; clears the buffer."""
         events, self._events = self._events, []

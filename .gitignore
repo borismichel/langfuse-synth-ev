@@ -1,6 +1,7 @@
 # Secrets & local state
 .env
 .synth_state.json
+.synth_spool/
 # DEMO_SCRIPT.md is generated per-run by `synth seed` / `synth script`
 DEMO_SCRIPT.md
 

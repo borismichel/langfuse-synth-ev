@@ -41,16 +41,30 @@ def plan(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
 
 @app.command()
 def seed(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
-         dry_run: bool = typer.Option(False, "--dry-run", help="Build everything but send nothing.")):
-    """Generate deterministic traces + templated v1 rejections, ingest backdated, register
-    prompts, create the dataset, reserve live-add cases, and emit DEMO_SCRIPT.md."""
+         dry_run: bool = typer.Option(False, "--dry-run", help="Build everything but send nothing."),
+         spool: str = typer.Option(None, "--spool", help="NDJSON spool path (default .synth_spool/events.ndjson)."),
+         no_import: bool = typer.Option(False, "--no-import",
+                                        help="Write the spool to disk but skip the upload (resume with `synth import-spool`).")):
+    """Generate deterministic traces + templated v1 rejections, spool them to disk, batch-import
+    backdated, register prompts, create the dataset, reserve live-add cases, and emit DEMO_SCRIPT.md."""
     from .script import render_script
     from .seed.run import run_seed
 
     cfg = _load(config)
-    state = run_seed(cfg, dry_run=dry_run, log=lambda m: typer.echo(m))
+    state = run_seed(cfg, dry_run=dry_run, spool_path=spool, do_import=not no_import,
+                     log=lambda m: typer.echo(m))
     out = render_script(cfg, state)
     typer.echo(f"✓ DEMO_SCRIPT.md written -> {out}")
+
+
+@app.command(name="import-spool")
+def import_spool(spool: str = typer.Argument(None, help="Spool file to import (default .synth_spool/events.ndjson)."),
+                 config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
+    """Resume an interrupted upload: batch-import an existing NDJSON spool without regenerating."""
+    from .seed.run import import_spool_file
+
+    cfg = _load(config)
+    import_spool_file(cfg, spool, log=lambda m: typer.echo(m))
 
 
 @app.command()
