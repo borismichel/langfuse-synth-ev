@@ -108,6 +108,28 @@ project settings for the managed judge and the experiment task.
 
 ---
 
+## Live decision playground (hand the room the wheel)
+
+`synth playground` serves a small configurator (FastAPI) so the audience can emit *their own*
+trace: pick one of five prefabs or enter a custom application against an **editable credit
+line**, submit, and get the **real production decision** back — rendered as a native
+agent-graph trace at the top of the timeline. A **Dispute** button logs a `user_disagreement`
+appeal (with a free-text comment) on that trace, nudging the dashboard's appeal rate live. The
+prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
+subsequent submissions from reject → approve — no code change.
+
+```bash
+pip install -e '.[playground]'
+synth playground --config config/demo.yaml          # → http://127.0.0.1:8000
+synth submit --config config/demo.yaml --prefab eligible --line 32000   # one-shot, from the terminal
+```
+
+Only the `decision` is a real model call (real tokens + latency); the surrounding agent graph
+is templated/computed exactly like the seed, so the live trace is shape-identical to the
+seeded data. Prefabs: `eligible` (the bug), `overcap`, `phev`, `approvable`, `rejected`.
+
+---
+
 ## Architecture (why the batch ingestion endpoint)
 
 The high-level OTel SDK timestamps observations from the wall clock and offers no
