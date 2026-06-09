@@ -155,7 +155,7 @@ def decide(
     lf=None,
     anth=None,
     prompt_name: str = "credit_decision",
-    model: str = "claude-sonnet-4.6",
+    model: str = "claude-sonnet-4-6",
 ) -> Decision:
     """Return a structured Decision. ``prompt_label`` ('v1'|'v2') is the only lever.
 

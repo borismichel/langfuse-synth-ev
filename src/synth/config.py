@@ -65,8 +65,8 @@ class DatasetCfg(BaseModel):
 class GoldenPath(BaseModel):
     enabled: bool = True
     prompt_name: str = "credit_decision"
-    judge_model: str = "claude-sonnet-4.6"
-    task_model: str = "claude-sonnet-4.6"
+    judge_model: str = "claude-sonnet-4-6"
+    task_model: str = "claude-sonnet-4-6"
     task_provider: Literal["anthropic", "bedrock"] = "anthropic"
     grant_effective_day_offset: int = -7
     drift_window_days: int = 5

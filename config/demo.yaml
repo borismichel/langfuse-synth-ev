@@ -19,9 +19,9 @@ generation:
     production_share: 0.92             # rest tagged `staging`
 
 models:                                # price per 1k tokens (Anthropic API, May 2026)
-  - { name: claude-opus-4.8,   role: plan,  input_per_1k: 0.005, output_per_1k: 0.025 }
-  - { name: claude-sonnet-4.6, role: work,  input_per_1k: 0.003, output_per_1k: 0.015 }
-  - { name: claude-haiku-4.5,  role: light, input_per_1k: 0.001, output_per_1k: 0.005 }
+  - { name: claude-opus-4-8,   role: plan,  input_per_1k: 0.005, output_per_1k: 0.025 }
+  - { name: claude-sonnet-4-6, role: work,  input_per_1k: 0.003, output_per_1k: 0.015 }
+  - { name: claude-haiku-4-5,  role: light, input_per_1k: 0.001, output_per_1k: 0.005 }
 
 model_mix:                             # realistic per-trace distribution
   plan_step_share: 0.25                # fraction of traces that invoke the Opus planner
@@ -31,8 +31,8 @@ model_mix:                             # realistic per-trace distribution
 golden_path:                           # the flagship narrative (§7)
   enabled: true
   prompt_name: credit_decision
-  judge_model: claude-sonnet-4.6       # managed LLM-as-judge (swap to Opus for a stronger judge)
-  task_model: claude-sonnet-4.6        # v2 task = production 'work' model; temperature 0
+  judge_model: claude-sonnet-4-6       # managed LLM-as-judge (swap to Opus for a stronger judge)
+  task_model: claude-sonnet-4-6        # v2 task = production 'work' model; temperature 0
   task_provider: anthropic             # anthropic | bedrock
   grant_effective_day_offset: -7       # relative to run date
   drift_window_days: 5
