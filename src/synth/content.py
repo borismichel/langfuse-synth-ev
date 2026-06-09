@@ -148,3 +148,26 @@ def retrieve_io() -> tuple[str, list[str]]:
 def explain_io(rng: Rng, approved: bool) -> tuple[str, str]:
     txt = rng.choice(_EXPLAIN_APPROVE if approved else _EXPLAIN_REJECT)
     return ("Draft a one-paragraph customer-facing rationale.", txt)
+
+
+# Customer pushback on a disputed false-negative — the quote that points the demo straight
+# at the missing subsidy. Varied per trace; only on the eligible false-negatives (§7).
+_APPEAL_TEMPLATES = [
+    "The €{grant:,} EV grant takes the financed amount to €{financed:,} — under my €{line:,} line. Why was this rejected?",
+    "This is a BEV under the cap, so the €{grant:,} purchase grant applies. With it I'm within my approved line — please re-check.",
+    "I qualify for the €{grant:,} electric-vehicle grant; rejecting on the full sticker price ignores the subsidy.",
+    "Once the €{grant:,} EV incentive is deducted I'm comfortably in margin (€{financed:,} ≤ €{line:,}). Can you re-run this?",
+    "The €{grant:,} government BEV grant should put me in margin — this rejection looks like an error.",
+    "Your affordability check used the gross price. With the €{grant:,} grant the principal is €{financed:,}, below my €{line:,} limit.",
+    "My battery-electric car is eligible for the €{grant:,} point-of-sale grant, but the decision didn't apply it.",
+]
+
+
+def customer_appeal(rng: Rng, trace_id: str, app: Application, grant_amount_eur: int) -> str:
+    """A varied, grant-specific customer pushback for a disputed false-negative. Deterministic
+    per trace, so the trace's ``customer_reply`` event and its ``user_disagreement`` comment
+    quote the same line."""
+    s = rng.sub("appeal", trace_id)
+    financed = max(0, app.vehicle.list_price_eur - grant_amount_eur)
+    return s.choice(_APPEAL_TEMPLATES).format(
+        grant=grant_amount_eur, financed=financed, line=app.approved_line_eur)

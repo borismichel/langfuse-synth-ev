@@ -72,20 +72,22 @@ def quality_judge_scores(rng: Rng, trace_id: str, decision_obs_id: str, ts: date
 
 def disagreement_score(rng: Rng, trace_id: str, ts: datetime, environment: str,
                        disagree_rate: float, sample_ratio: float,
-                       force: bool = False, force_disagree: bool = False) -> tuple[list[dict], bool]:
+                       force: bool = False, force_disagree: bool = False,
+                       comment: str | None = None) -> tuple[list[dict], bool]:
     """LLM-judge that flags customer pushback. Returns ``(events, disagree)`` so the caller
     can apply the ``disputed`` tag when the verdict is true.
 
     ``force`` guarantees the judge ran (used on the disputed cases); ``force_disagree``
-    pins the verdict to true (the false-negatives are the cases customers contest)."""
+    pins the verdict to true (the false-negatives are the cases customers contest); ``comment``
+    is the customer's actual pushback (the judge quotes it) — defaults to a generic note."""
     s = rng.sub("dscore", trace_id)
     if not force and not s.chance(sample_ratio):
         return [], False
     disagree = True if force_disagree else s.chance(disagree_rate)
+    note = (comment or "customer pushed back in chat") if disagree else None
     ev = score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
                      value=1 if disagree else 0, data_type="BOOLEAN", timestamp=ts,
-                     trace_id=trace_id, environment=environment,
-                     comment="customer pushed back in chat" if disagree else None)
+                     trace_id=trace_id, environment=environment, comment=note)
     return [ev], disagree
 
 

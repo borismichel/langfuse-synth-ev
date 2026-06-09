@@ -25,6 +25,7 @@ from .scores import (
     format_compliance_score,
     quality_judge_scores,
 )
+from ..content import customer_appeal
 from .traces import build_trace_events
 
 FIXTURES_DIR = REPO_ROOT / "fixtures"
@@ -140,10 +141,11 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
             #    to be set on the trace *before* we build it. The eligible false-negatives are
             #    the cases customers contest, so the judge is forced true on them.
             if spec.kind == "golden_eligible":
+                appeal = customer_appeal(rng, spec.trace_id, spec.application, gp.grant_amount_eur)
                 dis_events, disagree = disagreement_score(
                     rng, spec.trace_id, spec.timestamp, spec.environment,
                     gp.drift_disagreement_rate, sc.disagreement_judge_ratio,
-                    force=True, force_disagree=True)
+                    force=True, force_disagree=True, comment=appeal)
             else:
                 dis_events, disagree = disagreement_score(
                     rng, spec.trace_id, spec.timestamp, spec.environment,
