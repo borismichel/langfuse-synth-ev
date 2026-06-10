@@ -12,12 +12,20 @@ from __future__ import annotations
 
 import os
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 
 import requests
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
+
+
+@lru_cache(maxsize=None)
+def prompt_text(label: str) -> str:
+    """The system-prompt text for a label ('v1'|'v2') — the same bytes that get
+    registered in prompt management and that seeded decision inputs display."""
+    return (PROMPTS_DIR / f"credit_decision.{label}.txt").read_text().rstrip() + "\n"
 
 
 def set_version_labels(base_url: str, name: str, version: int, labels: list[str]) -> None:
@@ -34,10 +42,6 @@ def set_version_labels(base_url: str, name: str, version: int, labels: list[str]
         f"{base_url.rstrip('/')}/api/public/v2/prompts/{name}/versions/{version}",
         json={"newLabels": labels}, auth=(pub, sec), timeout=15)
     resp.raise_for_status()
-
-
-def _read(label: str) -> str:
-    return (PROMPTS_DIR / f"credit_decision.{label}.txt").read_text().rstrip() + "\n"
 
 
 def _chat_prompt(system_text: str) -> list[dict]:
@@ -88,11 +92,11 @@ def register_prompts(lf, cfg, effective_date: datetime, *, register_v1: bool = T
     if register_v1:
         # production is asserted separately (set_production_label) so it resets on re-seed.
         versions["v1"] = _reuse_or_create(
-            lf, name, _chat_prompt(_read("v1")), "v1", ["v1"],
+            lf, name, _chat_prompt(prompt_text("v1")), "v1", ["v1"],
             "stale prompt: gross-price affordability")
 
     if register_v2:
-        v2_text = _read("v2").replace("{{grant_date}}", iso_date(effective_date))
+        v2_text = prompt_text("v2").replace("{{grant_date}}", iso_date(effective_date))
         versions["v2"] = _reuse_or_create(
             lf, name, _chat_prompt(v2_text), "v2", ["v2"],
             "fix: apply EV purchase grant before affordability")

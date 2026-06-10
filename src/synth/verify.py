@@ -4,6 +4,9 @@ Asserts specifically:
 - the ``user_disagreement`` drift (elevated in the drift window vs the baseline before it),
 - green ``answer_quality`` in that same window (the failure is silent),
 - prompt-v1 linkage on ``decision`` generations,
+- the ``decision`` input is the actual LLM turn (system prompt + application messages) —
+  also catches the ingestion-merge staleness trap: a re-seed after a content change keeps
+  first-seen values, so old-shape inputs survive in the same project and fail here,
 - dataset item count + ``sourceTraceId`` links,
 - the reserved false-negatives exist as traces but are NOT in the dataset.
 
@@ -133,11 +136,12 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
     except Exception as exc:  # noqa: BLE001
         report.add("quality_green", False, f"error: {exc}")
 
-    # -- prompt v1 linkage on a disputed decision generation --------------
+    # -- prompt v1 linkage + chat-shaped input on a disputed decision -----
     try:
         tid = state.disputed_example.get("trace_id")
         linked = False
-        detail = "no disputed example in state"
+        chat_ok = False
+        detail = chat_detail = "no disputed example in state"
         if tid:
             trace = _get(base, f"/api/public/traces/{tid}")
             obs = trace.get("observations", [])
@@ -145,11 +149,21 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
             for o in decisions:
                 if o.get("promptName") == state.prompt_name and o.get("promptVersion") == state.prompt_versions.get("v1"):
                     linked = True
+                inp = o.get("input")
+                if (isinstance(inp, list) and inp and isinstance(inp[0], dict)
+                        and inp[0].get("role") == "system"
+                        and "credit-decision agent" in str(inp[0].get("content", ""))):
+                    chat_ok = True
             detail = (f"trace {tid[:12]}… decision generations linked to "
                       f"{state.prompt_name} v{state.prompt_versions.get('v1')}: {linked}")
+            chat_detail = (f"trace {tid[:12]}… decision input is chat messages with the system "
+                           f"prompt: {chat_ok}" + ("" if chat_ok else
+                           " (stale-merge? re-seeds keep first-seen values — use a fresh project)"))
         report.add("prompt_v1_linkage", linked, detail)
+        report.add("decision_input_chat", chat_ok, chat_detail)
     except Exception as exc:  # noqa: BLE001
         report.add("prompt_v1_linkage", False, f"error: {exc}")
+        report.add("decision_input_chat", False, f"error: {exc}")
 
     for c in report.checks:
         log(f"  [{'PASS' if c.ok else 'FAIL'}] {c.name}: {c.detail}")

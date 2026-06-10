@@ -67,6 +67,27 @@ def test_trace_events_well_formed():
     decision = next(e for e in events if e["body"].get("name") == "decision")
     assert decision["body"]["promptName"] == cfg.golden_path.prompt_name
     assert decision["body"]["promptVersion"] == 1
+    # ... and its input is the actual LLM turn: system prompt + application user message
+    dec_input = decision["body"]["input"]
+    assert dec_input[0]["role"] == "system"
+    assert "credit-decision agent" in dec_input[0]["content"]
+    assert dec_input[1]["role"] == "user"
+    assert str(spec.application.vehicle.list_price_eur) in dec_input[1]["content"]
+    # every generation's input is chat-shaped (the prompt is part of the input), its
+    # claimed usage covers at least the visible text, and TTFT falls inside the call
+    from synth.distributions import text_tokens
+
+    for e in events:
+        if e["type"] == "generation-create":
+            b = e["body"]
+            msgs = b["input"]
+            assert isinstance(msgs, list) and msgs[0]["role"] == "system", b["name"]
+            usage = b["usageDetails"]
+            input_side = (usage["input"] + usage.get("cache_read_input_tokens", 0)
+                          + usage.get("cache_creation_input_tokens", 0))
+            assert input_side >= text_tokens(msgs), b["name"]
+            assert usage["output"] >= text_tokens(b["output"]) * 0.8, b["name"]
+            assert b["startTime"] < b["completionStartTime"] < b["endTime"], b["name"]
     # every observation has start <= end
     for e in events:
         b = e["body"]

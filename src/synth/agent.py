@@ -114,11 +114,23 @@ def _decide_live(
     if not turns:
         turns = [{"role": "user", "content": application_json}]
 
-    resp = anth.messages.create(
-        model=model, system=system, messages=turns, temperature=0, max_tokens=512
-    )
-    text = "".join(block.text for block in resp.content if block.type == "text")
-    return parse_decision(text, app)
+    # Log the model call as a `decision` generation nested in the caller's trace (the
+    # experiment item's trace), with the compiled chat turn as input and the managed
+    # prompt linked — same shape as the seeded decision generations.
+    chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
+    with lf.start_as_current_observation(
+        as_type="generation", name="decision", model=model, input=chat,
+        model_parameters={"temperature": 0, "max_tokens": 512}, prompt=prompt,
+    ) as gen:
+        resp = anth.messages.create(
+            model=model, system=system, messages=turns, temperature=0, max_tokens=512
+        )
+        text = "".join(block.text for block in resp.content if block.type == "text")
+        decision = parse_decision(text, app)
+        gen.update(output=decision.model_dump(),
+                   usage_details={"input": resp.usage.input_tokens,
+                                  "output": resp.usage.output_tokens})
+    return decision
 
 
 def parse_decision(text: str, app: Application) -> Decision:

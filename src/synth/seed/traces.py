@@ -22,12 +22,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from ..config import Config
-from ..content import explain_io, extract_io, model_label, plan_io, retrieve_io
-from ..distributions import cache_split, sample_latency_ms, sample_tokens, tool_latency_ms
+from ..content import decision_messages, explain_io, extract_io, model_label, plan_io, retrieve_io
+from ..distributions import cache_split, sample_latency_ms, sample_tokens, text_tokens, tool_latency_ms
 from ..models import Application, Decision
 from ..pricing import cost_details, usage_details
 from ..rng import Rng
 from .events import event_event, generation_event, observation_event, span_event, trace_event
+from .prompts import prompt_text
 
 TRACE_NAME = "credit_agent.assess_application"
 HISTORY_TOKENS_PER_TURN = 750  # accumulated Q+A added to input per prior turn (multi-turn)
@@ -63,6 +64,11 @@ class _Cursor:
         return s, e
 
 
+def _first_token_at(r: Rng, s: datetime, e: datetime) -> datetime:
+    """When streaming starts: 30–65% into the call (request + prefill before token one)."""
+    return s + (e - s) * r.uniform(0.3, 0.65)
+
+
 def _subsidy_eligibility(cfg: Config, spec: TraceSpec) -> tuple[dict, bool]:
     """What ``check_subsidy_eligibility`` reports, and whether the agent ignored it.
 
@@ -85,10 +91,12 @@ def _subsidy_eligibility(cfg: Config, spec: TraceSpec) -> tuple[dict, bool]:
 
 def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None,
                        decision_usage: tuple[int, int] | None = None,
-                       decision_latency_ms: int | None = None) -> list[dict]:
+                       decision_latency_ms: int | None = None,
+                       decision_input: list[dict] | None = None) -> list[dict]:
     """Build the agent-graph event tree. Seed path leaves the overrides None (tokens + latency
-    are sampled); the live playground passes the *real* model ``(input, output)`` token counts
-    and the measured call latency so the decision generation reflects the actual call."""
+    are sampled; the decision input is the v1 chat turn compiled from the prompt file); the
+    live playground passes the *real* model ``(input, output)`` token counts, the measured
+    call latency, and the actually-compiled chat messages."""
     r = rng.sub("trace", spec.trace_id)
     app = spec.application
     env = spec.environment
@@ -130,27 +138,31 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
     if spec.plan_step:
         s, e = cur.advance(sample_latency_ms(r, "plan", spec.slow_factor))
         inp, outp = plan_io(app)
-        it, ot = sample_tokens(r, "plan", context_tokens=history_tokens)
-        plan_reasoning_tokens = ot
+        it, ot, rt = sample_tokens(r, "plan", visible_input=text_tokens(inp),
+                                   visible_output=text_tokens(outp), context_tokens=history_tokens)
+        plan_reasoning_tokens = ot + rt
         ti, cr, cc = cache_split(r, "plan", it)
         events.append(generation_event(
             obs_id=r.obs_id("plan", tid), trace_id=tid, name="plan", start=s, end=e,
-            parent_id=agent_id, model=opus.name, usage_details=usage_details(ti, ot, cr, cc),
-            cost_details=cost_details(opus, ti, ot, cr, cc), environment=env,
+            completion_start=_first_token_at(r, s, e),
+            parent_id=agent_id, model=opus.name, usage_details=usage_details(ti, ot, cr, cc, reasoning=rt),
+            cost_details=cost_details(opus, ti, ot, cr, cc, reasoning=rt), environment=env,
             input=inp, output=outp, model_parameters={"temperature": 0.3}))
 
     # -- load_application span + extract_fields generation ----------------
     s_load, _ = cur.advance(0)  # span wraps the extract gen
     s, e = cur.advance(sample_latency_ms(r, "light", spec.slow_factor))
-    ein, eout = extract_io(app)
-    it, ot = sample_tokens(r, "light")
+    raw, ein, eout = extract_io(app)
+    it, ot, _ = sample_tokens(r, "light", visible_input=text_tokens(ein),
+                              visible_output=text_tokens(eout))
     ti, cr, cc = cache_split(r, "light", it)
     load_id = r.obs_id("load", tid)
     events.append(span_event(obs_id=load_id, trace_id=tid, name="load_application",
                              start=s_load, end=e, parent_id=agent_id, environment=env,
-                             input={"raw": ein["raw_application"]}, output=eout))
+                             input={"raw": raw}, output=eout))
     events.append(generation_event(
         obs_id=r.obs_id("extract", tid), trace_id=tid, name="extract_fields", start=s, end=e,
+        completion_start=_first_token_at(r, s, e),
         parent_id=load_id, model=haiku.name, usage_details=usage_details(ti, ot, cr, cc),
         cost_details=cost_details(haiku, ti, ot, cr, cc), environment=env, input=ein, output=eout,
         metadata={"vehicle_model": model_label(r, app.vehicle.type)}))
@@ -190,21 +202,27 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         metadata={"tool": "affordability_engine", "toolCallId": afford_call_id}))
 
     # -- decision generation (Sonnet) — decide(), links to prompt v1 ------
-    # Input = base prompt + multi-turn history + the planner's reasoning (if any).
+    # Input is the actual LLM turn: the managed system prompt + the application JSON
+    # as the user message (multi-turn history / planner reasoning only grow the tokens).
     s, e = cur.advance(decision_latency_ms if decision_latency_ms is not None
                        else sample_latency_ms(r, "work", spec.slow_factor))
+    if decision_input is None:                   # seed: every backdated decision ran v1
+        decision_input = decision_messages(prompt_text("v1"), app)
     if decision_usage is not None:               # live: real token counts, no cache split
         ti, ot, cr, cc = decision_usage[0], decision_usage[1], 0, 0
     else:                                        # seed: sampled tokens + prompt-cache split
-        it, ot = sample_tokens(r, "work", context_tokens=history_tokens + plan_reasoning_tokens)
+        it, ot, _ = sample_tokens(r, "work", visible_input=text_tokens(decision_input),
+                                  visible_output=text_tokens(spec.decision.model_dump()),
+                                  context_tokens=history_tokens + plan_reasoning_tokens)
         ti, cr, cc = cache_split(r, "work", it)
     dec_id = r.obs_id("decision", tid)
     spec.decision_obs_id = dec_id
     events.append(generation_event(
         obs_id=dec_id, trace_id=tid, name="decision", start=s, end=e, parent_id=agent_id,
+        completion_start=_first_token_at(r, s, e),
         model=sonnet.name,
         usage_details=usage_details(ti, ot, cr, cc), cost_details=cost_details(sonnet, ti, ot, cr, cc),
-        environment=env, input=app.model_dump(), output=spec.decision.model_dump(),
+        environment=env, input=decision_input, output=spec.decision.model_dump(),
         model_parameters={"temperature": 0}, metadata={"tool_calls": tool_calls},
         prompt_name=cfg.golden_path.prompt_name if prompt_v1_version else None,
         prompt_version=prompt_v1_version))
@@ -217,12 +235,13 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
 
     # -- explain generation (Haiku) ---------------------------------------
     s, e = cur.advance(sample_latency_ms(r, "light", spec.slow_factor))
-    approved = spec.decision.decision == "approve"
-    ein2, eout2 = explain_io(r, approved)
-    it, ot = sample_tokens(r, "light")
+    ein2, eout2 = explain_io(r, spec.decision)
+    it, ot, _ = sample_tokens(r, "light", visible_input=text_tokens(ein2),
+                              visible_output=text_tokens(eout2))
     ti, cr, cc = cache_split(r, "light", it)
     events.append(generation_event(
         obs_id=r.obs_id("explain", tid), trace_id=tid, name="explain", start=s, end=e,
+        completion_start=_first_token_at(r, s, e),
         parent_id=agent_id, model=haiku.name, usage_details=usage_details(ti, ot, cr, cc),
         cost_details=cost_details(haiku, ti, ot, cr, cc), environment=env, input=ein2, output=eout2))
 

@@ -26,7 +26,8 @@ PRODUCTION_LABEL = "production"
 
 def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
     """Pull the current ``production`` prompt (cache_ttl=0 → a promotion is caught) and run it.
-    Returns ``(decision, input_tokens, output_tokens, prompt_version, latency_ms)``."""
+    Returns ``(decision, input_tokens, output_tokens, prompt_version, latency_ms, messages)``
+    where ``messages`` is the compiled chat turn the model actually saw."""
     name = cfg.golden_path.prompt_name
     prompt = lf.get_prompt(name, label=PRODUCTION_LABEL, type="chat", cache_ttl_seconds=0)
     application_json = app.model_dump_json()
@@ -39,8 +40,9 @@ def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
                                 messages=turns, temperature=0, max_tokens=512)
     latency_ms = int((time.monotonic() - t0) * 1000)
     text = "".join(b.text for b in resp.content if b.type == "text")
+    chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
     return (parse_decision(text, app), resp.usage.input_tokens, resp.usage.output_tokens,
-            getattr(prompt, "version", None), latency_ms)
+            getattr(prompt, "version", None), latency_ms, chat)
 
 
 def submit(cfg: Config, application: Application, *, log: Callable[[str], None] = print) -> dict:
@@ -58,7 +60,7 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
 
     lf = get_langfuse(cfg)
     anth = get_anthropic()
-    decision, in_tok, out_tok, version, latency_ms = _live_decision(cfg, lf, anth, application)
+    decision, in_tok, out_tok, version, latency_ms, messages = _live_decision(cfg, lf, anth, application)
     log(f"· production prompt v{version} decided: {decision.decision} "
         f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,}; {latency_ms}ms)")
 
@@ -70,7 +72,8 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
         kind="live", stale_grant_window=False, plan_step=False,
         tags=["ev-grant", "playground"])
     events = build_trace_events(Rng(cfg.generation.seed), cfg, spec, version,
-                                decision_usage=(in_tok, out_tok), decision_latency_ms=latency_ms)
+                                decision_usage=(in_tok, out_tok), decision_latency_ms=latency_ms,
+                                decision_input=messages)
     ing = Ingestor.from_env(base_url)
     ing.extend(events)
     ing.flush()

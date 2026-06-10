@@ -14,7 +14,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .agent import GrantRule
-from .models import Application, Vehicle
+from .models import Application, Decision, Vehicle
 from .rng import Rng
 
 # Plausible model names per drivetrain, for set dressing in trace I/O.
@@ -121,21 +121,54 @@ def model_label(rng: Rng, vtype: str) -> str:
 
 # ---------------------------------------------------------------------------
 # Step I/O (set dressing for the observation tree)
+#
+# Every generation's input is the *actual LLM turn* — chat messages with the system
+# prompt first — so opening any generation in the UI shows what the model was sent.
+# The decision step's system prompt is the managed prompt itself; the auxiliary
+# steps (plan / extract / explain) carry their own small system prompts below.
 # ---------------------------------------------------------------------------
-def plan_io(app: Application) -> tuple[str, str]:
-    return (
+_PLAN_SYSTEM = (
+    "You are the planning step of an auto-loan credit agent. Given an application "
+    "summary, reply with a short ordered plan of the processing steps to run."
+)
+_EXTRACT_SYSTEM = (
+    "Extract the structured application fields from the raw intake text. Respond with "
+    "ONLY a JSON object: applicant_id, approved_line_eur, "
+    "vehicle {type, list_price_eur}, application_date."
+)
+_EXPLAIN_SYSTEM = (
+    "You write the customer-facing outcome message for an auto-loan decision. Draft one "
+    "short paragraph in plain language; do not cite internal policy identifiers."
+)
+
+
+def chat_messages(system: str, user: str) -> list[dict]:
+    """One LLM turn the way the model saw it: system prompt, then the user message."""
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def decision_messages(system_text: str, app: Application) -> list[dict]:
+    """The decision turn exactly as ``decide()``'s live path compiles it: the managed
+    system prompt plus the application JSON as the user message."""
+    return chat_messages(system_text, app.model_dump_json())
+
+
+def plan_io(app: Application) -> tuple[list[dict], str]:
+    user = (
         f"Assess auto-loan application for {app.applicant_id}: {app.vehicle.type} at "
-        f"EUR {app.vehicle.list_price_eur:,}, approved line EUR {app.approved_line_eur:,}.",
+        f"EUR {app.vehicle.list_price_eur:,}, approved line EUR {app.approved_line_eur:,}."
+    )
+    return (
+        chat_messages(_PLAN_SYSTEM, user),
         "Plan: normalize fields, retrieve current credit policy, check subsidy eligibility, "
         "compute affordability, then decide and explain.",
     )
 
 
-def extract_io(app: Application) -> tuple[dict, dict]:
-    return (
-        {"raw_application": f"{app.vehicle.type} {app.vehicle.list_price_eur} line {app.approved_line_eur}"},
-        app.model_dump(),
-    )
+def extract_io(app: Application) -> tuple[str, list[dict], dict]:
+    """Returns (raw intake text, the extract LLM turn, the structured output)."""
+    raw = f"{app.vehicle.type} {app.vehicle.list_price_eur} line {app.approved_line_eur}"
+    return raw, chat_messages(_EXTRACT_SYSTEM, raw), app.model_dump()
 
 
 def retrieve_io() -> tuple[str, list[str]]:
@@ -145,9 +178,14 @@ def retrieve_io() -> tuple[str, list[str]]:
     )
 
 
-def explain_io(rng: Rng, approved: bool) -> tuple[str, str]:
+def explain_io(rng: Rng, decision: Decision) -> tuple[list[dict], str]:
+    approved = decision.decision == "approve"
     txt = rng.choice(_EXPLAIN_APPROVE if approved else _EXPLAIN_REJECT)
-    return ("Draft a one-paragraph customer-facing rationale.", txt)
+    user = (
+        f"Decision: {decision.decision}. {decision.reason} "
+        "Draft a one-paragraph customer-facing rationale."
+    )
+    return chat_messages(_EXPLAIN_SYSTEM, user), txt
 
 
 # Customer pushback on a disputed false-negative — the quote that points the demo straight
