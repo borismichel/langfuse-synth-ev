@@ -82,6 +82,13 @@ synth experiment --config config/demo.yaml --label development   # development (
 > disputed cases into a dataset, fixed the system prompt to apply the new grant, and the **same judge** that was
 > failing every case now passes them. That's the full loop, in Langfuse."
 
+### 8 · Encore — hand the room the wheel
+Open the **playground** (`synth playground` → http://127.0.0.1:8000) on screen, or share the link. Anyone submits an
+application against an **editable credit line** and gets the **real production decision** back, emitted as a live trace
+at the top of the timeline. Hit **Dispute** with a comment (*"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should
+put me under my line"*) → a `user_disagreement` appeal lands on that trace and nudges the appeal rate **live**. Then
+promote v2 to `production` and resubmit the same application → it now **approves**. The room just walked the whole loop.
+
 ---
 
 ## Break-glass fallback

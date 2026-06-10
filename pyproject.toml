@@ -15,6 +15,13 @@ dependencies = [
     "python-dotenv>=1.0",
 ]
 
+[project.optional-dependencies]
+playground = [           # `synth playground` — the live decision configurator UI
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "python-multipart>=0.0.9",   # FastAPI form parsing
+]
+
 [project.scripts]
 synth = "synth.cli:app"
 
