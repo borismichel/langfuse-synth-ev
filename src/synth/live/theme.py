@@ -66,6 +66,26 @@ button:hover{filter:brightness(.97)}
 h2{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.01em;margin-bottom:6px}
 a{color:var(--text-links);text-decoration:none} a:hover{text-decoration:underline}
 .back{display:inline-block;margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary)}
+.wrap.wide{max-width:980px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
+.kpi{padding:16px;border:1px solid var(--line-structure);border-radius:var(--radius);background:var(--surface-bg)}
+.kpi .klabel{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-tertiary)}
+.kpi .kvalue{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.01em;margin:4px 0 2px}
+.kpi .kdelta{font-family:var(--font-mono);font-size:11px}
+.kdelta.bad{color:var(--error)} .kdelta.good{color:var(--success)} .kdelta.flat{color:var(--text-tertiary)}
+.chip{display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:999px;border:1px solid var(--line-structure)}
+.chip.green{background:#538a2e14;color:var(--success);border-color:#538a2e55}
+.chip.red{background:#cc331410;color:var(--error);border-color:#cc331455}
+.charts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:4px 0 18px}
+@media(max-width:760px){.charts{grid-template-columns:1fr}}
+.chart{padding:14px 16px;border:1px solid var(--line-structure);border-radius:var(--radius);background:var(--surface-bg)}
+.chart .klabel{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-tertiary);margin-bottom:8px}
+.chart svg{display:block;width:100%;height:auto}
+.memo{padding:16px 18px;border:1px solid var(--line-structure);border-left:3px solid var(--cta-primary);
+  border-radius:var(--radius);background:var(--surface-beige);font-size:14px}
+.memo .quote{font-style:italic;color:var(--text-secondary)}
 .overlay{display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;flex-direction:column;
   background:repeating-linear-gradient(-45deg,var(--stripe-line) 0,var(--stripe-line) 1px,transparent 1px,transparent var(--stripe-period)),var(--surface-1)}
 .spinner{width:42px;height:42px;border:3px solid var(--line-structure);border-top-color:var(--text-primary);
@@ -76,13 +96,15 @@ a{color:var(--text-links);text-decoration:none} a:hover{text-decoration:underlin
 """
 
 
-def page(body: str, *, title: str = "Langfuse") -> str:
-    """Wrap ``body`` in the Langfuse-styled HTML shell (fonts, tokens, processing overlay)."""
+def page(body: str, *, title: str = "Langfuse", wide: bool = False) -> str:
+    """Wrap ``body`` in the Langfuse-styled HTML shell (fonts, tokens, processing overlay).
+    ``wide`` switches to the 980px dashboard layout."""
+    wrap = "wrap wide" if wide else "wrap"
     return (
         f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
         f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
         f"<title>{title}</title>{FONT_LINKS}<style>{CSS}</style></head>"
-        f"<body><div class='wrap'>{body}</div>"
+        f"<body><div class='{wrap}'>{body}</div>"
         f"<div class='overlay' id='overlay'><div class='spinner'></div><p id='ovmsg'>Processing decision</p></div>"
         f"<script>document.addEventListener('submit',function(e){{var a=e.target.getAttribute('action')||'';"
         f"document.getElementById('ovmsg').textContent=a.endsWith('/dispute')?'Logging dispute':'Processing decision';"

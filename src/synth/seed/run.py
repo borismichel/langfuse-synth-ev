@@ -20,7 +20,7 @@ from .generator import Plan, build_plan
 from .ingest import Ingestor, assert_demo_project, ensure_score_config
 from .scores import (
     SCORE_CONFIGS,
-    csat_score,
+    csat_events,
     disagreement_score,
     format_compliance_score,
     quality_judge_scores,
@@ -164,16 +164,10 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
                                             spec.timestamp, spec.environment, sc.quality_judge_ratio))
             ing.extend(dis_events)
 
-        # per-session csat survey at a response rate
-        spec_by_id = {s.trace_id: s for s in plan.specs}
-        for sid, trace_ids in plan.sessions.items():
-            members = [spec_by_id[t] for t in trace_ids if t in spec_by_id]
-            if not members:
-                continue
-            if not rng.sub("csatsample", sid).chance(sc.csat_response_ratio):
-                continue
-            last = max(members, key=lambda s: s.timestamp)
-            ing.add(csat_score(rng, sid, last.timestamp, last.environment))
+        # per-session csat surveys (healthy multi-turn + angry disputed FNs — shared
+        # generator with the analytics dashboard, so the two can never disagree)
+        for ev in csat_events(rng, plan.specs, plan.sessions, sc.csat_response_ratio):
+            ing.add(ev)
     finally:
         ing.close_spool()
     return total

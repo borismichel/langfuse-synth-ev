@@ -10,6 +10,9 @@ Coverage follows the *kind* of instrument, not one blanket ratio:
   pushback — sampled, and **forced true on the disputed false-negatives** so the
   appeal rate **drifts** in the window. Its verdict drives the ``disputed`` tag.
 - ``csat`` is a per-session **customer survey** — present at a response rate, not a grade.
+  Disputed false-negatives answer at double the rate and angrily (~2.0 vs ~4.1), so CSAT
+  visibly breaks down in the drift window — the business-side smoke the analytics
+  dashboard (``/analytics`` in the playground) reports to AI Engineering.
 - There is **no** score for decision-correctness-under-the-new-grant. That gap is the
   whole point — it's what the managed judge in §7 fills, live, during the demo.
 
@@ -91,9 +94,37 @@ def disagreement_score(rng: Rng, trace_id: str, ts: datetime, environment: str,
     return [ev], disagree
 
 
-def csat_score(rng: Rng, session_id: str, ts: datetime, environment: str) -> dict:
+def csat_score(rng: Rng, session_id: str, ts: datetime, environment: str,
+               dissatisfied: bool = False) -> dict:
     s = rng.sub("csat", session_id)
-    val = round(min(5.0, max(1.0, s.gauss(4.1, 0.7))), 1)
+    mu, sigma = (2.0, 0.6) if dissatisfied else (4.1, 0.7)
+    val = round(min(5.0, max(1.0, s.gauss(mu, sigma))), 1)
     return score_event(score_id=s.score_id("csat", session_id), name="csat", value=val,
                        data_type="NUMERIC", timestamp=ts, session_id=session_id,
                        environment=environment)
+
+
+def csat_events(rng: Rng, specs, sessions: dict[str, list[str]],
+                response_ratio: float):
+    """Every per-session csat survey for a plan, in one place (seed AND the analytics
+    dashboard derive from this, so they can never disagree).
+
+    Multi-turn sessions respond at ``response_ratio`` with the healthy ~4.1 mean. The
+    disputed false-negatives' sessions are surveyed too — wrongly rejected customers
+    answer at double the rate (angry customers always take the survey) and angrily
+    (~2.0) — which is what makes CSAT visibly break down in the drift window."""
+    spec_by_id = {s.trace_id: s for s in specs}
+    for sid, trace_ids in sessions.items():
+        members = [spec_by_id[t] for t in trace_ids if t in spec_by_id]
+        if not members:
+            continue
+        if not rng.sub("csatsample", sid).chance(response_ratio):
+            continue
+        last = max(members, key=lambda s: s.timestamp)
+        yield csat_score(rng, sid, last.timestamp, last.environment)
+    for s in specs:
+        if s.kind != "golden_eligible" or not s.session_id:
+            continue
+        if not rng.sub("csatsample", s.session_id).chance(min(1.0, response_ratio * 2)):
+            continue
+        yield csat_score(rng, s.session_id, s.timestamp, s.environment, dissatisfied=True)

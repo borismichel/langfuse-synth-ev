@@ -4,6 +4,10 @@ A customer-facing loan application: choose a vehicle and your pre-approved credi
 an instant lending decision, and (if you disagree) request a review. Under the hood each
 application runs the live production prompt and emits an agent-graph trace — but the UI stays
 in character. Styled with the shared Langfuse tokens (``theme.py``). Launch with ``synth playground``.
+
+A second, staff-facing route ``/analytics`` (``dashboard.py``) is the internal lending-analytics
+report — appeals climbing, CSAT breaking down, AI monitors green — that Lending Analytics sends
+AI Engineering to start the investigation. It's the demo's opening beat.
 """
 from __future__ import annotations
 
@@ -51,6 +55,22 @@ def _form(prefabs_js: str) -> str:
     </script>"""
 
 
+def _error_card(headline: str, exc: Exception) -> str:
+    """In-scene failure card (model API hiccup, unparseable reply, Langfuse down) — the
+    show must go on: no raw 500s mid-presentation, and a one-line technical note so the
+    presenter can tell a transient blip from a broken setup."""
+    tech = f"{type(exc).__name__}: {exc}"
+    return f"""
+    <div class="eyebrow">Langfuse Bank · service notice</div>
+    <div class="card">
+      <h2>{headline}</h2>
+      <p class="sub" style="margin:6px 0 14px">Our decision service had a momentary problem and
+        nothing was recorded. Please try again — your details are one click back.</p>
+      <div class="kv"><span>Technical detail</span><span>{html.escape(tech[:160])}</span></div>
+    </div>
+    <a class="back" href="/">← try again</a>"""
+
+
 def create_app(cfg: Config):
     from fastapi import FastAPI, Form
     from fastapi.responses import HTMLResponse
@@ -61,13 +81,25 @@ def create_app(cfg: Config):
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
-        return page(_HEADER + _form(prefabs_js), title=TITLE)
+        staff = "<a class='back' href='/analytics'>staff · lending analytics →</a>"
+        return page(_HEADER + _form(prefabs_js) + staff, title=TITLE)
+
+    @app.get("/analytics", response_class=HTMLResponse)
+    def analytics() -> str:
+        from .dashboard import render_analytics
+        try:
+            return render_analytics(cfg)
+        except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
+            return page(_error_card("Analytics is temporarily unavailable", exc), title=TITLE)
 
     @app.post("/submit", response_class=HTMLResponse)
     def do_submit(vehicle: str = Form("BEV"), price: int = Form(...), line: int = Form(...)) -> str:
-        application = Application(applicant_id="playground_applicant", approved_line_eur=line,
-                                  vehicle=Vehicle(type=vehicle, list_price_eur=price), application_date="")
-        res = submit(cfg, application)
+        try:
+            application = Application(applicant_id="playground_applicant", approved_line_eur=line,
+                                      vehicle=Vehicle(type=vehicle, list_price_eur=price), application_date="")
+            res = submit(cfg, application)
+        except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
+            return page(_error_card("We couldn't process your application", exc), title=TITLE)
         d = res["decision"]
         approved = d.decision == "approve"
         verdict = "APPROVED" if approved else "DECLINED"
@@ -95,7 +127,10 @@ def create_app(cfg: Config):
 
     @app.post("/dispute", response_class=HTMLResponse)
     def do_dispute(trace_id: str = Form(...), comment: str = Form("")) -> str:
-        res = dispute(cfg, trace_id, comment)
+        try:
+            res = dispute(cfg, trace_id, comment)
+        except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
+            return page(_error_card("We couldn't log your appeal", exc), title=TITLE)
         body = f"""
         <div class="eyebrow">Langfuse Bank · appeal received</div>
         <div class="card active">

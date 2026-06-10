@@ -18,6 +18,14 @@
 
 ## The beats
 
+### 0 · The report that starts it — lending analytics
+Open the staff dashboard (`synth playground` → http://127.0.0.1:8000/analytics) — the weekly risk
+report Lending Analytics sends **AI Engineering**: appeals climbing, decision CSAT breaking down,
+approval rate on eligible BEVs collapsing, **€-volume walking away** — while the agent's own quality
+monitors are **all green**. Every figure is derived from the same deterministic plan the seed
+ingested, so whatever the room drills into, the traces in Langfuse back it up.
+> This is how it starts in real life: the business sees it first. Nothing the AI team watches is red.
+
 ### 1 · Dashboard — the only smoke
 Open the dashboard{{ dashboard_link }}. Point out the **rising `user_disagreement` / appeal rate**
 over the last {{ drift_window_days }} days — while **`answer_quality`, `tone`, `format_compliance` stay green**.
@@ -37,7 +45,9 @@ Open trace **`{{ disputed_example.trace_id }}`**{{ disputed_trace_link }}
   comment — e.g. *"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should put me under my
   line"* — so the signal says *why*, not just *that*. The customers are telling you what's wrong.
 - The `decision` generation is linked to prompt **{{ prompt_name }} v{{ prompt_versions.v1 }}** (label `production`) —
-  *every bad decision used v1*. The rationale is clear and never mentions the grant.
+  *every bad decision used v1*. Open it: the **input is the actual LLM turn** — the v1 system
+  prompt ("financed amount is the list price, grant = 0") plus the application JSON — so the
+  stale instruction is sitting right there in every trace. The rationale never mentions the grant.
 
 ### 3 · Build the decision-correctness judge → red
 Create a **managed LLM-as-judge** in the UI ({{ judge_model }}, temperature 0). Paste this prompt:
@@ -46,8 +56,10 @@ Create a **managed LLM-as-judge** in the UI ({{ judge_model }}, temperature 0). 
 {{ judge_prompt }}
 ```
 
-**Variable mappings:** `{{ '{{input}}' }}` ← trace/observation **input** (the application);
-`{{ '{{output}}' }}` ← the `decision` generation **output**; `{{ '{{grant_date}}' }}` is the constant above.
+**Variable mappings:** `{{ '{{input}}' }}` ← the **trace input** (the bare application JSON — the
+`decision` generation's input is the full chat turn including the system prompt, so map the
+trace, not the generation); `{{ '{{output}}' }}` ← the `decision` generation **output**;
+`{{ '{{grant_date}}' }}` is the constant above.
 Emit a **CATEGORICAL** score (`pass`/`fail`), reason as the comment.
 **Scope it to recent production traces** (tag `disputed`, last {{ drift_window_days }} days) and run the backfill →
 the disputed rejections go **red**.

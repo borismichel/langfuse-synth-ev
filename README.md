@@ -65,8 +65,10 @@ coverage / drift / tag checks). If a large import stalls, the generated data is 
 
 ## What gets created
 
-- **~4,000 traces** over 30 days with diurnal/weekly shape; realistic latency (log-normal),
-  **production-scale token usage** with **prompt caching** (cache-read / cache-creation split),
+- **~4,000 traces** over 30 days with diurnal/weekly shape; realistic latency (log-normal)
+  with a **time-to-first-token** on every generation; **production-scale token usage**
+  anchored to the visible chat messages (input = messages + per-role overhead; Opus thinking
+  billed as `reasoning` tokens) with **prompt caching** (cache-read / cache-creation split),
   multi-turn context growth, and Opus reasoning that feeds the decision step's input; cost
   (token × per-model price, incl. cache rates), and a baseline error rate.
 - Each trace is an **agent graph**: a `credit_agent` orchestrator over a planner (Opus, ~25%),
@@ -127,6 +129,13 @@ synth submit --config config/demo.yaml --prefab eligible --line 32000   # one-sh
 Only the `decision` is a real model call (real tokens + latency); the surrounding agent graph
 is templated/computed exactly like the seed, so the live trace is shape-identical to the
 seeded data. Prefabs: `eligible` (the bug), `overcap`, `phev`, `approvable`, `rejected`.
+
+A second, staff-facing route — **`/analytics`** — is the in-scene **lending-analytics report**
+that opens the demo: the weekly risk dashboard Lending Analytics sends AI Engineering. Appeals
+climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume
+walking away — while the agent's own quality monitors stay green. Every figure is **derived from
+the same deterministic plan the seed ingested** (the score draws are replayed from the same
+id-keyed rng substreams), so the report and the data in Langfuse always agree.
 
 ---
 
