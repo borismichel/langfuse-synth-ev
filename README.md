@@ -1,62 +1,35 @@
 # Langfuse Demo Data Synthesiser — EV-subsidy regression
 
 ## The business case & story arc
-
-**The business.** A consumer lender approves auto-loan applications with an AI
-**credit-approval agent**: it retrieves policy, checks subsidy eligibility, computes
-affordability against the customer's credit line, and returns an approve/reject decision
-with a customer-facing rationale. Thousands of decisions a day ride on it, so its outputs
-are monitored for the things that usually go wrong with an LLM — quality, tone and format.
-
-**The tension.** A new EV purchase grant takes effect — €6,000 off BEVs ≤ €50,000, applied
-at the point of sale — but the agent's system prompt predates it. It keeps assessing
-affordability on the **gross** price and **wrongly rejects** borderline applicants who are
-now affordable. Every quality, tone and format eval stays **green**: the rejections read
-perfectly; they are just *wrong*. The only smoke is a rising appeal / `user_disagreement`
-rate. The failure is **silent** because nothing was scoring decision *correctness* under the
-new rule.
-
+ 
+**The business.** A consumer lender approves auto-loan applications with an AI credit-approval agent: it retrieves policy, checks subsidy eligibility, computes affordability against the customer's credit line, and returns an approve/reject decision with a customer-facing rationale. Thousands of decisions a day ride on it, so its outputs are monitored for the things that usually go wrong with an LLM: quality, tone and format.
+ 
+**The tension.** A new EV purchase grant takes effect (€6,000 off BEVs ≤ €50,000, applied at the point of sale), but the agent's system prompt predates it. It keeps assessing affordability on the gross price and wrongly rejects borderline applicants who are now affordable. Every quality, tone and format eval stays green: the rejections read perfectly; they're just *wrong*. The only smoke is a rising appeal / `user_disagreement` rate. The failure is silent because nothing was scoring decision *correctness* under the new rule.
+ 
 **The arc** (the demo walks the full engineering loop, trace → fix → proof):
-1. **Production reality** — ~4,000 backdated traces show the agent working at scale: a
-   planner → `retrieve_policy` → `check_subsidy_eligibility` + `compute_affordability` tools
-   → the Sonnet `decision` → a Haiku `explain`, with realistic latency, token usage and
-   cost. Quality/tone/format monitors are all green.
-2. **The smoke** — the in-scene **Lending Analytics** report (`/analytics`) that opens the
-   demo: appeals climbing, decision CSAT breaking down, eligible-BEV approval rate
-   collapsing, financing volume walking away — while the agent's own quality monitors stay
-   green. Something is wrong that nobody is measuring.
-3. **The missing instrument** — install the one eval that was absent: a
-   **decision-correctness** managed LLM-as-judge. Backfilled over recent production it turns
-   **red** on the disputed rejections. The gap was the whole point.
-4. **Curate & fix** — curate the eligible false-negatives into a hosted **dataset**, then fix
-   the prompt through **prompt management** (v1 stale → v2 grant-aware), labelled
-   `production` / `development`.
-5. **Prove it** — an **experiment** runs the labelled prompt over the dataset: the *same
-   judge* that failed every case now **passes** them. Promote v2 to `production` and the live
-   playground flips subsequent decisions reject → approve — no code change.
-
-**This kit tells the prompt-loop story** — catching a silent regression in production and
-closing the loop on it, end to end.
-
+ 
+1. **Production reality.** ~4,000 backdated traces show the agent working at scale: a planner → `retrieve_policy` → `check_subsidy_eligibility` + `compute_affordability` tools → the Sonnet `decision` → a Haiku `explain`, with realistic latency, token usage and cost. Quality/tone/format monitors are all green.
+2. **The smoke.** The in-scene Lending Analytics report (`/analytics`) that opens the demo: appeals climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume walking away, while the agent's own quality monitors stay green. Something is wrong that nobody is measuring.
+3. **The missing instrument.** Install the one eval that was absent: a decision-correctness managed LLM-as-judge. Backfilled over recent production, it turns red on the disputed rejections. The gap was the whole point.
+4. **Curate & fix.** Curate the eligible false-negatives into a hosted dataset, then fix the prompt through prompt management (v1 stale → v2 grant-aware), labelled `production` / `development`.
+5. **Prove it.** An experiment runs the labelled prompt over the dataset: the *same judge* that failed every case now passes them. Promote v2 to `production` and the live playground flips subsequent decisions reject → approve, no code change.
+**This kit tells the prompt-loop story:** catching a silent regression in production and closing the loop on it, end to end.
+ 
 The arithmetic that produces the regression (spec §17):
-
+ 
 | Application | v1 (stale) | v2 (fixed) | Judge on v2 |
 |---|---|---|---|
 | BEV €42k, line €40k (eligible, borderline) | reject (42k > 40k) | **approve** (36k ≤ 40k) | PASS |
 | BEV €58k, line €55k (over cap) | reject | reject (no grant) | PASS |
 | PHEV €42k, line €40k (not BEV) | reject | reject (no grant) | PASS |
-
+ 
 ---
-
-Seed a fresh Langfuse project — **Langfuse Cloud or self-hosted** — with believable,
-time-distributed observability data, anchored by the one end-to-end **golden path** above, so
-a demo dashboard looks *alive* and walks an audience through that loop:
-
-> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt
-> management → prove the fix with an experiment.
-
-This is the first scenario in the demo-data kit. It is a cloneable repo: `git clone`, set
-`.env`, `synth seed`, run the demo. The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
+ 
+Seed a fresh Langfuse project (Langfuse Cloud or self-hosted) with believable, time-distributed observability data, anchored by the one end-to-end golden path above, so a demo dashboard looks *alive* and walks an audience through that loop:
+ 
+> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt management → prove the fix with an experiment.
+ 
+This is the first scenario in the demo-data kit. It's a cloneable repo: `git clone`, set `.env`, `synth seed`, run the demo. The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
 
 ---
 
