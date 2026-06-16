@@ -26,6 +26,8 @@ from typing import Callable
 
 import requests
 
+from ..http import request_retry
+
 
 class IngestError(RuntimeError):
     pass
@@ -159,7 +161,13 @@ class Ingestor:
             if resp.status_code in (429, 500, 502, 503, 504):
                 if attempt == self.max_retries:
                     raise IngestError(f"ingestion failed {resp.status_code}: {resp.text[:500]}")
-                time.sleep(backoff)
+                wait = backoff
+                if resp.status_code == 429:  # Cloud sets Retry-After; honour it
+                    try:
+                        wait = max(wait, float(resp.headers.get("Retry-After", 0)))
+                    except (TypeError, ValueError):
+                        pass
+                time.sleep(min(wait, 30))
                 backoff = min(backoff * 2, 30)
                 continue
             raise IngestError(f"ingestion rejected {resp.status_code}: {resp.text[:500]}")
@@ -187,10 +195,9 @@ def assert_demo_project(base_url: str, project_hint: str) -> tuple[str, str]:
     """
     pub = os.environ.get("LANGFUSE_PUBLIC_KEY", "")
     sec = os.environ.get("LANGFUSE_SECRET_KEY", "")
-    resp = requests.get(
-        f"{base_url.rstrip('/')}/api/public/projects",
-        auth=(pub, sec),
-        timeout=15,
+    resp = request_retry(
+        "GET", f"{base_url.rstrip('/')}/api/public/projects",
+        auth=(pub, sec), timeout=15,
     )
     resp.raise_for_status()
     projects = resp.json().get("data", [])
@@ -209,11 +216,9 @@ def ensure_score_config(base_url: str, body: dict) -> None:
     """Create a score config (POST /api/public/score-configs). Idempotent-ish: ignores 409."""
     pub = os.environ.get("LANGFUSE_PUBLIC_KEY", "")
     sec = os.environ.get("LANGFUSE_SECRET_KEY", "")
-    resp = requests.post(
-        f"{base_url.rstrip('/')}/api/public/score-configs",
-        json=body,
-        auth=(pub, sec),
-        timeout=15,
+    resp = request_retry(
+        "POST", f"{base_url.rstrip('/')}/api/public/score-configs",
+        json=body, auth=(pub, sec), timeout=15,
     )
     if resp.status_code in (200, 201):
         return

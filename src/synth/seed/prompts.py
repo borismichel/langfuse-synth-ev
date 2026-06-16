@@ -15,7 +15,7 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
-import requests
+from ..http import request_retry
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
@@ -38,8 +38,8 @@ def set_version_labels(base_url: str, name: str, version: int, labels: list[str]
     if it was promoted elsewhere (e.g. ``production`` flipped to v2 during a prior demo)."""
     pub = os.environ.get("LANGFUSE_PUBLIC_KEY", "")
     sec = os.environ.get("LANGFUSE_SECRET_KEY", "")
-    resp = requests.patch(
-        f"{base_url.rstrip('/')}/api/public/v2/prompts/{name}/versions/{version}",
+    resp = request_retry(
+        "PATCH", f"{base_url.rstrip('/')}/api/public/v2/prompts/{name}/versions/{version}",
         json={"newLabels": labels}, auth=(pub, sec), timeout=15)
     resp.raise_for_status()
 

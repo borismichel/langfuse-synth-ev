@@ -43,6 +43,10 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     project_name = "(dry-run)"
     project_id = ""
     if not dry_run:
+        from ..target import TargetProfile
+
+        profile = TargetProfile.detect(base_url)
+        log(f"· seeding {profile.label} ({base_url})")
         project_id, project_name = assert_demo_project(base_url, cfg.target.project_hint)
         log(f"✓ guardrail passed: project {project_name!r} matches hint {cfg.target.project_hint!r}")
 

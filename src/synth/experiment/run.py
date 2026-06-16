@@ -41,7 +41,10 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
     v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
     from ..lfclient import get_anthropic, get_langfuse
+    from ..target import TargetProfile
 
+    profile = TargetProfile.detect(cfg.target.base_url)
+    log(f"· experiment target: {profile.label} ({profile.base_url})")
     lf = get_langfuse(cfg)
     anth = get_anthropic()
     prompt_name = cfg.golden_path.prompt_name
@@ -67,7 +70,31 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     )
     log(res.format())
     lf.flush()
-    return {"label": label, "version": ver, "result": res}
+
+    # Deep link to the Dataset Run so the presenter can click straight to the comparison
+    # view. The SDK appends a " - <timestamp>" suffix to the run name, so the run shown in
+    # the UI starts with `name`; the managed judge scores it there. Best-effort only.
+    run_url = _dataset_run_url(cfg, lf)
+    if run_url:
+        log(f"· dataset runs: {run_url}")
+    return {"label": label, "version": ver, "result": res, "run_name": name, "run_url": run_url}
+
+
+def _dataset_run_url(cfg: Config, lf) -> str | None:
+    """`{base}/project/{id}/datasets/{id}` — the runs/comparison page. None if it can't
+    be resolved (never fatal: the run already landed; this is just a convenience link)."""
+    try:
+        from ..seed.ingest import assert_demo_project
+
+        base = cfg.target.base_url
+        project_id, _ = assert_demo_project(base, cfg.target.project_hint)
+        dataset = lf.get_dataset(cfg.golden_path.dataset.name)
+        dataset_id = getattr(dataset, "id", None)
+        if project_id and dataset_id:
+            return f"{base}/project/{project_id}/datasets/{dataset_id}"
+    except Exception:  # noqa: BLE001 — convenience only
+        return None
+    return None
 
 
 # -- CI/CD regression-gate fallback (optional, offline arithmetic) ----------

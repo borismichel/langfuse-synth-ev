@@ -1,35 +1,62 @@
 # Langfuse Demo Data Synthesiser — EV-subsidy regression
 
-Seed a fresh self-hosted Langfuse project with believable, time-distributed observability
-data — anchored by one end-to-end **golden path** (the EV-subsidy regression) — so a demo
-dashboard looks *alive* and walks an audience through the full engineering loop:
+## The business case & story arc
 
-> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt
-> management → prove the fix with an experiment.
+**The business.** A consumer lender approves auto-loan applications with an AI
+**credit-approval agent**: it retrieves policy, checks subsidy eligibility, computes
+affordability against the customer's credit line, and returns an approve/reject decision
+with a customer-facing rationale. Thousands of decisions a day ride on it, so its outputs
+are monitored for the things that usually go wrong with an LLM — quality, tone and format.
 
-This is the first scenario in the demo-data kit. It is a cloneable repo: `git clone`, set
-`.env`, `synth seed`, run the demo. The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
+**The tension.** A new EV purchase grant takes effect — €6,000 off BEVs ≤ €50,000, applied
+at the point of sale — but the agent's system prompt predates it. It keeps assessing
+affordability on the **gross** price and **wrongly rejects** borderline applicants who are
+now affordable. Every quality, tone and format eval stays **green**: the rejections read
+perfectly; they are just *wrong*. The only smoke is a rising appeal / `user_disagreement`
+rate. The failure is **silent** because nothing was scoring decision *correctness* under the
+new rule.
 
----
+**The arc** (the demo walks the full engineering loop, trace → fix → proof):
+1. **Production reality** — ~4,000 backdated traces show the agent working at scale: a
+   planner → `retrieve_policy` → `check_subsidy_eligibility` + `compute_affordability` tools
+   → the Sonnet `decision` → a Haiku `explain`, with realistic latency, token usage and
+   cost. Quality/tone/format monitors are all green.
+2. **The smoke** — the in-scene **Lending Analytics** report (`/analytics`) that opens the
+   demo: appeals climbing, decision CSAT breaking down, eligible-BEV approval rate
+   collapsing, financing volume walking away — while the agent's own quality monitors stay
+   green. Something is wrong that nobody is measuring.
+3. **The missing instrument** — install the one eval that was absent: a
+   **decision-correctness** managed LLM-as-judge. Backfilled over recent production it turns
+   **red** on the disputed rejections. The gap was the whole point.
+4. **Curate & fix** — curate the eligible false-negatives into a hosted **dataset**, then fix
+   the prompt through **prompt management** (v1 stale → v2 grant-aware), labelled
+   `production` / `development`.
+5. **Prove it** — an **experiment** runs the labelled prompt over the dataset: the *same
+   judge* that failed every case now **passes** them. Promote v2 to `production` and the live
+   playground flips subsequent decisions reject → approve — no code change.
 
-## The story (60 seconds)
+**This kit tells the prompt-loop story** — catching a silent regression in production and
+closing the loop on it, end to end.
 
-A new EV purchase grant (€6,000 off BEVs ≤ €50,000, applied at point of sale) takes effect.
-The credit-approval agent's system prompt predates it, so it assesses affordability on the
-**gross** price and **wrongly rejects** borderline applicants who should now be approved.
-Quality, tone and format evals stay **green** — the rejections read perfectly well; they're
-just *wrong*. The only smoke is a rising `user_disagreement` / appeal rate. The failure is
-silent because nothing was checking decision correctness under the new rule. The demo
-installs that missing judge, curates the disputed cases, fixes the prompt, and proves the
-fix — the **same judge** that failed every case now passes them.
-
-The arithmetic that produces it (spec §17):
+The arithmetic that produces the regression (spec §17):
 
 | Application | v1 (stale) | v2 (fixed) | Judge on v2 |
 |---|---|---|---|
 | BEV €42k, line €40k (eligible, borderline) | reject (42k > 40k) | **approve** (36k ≤ 40k) | PASS |
 | BEV €58k, line €55k (over cap) | reject | reject (no grant) | PASS |
 | PHEV €42k, line €40k (not BEV) | reject | reject (no grant) | PASS |
+
+---
+
+Seed a fresh Langfuse project — **Langfuse Cloud or self-hosted** — with believable,
+time-distributed observability data, anchored by the one end-to-end **golden path** above, so
+a demo dashboard looks *alive* and walks an audience through that loop:
+
+> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt
+> management → prove the fix with an experiment.
+
+This is the first scenario in the demo-data kit. It is a cloneable repo: `git clone`, set
+`.env`, `synth seed`, run the demo. The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
 
 ---
 
@@ -105,7 +132,7 @@ The decision-correctness judge is a **managed LLM-as-judge** configured in the L
 it cannot live in the repo, but `DEMO_SCRIPT.md` step 3 contains the exact prompt to paste,
 the variable mappings, and the scopes. It is *the same judge* on both surfaces: scoped to the
 recent production traces (backfill → **red**) and to the dataset's new runs (the experiment →
-**green**). Self-hosted needs an LLM connection (Anthropic key, or Bedrock) configured in
+**green**). Either target needs an LLM connection (Anthropic key, or Bedrock) configured in
 project settings for the managed judge and the experiment task.
 
 ---
@@ -152,6 +179,15 @@ Ingestion is **two-phase and recoverable**: generation streams every event to an
 upload can't lose the (deterministic, expensive) generated data — resume with
 `synth import-spool`. The spool lives under `.synth_spool/` (gitignored).
 
+**Cloud vs self-hosted** is a single URL-derived fact in [`target.py`](src/synth/target.py)
+(`TargetProfile.detect`), kept out of every call site. The batch ingestion endpoint already
+retries, but the hand-rolled REST helpers (the project guardrail, prompt-label PATCH,
+score-config creation, and `synth verify`'s paginated query-backs) did single shots that
+Langfuse Cloud rate-limits with 429s. [`http.py`](src/synth/http.py)'s `request_retry` is the
+one **Retry-After-aware** backoff they all share, and on Cloud the one-at-a-time reads/writes
+get a small `post_throttle_s` spacing so they don't trip the limiter to begin with
+(self-hosted: zero overhead). `seed`, `experiment` and `verify` each log which target they hit.
+
 ```
 config/demo.yaml ──▶ generator (deterministic plan)
                           │
@@ -179,6 +215,7 @@ prompts/credit_decision.v{1,2}.txt
 src/synth/
   agent.py                # decide(application, prompt_label) -> Decision  ← the one lever
   config.py rng.py models.py pricing.py timegen.py distributions.py content.py
+  target.py http.py       # Cloud-vs-self-hosted facts + Retry-After-aware REST helper
   seed/                   # ingest (spool+batch), events, traces, sessions, scores, golden_path, prompts, datasets, run
   experiment/run.py       # run_experiment(label) → decide(i.input, label)  ← production | development
   verify.py script.py cli.py
