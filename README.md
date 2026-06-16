@@ -120,6 +120,13 @@ appeal (with a free-text comment) on that trace, nudging the dashboard's appeal 
 prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
 subsequent submissions from reject → approve — no code change.
 
+The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
+
+| 1 · Submission form | 2 · Decision + feedback | 3 · Recorded trace |
+|---|---|---|
+| [![Playground submission form](docs/img/playground-form.png)](docs/img/playground-form.png) | [![Lending decision with review request](docs/img/playground-decision.png)](docs/img/playground-decision.png) | [![The decision's trace in Langfuse](docs/img/playground-trace.png)](docs/img/playground-trace.png) |
+| A BEV at €38,000 against a €32,000 line — borderline-eligible under the new grant. | The stale `production` prompt **declines** it (grant €0, ignoring the €6k it qualifies for); the customer requests a review. | The native agent-graph trace lands under the `.env` project, carrying the real `decision` call (tokens + cost) and the `user_disagreement` score from the review. |
+
 ```bash
 pip install -e '.[playground]'
 synth playground --config config/demo.yaml          # → http://127.0.0.1:8000
