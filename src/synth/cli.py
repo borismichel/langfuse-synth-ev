@@ -1,10 +1,15 @@
 """`synth` CLI (spec §11):
 
+    synth probe       --config demo.yaml   # assert backdated ingestion survives on this host (Cloud pre-check)
     synth plan        --config demo.yaml   # dry-run: volumes, golden-path dates, dataset summary
     synth seed        --config demo.yaml   # generate + ingest backdated; prompts; dataset; DEMO_SCRIPT.md
     synth verify      --config demo.yaml   # query back via v2 API, assert drift/linkage/dataset
     synth experiment  --config demo.yaml   # run the hosted dataset with prompt v2 (the live fix)
     synth script      --config demo.yaml   # (re)generate the demo runbook from current run state
+
+The pipeline commands (probe/plan/seed/verify) accept repeatable ``--set dotted.key=value``
+overrides applied to the config before validation, so the portal can scale the single shipped
+config per environment (e.g. ``--set generation.total_traces=800``).
 """
 from __future__ import annotations
 
@@ -22,18 +27,39 @@ app = typer.Typer(add_completion=False, help="Langfuse demo-data synthesiser —
 
 DEFAULT_CONFIG = "config/demo.yaml"
 
+# Repeatable `--set dotted.key=value` override, shared by the pipeline commands.
+SET_OPTION = typer.Option(
+    None, "--set", metavar="KEY=VALUE",
+    help="Override a config value before validation, e.g. --set generation.total_traces=800. "
+         "Repeatable; the value is coerced like yaml (800→int, true→bool, 1.5→float).",
+)
 
-def _load(config: str):
+
+def _load(config: str, overrides: list[str] | None = None):
     load_dotenv()  # pick up .env
-    return load_config(config)
+    return load_config(config, overrides)
 
 
 @app.command()
-def plan(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
+def probe(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+          set_: list[str] = SET_OPTION):
+    """Verify EARLY that backdated ingestion behaves on this host (PLAN.md §1): ingest ONE
+    trace with a historical timestamp, query it back, and FAIL LOUDLY if the timestamp was
+    dropped or normalised. Run before any bulk seed on Cloud."""
+    from .probe import run_probe
+
+    cfg = _load(config, set_)
+    ok = run_probe(cfg, log=lambda m: typer.echo(m))
+    raise typer.Exit(code=0 if ok else 1)
+
+
+@app.command()
+def plan(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+         set_: list[str] = SET_OPTION):
     """Dry run: print volumes, golden-path dates, and the dataset summary. No network."""
     from .seed.run import run_seed
 
-    cfg = _load(config)
+    cfg = _load(config, set_)
     state = run_seed(cfg, dry_run=True, persist=False, log=lambda m: typer.echo(m))
     typer.echo("\n— PLAN SUMMARY —")
     typer.echo(json.dumps(state.summary, indent=2))
@@ -41,6 +67,7 @@ def plan(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
 
 @app.command()
 def seed(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+         set_: list[str] = SET_OPTION,
          dry_run: bool = typer.Option(False, "--dry-run", help="Build everything but send nothing."),
          spool: str = typer.Option(None, "--spool", help="NDJSON spool path (default .synth_spool/events.ndjson)."),
          no_import: bool = typer.Option(False, "--no-import",
@@ -50,7 +77,7 @@ def seed(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
     from .script import render_script
     from .seed.run import run_seed
 
-    cfg = _load(config)
+    cfg = _load(config, set_)
     state = run_seed(cfg, dry_run=dry_run, spool_path=spool, do_import=not no_import,
                      log=lambda m: typer.echo(m))
     out = render_script(cfg, state)
@@ -68,11 +95,12 @@ def import_spool(spool: str = typer.Argument(None, help="Spool file to import (d
 
 
 @app.command()
-def verify(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c")):
+def verify(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
+           set_: list[str] = SET_OPTION):
     """Query the data back via the v2 API and assert the golden path."""
     from .verify import run_verify
 
-    cfg = _load(config)
+    cfg = _load(config, set_)
     if not RunState.exists():
         typer.echo("No .synth_state.json — run `synth seed` first.", err=True)
         raise typer.Exit(code=2)
