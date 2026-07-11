@@ -120,6 +120,38 @@ class Config(BaseModel):
         raise KeyError(f"no model configured for role={role!r}")
 
 
-def load_config(path: str | Path) -> Config:
+def _set_dotted(raw: dict, dotted_key: str, value) -> None:
+    """Set ``value`` at the dotted path ``a.b.c`` in the raw config dict, creating
+    intermediate mappings as needed (overwriting a non-mapping intermediate)."""
+    keys = dotted_key.split(".")
+    node = raw
+    for k in keys[:-1]:
+        child = node.get(k)
+        if not isinstance(child, dict):
+            child = {}
+            node[k] = child
+        node = child
+    node[keys[-1]] = value
+
+
+def apply_overrides(raw: dict, overrides: list[str] | None) -> dict:
+    """Apply ``--set dotted.key=value`` overrides to the RAW yaml dict before validation.
+
+    Each value is coerced with ``yaml.safe_load`` so ``800``→int, ``true``→bool,
+    ``1.5``→float, quoted/other→str — matching how the same value would parse in the
+    yaml file. Mutates and returns ``raw``. Used to let the portal scale a single
+    shipped config via the manifest ``config_schema`` (e.g. ``generation.total_traces``).
+    """
+    for item in overrides or []:
+        key, sep, rawval = item.partition("=")
+        key = key.strip()
+        if not sep or not key:
+            raise ValueError(f"--set expects dotted.key=value, got {item!r}")
+        _set_dotted(raw, key, yaml.safe_load(rawval))
+    return raw
+
+
+def load_config(path: str | Path, overrides: list[str] | None = None) -> Config:
     raw = yaml.safe_load(Path(path).read_text())
+    apply_overrides(raw, overrides)
     return Config.model_validate(raw)

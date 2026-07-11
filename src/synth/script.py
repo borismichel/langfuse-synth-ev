@@ -6,6 +6,7 @@ wording stays polished while the IDs stay accurate.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from jinja2 import Template
@@ -14,7 +15,17 @@ from .config import Config
 from .state import REPO_ROOT, RunState
 
 TEMPLATE_PATH = REPO_ROOT / "templates" / "demo_script.md.j2"
-OUTPUT_PATH = REPO_ROOT / "DEMO_SCRIPT.md"
+
+
+def output_dir() -> Path:
+    """Where run artifacts (DEMO_SCRIPT.md) land.
+
+    The portal collects artifacts from ``SYNTH_OUT_DIR`` (PLAN.md §5.1, set to
+    ``/app/out`` in the kit image); local dev leaves it unset and falls back to the
+    repo root. Resolved at call time so a container `ENV` or a shell export both work.
+    """
+    env = os.environ.get("SYNTH_OUT_DIR")
+    return Path(env) if env else REPO_ROOT
 
 # The reference-grounded judge prompt (spec §16), with {{grant_date}} baked to the run.
 _JUDGE_PROMPT = """You are auditing a vehicle-loan credit decision for correctness under current policy.
@@ -59,7 +70,10 @@ def build_context(cfg: Config, state: RunState) -> dict:
     }
 
 
-def render_script(cfg: Config, state: RunState, *, out_path: Path = OUTPUT_PATH) -> Path:
+def render_script(cfg: Config, state: RunState, *, out_path: Path | None = None) -> Path:
+    if out_path is None:
+        out_path = output_dir() / "DEMO_SCRIPT.md"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     template = Template(TEMPLATE_PATH.read_text())
     ctx = build_context(cfg, state)
     out_path.write_text(template.render(**ctx))
