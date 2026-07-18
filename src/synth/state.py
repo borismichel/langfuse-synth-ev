@@ -4,15 +4,33 @@
 (dates, prompt versions, dataset name, example trace ids + figures, project name).
 ``synth verify`` and ``synth script`` read it back so the demo runbook can never drift
 from the seeded data (spec §18). The file is git-ignored — it is per-run output.
+
+It lives in the spool dir, not the repo root: under the portal each step runs in its
+own ephemeral container, and the spool is the only surface mounted (as a named volume)
+into all of them, so state written by ``seed`` survives to be read by ``verify``. The
+artifact dir (``SYNTH_OUT_DIR``) is NOT shared — it is lifted from the exited container
+after each step — so state must not live there. ``SYNTH_STATE_DIR`` overrides.
 """
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-STATE_PATH = str(REPO_ROOT / ".synth_state.json")
+STATE_FILENAME = ".synth_state.json"
+
+
+def state_dir() -> Path:
+    """Where ``.synth_state.json`` lives — resolved at call time so a container ``ENV``
+    or a shell export both work (the portal injects ``SYNTH_STATE_DIR``)."""
+    env = os.environ.get("SYNTH_STATE_DIR")
+    return Path(env) if env else REPO_ROOT / ".synth_spool"
+
+
+def state_path() -> str:
+    return str(state_dir() / STATE_FILENAME)
 
 
 @dataclass
@@ -39,14 +57,16 @@ class RunState:
     project_id: str = ""
     dry_run: bool = False
 
-    def save(self, path: str = STATE_PATH) -> None:
-        Path(path).write_text(json.dumps(asdict(self), indent=2))
+    def save(self, path: str | None = None) -> None:
+        p = Path(path or state_path())
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(asdict(self), indent=2))
 
     @classmethod
-    def load(cls, path: str = STATE_PATH) -> "RunState":
-        data = json.loads(Path(path).read_text())
+    def load(cls, path: str | None = None) -> "RunState":
+        data = json.loads(Path(path or state_path()).read_text())
         return cls(**data)
 
     @staticmethod
-    def exists(path: str = STATE_PATH) -> bool:
-        return Path(path).exists()
+    def exists(path: str | None = None) -> bool:
+        return Path(path or state_path()).exists()
