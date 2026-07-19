@@ -46,6 +46,12 @@ config_schema:
   # v1 contract: each property NAME is a dotted kit-config key applied as `--set name=value`.
   type: object
   properties:
+    generation.seed:
+      type: integer
+      default: 42
+      minimum: 0
+      title: "Generation seed"
+      description: "Deterministic RNG seed for the whole dataset. Vary it to mint a distinct trace/id set per deployment; the same seed re-seeds idempotently (upsert). The throwaway probe trace is separately nonce-salted, so it never collides regardless of this value."
     generation.total_traces:
       type: integer
       default: 800
