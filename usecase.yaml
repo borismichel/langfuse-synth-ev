@@ -101,6 +101,12 @@ live_components:
     command: "synth playground --config {config} --host 0.0.0.0 --port 8080"
     port: 8080
     requires_secrets: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, ANTHROPIC_API_KEY]
+    # One container serving the decision configurator (/) and the in-scene dashboard.
+    routes:
+      - path: /
+        title: "Decision configurator"
+      - path: /analytics
+        title: "In-scene dashboard"
     default_ttl_hours: 168
     max_ttl_hours: 720
     health_path: "/"
