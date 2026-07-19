@@ -19,6 +19,8 @@ import os
 from dataclasses import dataclass, field
 from datetime import datetime
 
+import requests
+
 from .config import Config
 from .http import request_retry
 from .state import RunState
@@ -56,11 +58,25 @@ def _get(base: str, path: str, params: dict | None = None, *, throttle: float = 
     return resp.json()
 
 
+def _scores_path(base: str, *, throttle: float = 0.0) -> str:
+    """``/api/public/v2/scores`` on current servers; a Langfuse v2 SERVER (self-
+    hosted 2.9x — naming is unrelated to the API's own /v2/ prefix, which is
+    v3-era) only serves the legacy ``/api/public/scores``. Probe once per run."""
+    try:
+        _get(base, "/api/public/v2/scores", {"limit": 1, "page": 1}, throttle=throttle)
+        return "/api/public/v2/scores"
+    except requests.HTTPError as e:
+        if e.response is not None and e.response.status_code == 404:
+            return "/api/public/scores"
+        raise
+
+
 def _get_all_scores(base: str, name: str, limit_pages: int = 30, *, throttle: float = 0.0) -> list[dict]:
     out: list[dict] = []
     page = 1
+    path = _scores_path(base, throttle=throttle)
     while page <= limit_pages:
-        data = _get(base, "/api/public/v2/scores", {"name": name, "limit": 100, "page": page},
+        data = _get(base, path, {"name": name, "limit": 100, "page": page},
                     throttle=throttle)
         rows = data.get("data", [])
         out.extend(rows)
