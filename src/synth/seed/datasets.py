@@ -12,22 +12,40 @@ false-negatives are deliberately NOT added here — they exist as traces for the
 """
 from __future__ import annotations
 
+import pydantic
+
 from .golden_path import GoldenPath
+
+
+def _tolerate_v2_response(call, what: str):
+    """Run an SDK write, tolerating a v2 self-hosted target's response shape.
+
+    The langfuse 4.x SDK validates server responses against v3-era models; a
+    Langfuse v2 server (self_hosted targets, e.g. 2.95.x) persists the write
+    but its response predates fields the model requires (e.g.
+    ``DatasetItem.media_references``) — the SDK then raises ValidationError
+    AFTER the row exists. The write is what we need; parse failures on the
+    echo are ignored so v2 targets keep working.
+    """
+    try:
+        return call()
+    except pydantic.ValidationError:
+        return None
 
 
 def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
     ds = cfg.golden_path.dataset
-    lf.create_dataset(
+    _tolerate_v2_response(lambda: lf.create_dataset(
         name=ds.name,
         description=("Disputed EV-grant credit rejections: eligible false-negatives (should-approve) "
                      "plus correct-rejection controls. Built from backdated production traces."),
         metadata={"scenario": "ev-subsidy-regression", "grant_effective_date":
                   golden.effective_date.date().isoformat(), "seeded": True},
-    )
+    ), "create_dataset")
 
     created = 0
     for it in golden.dataset_plan:
-        lf.create_dataset_item(
+        _tolerate_v2_response(lambda it=it: lf.create_dataset_item(
             dataset_name=ds.name,
             id=it.item_id,
             input=it.application.model_dump(),
@@ -35,7 +53,7 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
             metadata={"eligible": it.eligible, "borderline": it.borderline,
                       "scenario": it.scenario},
             source_trace_id=it.source_trace_id,
-        )
+        ), f"create_dataset_item {it.item_id}")
         created += 1
 
     return {
