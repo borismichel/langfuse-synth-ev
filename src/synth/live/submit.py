@@ -24,7 +24,7 @@ from ..timegen import day_anchor, iso_date
 PRODUCTION_LABEL = "production"
 
 
-def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
+def _live_decision(cfg: Config, lf, llm, app: Application) -> tuple:
     """Pull the current ``production`` prompt (cache_ttl=0 → a promotion is caught) and run it.
     Returns ``(decision, input_tokens, output_tokens, prompt_version, latency_ms, messages)``
     where ``messages`` is the compiled chat turn the model actually saw."""
@@ -36,12 +36,10 @@ def _live_decision(cfg: Config, lf, anth, app: Application) -> tuple:
     turns = [m for m in messages if m.get("role") != "system"] or \
         [{"role": "user", "content": application_json}]
     t0 = time.monotonic()
-    resp = anth.messages.create(model=cfg.golden_path.task_model, system=system,
-                                messages=turns, temperature=0, max_tokens=512)
+    result = llm.complete(system=system, messages=turns, temperature=0, max_tokens=512)
     latency_ms = int((time.monotonic() - t0) * 1000)
-    text = "".join(b.text for b in resp.content if b.type == "text")
     chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
-    return (parse_decision(text, app), resp.usage.input_tokens, resp.usage.output_tokens,
+    return (parse_decision(result.text, app), result.input_tokens, result.output_tokens,
             getattr(prompt, "version", None), latency_ms, chat)
 
 
@@ -50,7 +48,8 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
 
     Returns the decision, the deterministic v2 ``expected`` (for contrast), the prompt
     version that ran, and a deep link to the freshly emitted trace."""
-    from ..lfclient import get_anthropic, get_langfuse
+    from ..lfclient import get_langfuse
+    from ..llm import get_llm
 
     base_url = cfg.target.base_url
     project_id, project_name = assert_demo_project(base_url, cfg.target.project_hint)
@@ -59,8 +58,8 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
     application = application.model_copy(update={"application_date": iso_date(now)})
 
     lf = get_langfuse(cfg)
-    anth = get_anthropic()
-    decision, in_tok, out_tok, version, latency_ms, messages = _live_decision(cfg, lf, anth, application)
+    llm = get_llm(cfg.golden_path.task_model)
+    decision, in_tok, out_tok, version, latency_ms, messages = _live_decision(cfg, lf, llm, application)
     log(f"· production prompt v{version} decided: {decision.decision} "
         f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,}; {latency_ms}ms)")
 

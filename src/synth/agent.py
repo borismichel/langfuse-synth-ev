@@ -11,7 +11,7 @@ Two execution paths, identical contract:
   (spec §2, §9). The seeded v1 rejections are exactly what ``decide(app, "v1")``
   produces, so they are authentic *and* judge-failable.
 
-- **Live (demo path).** ``decide(app, label, live=True, lf=..., anth=...)`` fetches the
+- **Live (demo path).** ``decide(app, label, live=True, lf=..., llm=...)`` fetches the
   system prompt from Langfuse prompt management by label, calls the model at
   temperature 0, and parses the structured Decision. This is the production agent
   path the experiment exercises with the fixed prompt.
@@ -98,9 +98,8 @@ def _decide_live(
     prompt_label: str,
     *,
     lf,
-    anth,
+    llm,
     prompt_name: str,
-    model: str,
 ) -> Decision:
     # cache_ttl_seconds=0: always pull the *current* labelled version, so promoting a new
     # prompt to `production` in the UI takes effect on the very next experiment run.
@@ -108,7 +107,8 @@ def _decide_live(
     application_json = app.model_dump_json()
     messages = prompt.compile(application=application_json)
 
-    # Split Langfuse chat messages into Anthropic system + messages.
+    # Split Langfuse chat messages into a system prompt + turns (the provider layer
+    # re-attaches the system prompt in each SDK's native shape).
     system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
     turns = [m for m in messages if m.get("role") != "system"]
     if not turns:
@@ -119,17 +119,14 @@ def _decide_live(
     # prompt linked — same shape as the seeded decision generations.
     chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
     with lf.start_as_current_observation(
-        as_type="generation", name="decision", model=model, input=chat,
+        as_type="generation", name="decision", model=llm.model, input=chat,
         model_parameters={"temperature": 0, "max_tokens": 512}, prompt=prompt,
     ) as gen:
-        resp = anth.messages.create(
-            model=model, system=system, messages=turns, temperature=0, max_tokens=512
-        )
-        text = "".join(block.text for block in resp.content if block.type == "text")
-        decision = parse_decision(text, app)
+        result = llm.complete(system=system, messages=turns, temperature=0, max_tokens=512)
+        decision = parse_decision(result.text, app)
         gen.update(output=decision.model_dump(),
-                   usage_details={"input": resp.usage.input_tokens,
-                                  "output": resp.usage.output_tokens})
+                   usage_details={"input": result.input_tokens,
+                                  "output": result.output_tokens})
     return decision
 
 
@@ -167,19 +164,19 @@ def decide(
     rule: GrantRule = DEFAULT_RULE,
     live: bool = False,
     lf=None,
-    anth=None,
+    llm=None,
     prompt_name: str = "credit_decision",
-    model: str = "claude-sonnet-4-6",
 ) -> Decision:
     """Return a structured Decision. ``prompt_label`` ('v1'|'v2') is the only lever.
 
     Default (seed path) is deterministic and model-free. Pass ``live=True`` with a
-    Langfuse client (``lf``) and Anthropic client (``anth``) to run the real agent
-    path used by the demo-time experiment.
+    Langfuse client (``lf``) and an :class:`~synth.llm.LLMClient` (``llm``) to run the
+    real agent path used by the demo-time experiment; the client owns the resolved
+    provider and model.
     """
     app = Application.from_input(application)
     if live:
-        if lf is None or anth is None:
-            raise ValueError("live=True requires both lf (Langfuse) and anth (Anthropic) clients")
-        return _decide_live(app, prompt_label, lf=lf, anth=anth, prompt_name=prompt_name, model=model)
+        if lf is None or llm is None:
+            raise ValueError("live=True requires both lf (Langfuse) and llm (LLMClient) clients")
+        return _decide_live(app, prompt_label, lf=lf, llm=llm, prompt_name=prompt_name)
     return _decide_deterministic(app, prompt_label, rule)
