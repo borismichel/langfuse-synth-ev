@@ -38,6 +38,18 @@ target:
   supports: [cloud_eu, cloud_us, self_hosted]
   cloud_notes: "Free tier caps events. Run plan first and keep the trace estimate ≤80% of the tier cap; scale down with generation.total_traces."
 
+llm:
+  # Demo-time model calls (live playground submission + experiment task) route through
+  # the kit's provider layer (src/synth/llm.py). First provider = deploy-time default.
+  # The portal injects the selected provider's key via the LLM_API_KEY sentinel below,
+  # plus LLM_PROVIDER and (when declared here) LLM_MODEL.
+  providers: [anthropic, openai]
+  models:
+    # Anthropic intentionally omitted: with no LLM_MODEL injected, the kit keeps its
+    # built-in Anthropic model (claude-sonnet-4-6), so existing deployments are
+    # byte-for-byte unaffected. OpenAI has no built-in default worth pinning here.
+    openai: gpt-4o
+
 base_config:
   # EV ships a single config; Cloud runs scale down via --set rather than a separate file.
   default: config/demo.yaml
@@ -100,7 +112,7 @@ live_components:
     description: "Live decision configurator + /analytics in-scene dashboard. Production prompt pulled live per submission."
     command: "synth playground --config {config} --host 0.0.0.0 --port 8080"
     port: 8080
-    requires_secrets: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, ANTHROPIC_API_KEY]
+    requires_secrets: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LLM_API_KEY]
     # One container serving the decision configurator (/) and the in-scene dashboard.
     routes:
       - path: /

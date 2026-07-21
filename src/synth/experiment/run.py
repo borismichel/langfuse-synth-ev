@@ -21,15 +21,14 @@ from ..models import Application
 from ..state import RunState
 
 
-def _make_task(lf, anth, cfg: Config, label: str) -> Callable:
+def _make_task(lf, llm, cfg: Config, label: str) -> Callable:
     prompt_name = cfg.golden_path.prompt_name
-    model = cfg.golden_path.task_model
 
     def task(*args, **kwargs):
         item = kwargs.get("item") if "item" in kwargs else (args[0] if args else None)
         # SAME agent fn as seeding; runs whatever carries `label` right now.
-        decision = decide(item.input, label, live=True, lf=lf, anth=anth,
-                          prompt_name=prompt_name, model=model)
+        decision = decide(item.input, label, live=True, lf=lf, llm=llm,
+                          prompt_name=prompt_name)
         return decision.model_dump()
 
     return task
@@ -40,13 +39,15 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     """Run the prompt carrying ``label`` against the hosted dataset. The run is named by
     label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
     v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
-    from ..lfclient import get_anthropic, get_langfuse
+    from ..lfclient import get_langfuse
+    from ..llm import get_llm
     from ..target import TargetProfile
 
     profile = TargetProfile.detect(cfg.target.base_url)
     log(f"· experiment target: {profile.label} ({profile.base_url})")
     lf = get_langfuse(cfg)
-    anth = get_anthropic()
+    llm = get_llm(cfg.golden_path.task_model)
+    log(f"· model: {llm.provider}/{llm.model}")
     prompt_name = cfg.golden_path.prompt_name
 
     try:
@@ -65,7 +66,7 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     res = dataset.run_experiment(
         name=name,
         description=f"{label.capitalize()} prompt ({prompt_name} v{ver}) against the disputed dataset.",
-        task=_make_task(lf, anth, cfg, label),
+        task=_make_task(lf, llm, cfg, label),
         # evaluators left empty: the managed UI judge (scoped to dataset runs) scores it.
     )
     log(res.format())
