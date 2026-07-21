@@ -22,6 +22,7 @@ from ..content import customer_appeal
 from ..seed.generator import Plan, build_plan
 from ..seed.scores import csat_events, disagreement_score, format_compliance_score, quality_judge_scores
 from ..state import RunState
+from .paths import local
 from .theme import page
 
 DAYS_SHOWN = 14
@@ -286,5 +287,5 @@ def render_analytics(cfg: Config) -> str:
       <div class="kv"><span>Action requested</span><span>AI Engineering to investigate decision correctness — {traces_link or "see Langfuse"}</span></div>
     </div>
 
-    <a class="back" href="/">← Langfuse Bank · loan application</a>"""
+    <a class="back" href="{local('/')}">← Langfuse Bank · loan application</a>"""
     return page(body, title=TITLE, wide=True)

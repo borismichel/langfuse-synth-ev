@@ -16,6 +16,7 @@ import json
 
 from ..config import Config
 from ..models import Application, Vehicle
+from .paths import local
 from .prefabs import PREFABS
 from .submit import dispute, submit
 from .theme import page
@@ -36,7 +37,7 @@ def _form(prefabs_js: str) -> str:
     vopts = "".join(f'<option value="{k}" {"selected" if k=="BEV" else ""}>{html.escape(v)}</option>'
                     for k, v in _VNAME.items())
     return f"""
-    <form method="post" action="/submit">
+    <form method="post" action="{local('/submit')}">
       <label>Try an example</label>
       <select id="prefab" onchange="fill()">{opts}<option value="custom">— or enter your own —</option></select>
       <label>Vehicle</label>
@@ -68,7 +69,7 @@ def _error_card(headline: str, exc: Exception) -> str:
         nothing was recorded. Please try again — your details are one click back.</p>
       <div class="kv"><span>Technical detail</span><span>{html.escape(tech[:160])}</span></div>
     </div>
-    <a class="back" href="/">← try again</a>"""
+    <a class="back" href="{local('/')}">← try again</a>"""
 
 
 def create_app(cfg: Config):
@@ -81,7 +82,7 @@ def create_app(cfg: Config):
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
-        staff = "<a class='back' href='/analytics'>staff · lending analytics →</a>"
+        staff = f"<a class='back' href='{local('/analytics')}'>staff · lending analytics →</a>"
         return page(_HEADER + _form(prefabs_js) + staff, title=TITLE)
 
     @app.get("/analytics", response_class=HTMLResponse)
@@ -116,13 +117,13 @@ def create_app(cfg: Config):
           <div class="kv"><span>Vehicle price / your line</span><span>€{price:,} / €{line:,}</span></div>
           <div class="kv"><span>Decision record</span><span><a href="{res['trace_url']}" target="_blank">view →</a></span></div>
         </div>
-        <form method="post" action="/dispute" class="ghost card">
+        <form method="post" action="{local('/dispute')}" class="ghost card">
           <input type="hidden" name="trace_id" value="{res['trace_id']}">
           <label>Think this is wrong? Request a review</label>
           <textarea name="comment" rows="3" placeholder="e.g. the €6,000 EV grant should put me under my line"></textarea>
           <button type="submit">Request a review</button>
         </form>
-        <a class="back" href="/">← new application</a>"""
+        <a class="back" href="{local('/')}">← new application</a>"""
         return page(body, title=TITLE)
 
     @app.post("/dispute", response_class=HTMLResponse)
@@ -140,7 +141,7 @@ def create_app(cfg: Config):
           <div class="kv"><span>Your message</span><span>{html.escape(res['comment'])}</span></div>
           <div class="kv"><span>Decision record</span><span><a href="{res['trace_url']}" target="_blank">view →</a></span></div>
         </div>
-        <a class="back" href="/">← new application</a>"""
+        <a class="back" href="{local('/')}">← new application</a>"""
         return page(body, title=TITLE)
 
     return app
