@@ -156,3 +156,43 @@ Key invariants:
 The seed is deterministic, but Langfuse data is append-only within its merge window, so the
 clean-slate path is **project-level**: create a fresh project (name must contain the
 `project_hint`, default `demo`), put its keys in `.env`, and run `synth seed` once.
+
+---
+
+## Offline determinism golden gate (author-time, pre-ingestion)
+
+The two layers above verify data *after* it lands in Langfuse. The golden gate verifies the
+generator itself, **offline, before any ingestion** — it is the migration oracle for
+Spec A (`langfuse-synth-core`, Step 0 · #30).
+
+`tests/test_determinism.py::test_full_payload_golden_is_byte_identical` materializes the
+**entire pre-ingestion Spool** (the NDJSON event stream — traces + observations + scores)
+in a subprocess under `PYTHONHASHSEED=0` and a **deny-LLM egress block**, and asserts it is
+byte-identical to the blessed snapshot at `tests/golden/ev_spool.ndjson`. So it proves, in
+one shot, that generation is **deterministic** and **model-free at seed runtime**. Any
+refactor that silently perturbs the pool, or that plants an LLM call in generation code,
+fails here — loudly, before a single event is ingested.
+
+```bash
+pip install -e ".[dev]"        # pulls the git-pinned langfuse-synth-core[authoring] gate
+pytest tests/test_determinism.py
+```
+
+**The oracle is pinned at `target_traces=300`** (`generation.total_traces`; EV maps the
+canonical `target_traces` knob identity → direct count). The whole hand-authored narrative —
+golden-path disputes, the hosted dataset, multi-turn CSAT, every score family — is captured
+at this volume because those assets are config-sized, not ambient-scaled.
+
+> **Known oracle boundary.** `incident:cost_spike` is captured at 300, but
+> `incident:error_burst` is so low-probability it only surfaces near production volume
+> (~4000 traces / ~37 MB). It is therefore **out of this oracle by design** — the pin trades
+> full ambient-incident coverage for a committable ~2.7 MB snapshot. Determinism itself is
+> scale-independent, so this does not weaken the byte-for-byte guarantee on everything the
+> oracle *does* contain.
+
+**Re-blessing** (only for a *deliberate* pool change — never hand-edit the snapshot):
+
+```bash
+synth-authoring freeze golden_seed:seed \
+    --golden tests/golden/ev_spool.ndjson --target-traces 300 --search-path tests
+```
