@@ -5,15 +5,18 @@ description = "Synthesiser for believable, time-distributed Langfuse demo data, 
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    # The shared byte-identical core (Ring 1, #31/#32): RNG/ID, pricing, distributions, the
-    # Langfuse client, event emission, and the live-UI primitives now live in the lib.
-    # Re-pinned from the extraction SHA to the release tag v0.1.0 (Ring 1b, #32 — cut once
-    # both gold-standard kits were golden-green) so this kit's vendor-approved output can't
-    # be silently rewritten by a lib change; bump the pin deliberately. The repo is public,
-    # so the install is a plain pip install (the Docker build installs `git` to fetch it —
-    # no build secret). langfuse below is still declared directly: it is this kit's own SDK
-    # surface (run_experiment, prompts, datasets), not only the lib's.
-    "langfuse-synth-core @ git+https://github.com/borismichel/langfuse-synth-core@v0.1.0",
+    # The shared core. Ring 1 (#31/#32) extracted the byte-identical core (RNG/ID, pricing,
+    # distributions, the Langfuse client, event emission, live-UI primitives). Ring 2 (#33)
+    # moved the data-model MIDDLE FIELD too — the config loader, ingest, time generation, the
+    # verify read-client, the probe, and HTTP resilience — so this kit now consumes those
+    # from the lib (see the lib's docs/RING2.md ledger).
+    # Pinned to the Ring-2 merge SHA on main (mirroring how #31 pinned the extraction SHA
+    # before a tag existed); re-pinned to the v1.0.0 release tag once BOTH kits are green on
+    # Ring 2 (#34), so this kit's vendor-approved output can't be silently rewritten by a lib
+    # change — bump the pin deliberately. Public repo → plain pip install (the Docker build
+    # installs `git` to fetch it, no build secret). langfuse below is still declared directly:
+    # it is this kit's own SDK surface (run_experiment, prompts, datasets), not only the lib's.
+    "langfuse-synth-core @ git+https://github.com/borismichel/langfuse-synth-core@2102630e1d66ec4f0d23d3916a00f36be0430210",
     "langfuse>=4.0,<5",      # v4 Python SDK (run_experiment, prompts, datasets, api client)
     "anthropic>=0.40.0",     # live model calls at demo time — Anthropic provider (default)
     "openai>=1.40.0",        # live model calls at demo time — OpenAI provider (LAN-378)
@@ -34,10 +37,10 @@ playground = [           # `synth playground` — the live decision configurator
 dev = [                  # dev/authoring-time only — NEVER in the runtime image (Spec A §3)
     "pytest>=8,<9",
     # Determinism golden gate + `synth-authoring freeze`. Adds the [authoring] extra on top
-    # of the runtime core pin above — same ref (v0.1.0), so the gate that reproduces the
-    # oracle and the core the kit runs against are the one, identical build. Bump both pins
-    # together (Ring 1b, #32 re-pinned to the v0.1.0 tag), never let them drift apart.
-    "langfuse-synth-core[authoring] @ git+https://github.com/borismichel/langfuse-synth-core@v0.1.0",
+    # of the runtime core pin above — SAME ref, so the gate that reproduces the oracle and the
+    # core the kit runs against are the one, identical build. Bump both pins together (re-pin
+    # to the v1.0.0 tag at Ring 2 completion, #34), never let them drift apart.
+    "langfuse-synth-core[authoring] @ git+https://github.com/borismichel/langfuse-synth-core@2102630e1d66ec4f0d23d3916a00f36be0430210",
 ]
 
 [project.scripts]

@@ -85,7 +85,7 @@ def _dataset_run_url(cfg: Config, lf) -> str | None:
     """`{base}/project/{id}/datasets/{id}` — the runs/comparison page. None if it can't
     be resolved (never fatal: the run already landed; this is just a convenience link)."""
     try:
-        from ..seed.ingest import assert_demo_project
+        from langfuse_synth_core.seed.ingest import assert_demo_project
 
         base = cfg.target.base_url
         project_id, _ = assert_demo_project(base, cfg.target.project_hint)

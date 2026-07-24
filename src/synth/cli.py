@@ -9,7 +9,8 @@
 
 The pipeline commands (probe/plan/seed/verify) accept repeatable ``--set dotted.key=value``
 overrides applied to the config before validation, so the portal can scale the single shipped
-config per environment (e.g. ``--set generation.total_traces=800``).
+config per environment (e.g. ``--set generation.target_traces=800`` — the canonical operator
+volume knob, mapped to EV's internal ``total_traces`` by the direct-count derivation hook).
 """
 from __future__ import annotations
 
@@ -30,7 +31,7 @@ DEFAULT_CONFIG = "config/demo.yaml"
 # Repeatable `--set dotted.key=value` override, shared by the pipeline commands.
 SET_OPTION = typer.Option(
     None, "--set", metavar="KEY=VALUE",
-    help="Override a config value before validation, e.g. --set generation.total_traces=800. "
+    help="Override a config value before validation, e.g. --set generation.target_traces=800. "
          "Repeatable; the value is coerced like yaml (800→int, true→bool, 1.5→float).",
 )
 

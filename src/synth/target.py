@@ -9,7 +9,7 @@ the seeder/verifier behave, so keep the decision HERE rather than scattering
 reads/writes (the paginated ``/v2/scores`` reads ``synth verify`` fires, the per-trace
 GETs, the prompt-label PATCH). Self-hosted has no such limit. So on Cloud we (a) space
 those calls out a little and (b) lean on the Retry-After-aware backoff in ``http`` — see
-``synth.http.request_retry``. This is purely a function of the host, so it lives on
+``langfuse_synth_core.http.request_retry``. This is purely a function of the host, so it lives on
 ``TargetProfile``. The batch ingestion endpoint is unaffected (it already retries and is
 not one-request-per-event), so the seed itself needs no throttle.
 """

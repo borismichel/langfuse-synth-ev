@@ -15,9 +15,9 @@ from typing import Callable
 
 from ..config import Config
 from ..state import REPO_ROOT, RunState
-from ..timegen import iso_date, now_utc
+from langfuse_synth_core.timegen import iso_date, now_utc
 from .generator import Plan, build_plan
-from .ingest import Ingestor, assert_demo_project, ensure_score_config
+from langfuse_synth_core.seed.ingest import Ingestor, assert_demo_project, ensure_score_config
 from .scores import (
     SCORE_CONFIGS,
     csat_events,

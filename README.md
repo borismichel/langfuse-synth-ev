@@ -163,8 +163,9 @@ upload can't lose the (deterministic, expensive) generated data — resume with
 (`TargetProfile.detect`), kept out of every call site. The batch ingestion endpoint already
 retries, but the hand-rolled REST helpers (the project guardrail, prompt-label PATCH,
 score-config creation, and `synth verify`'s paginated query-backs) did single shots that
-Langfuse Cloud rate-limits with 429s. [`http.py`](src/synth/http.py)'s `request_retry` is the
-one **Retry-After-aware** backoff they all share, and on Cloud the one-at-a-time reads/writes
+Langfuse Cloud rate-limits with 429s. The shared core's `langfuse_synth_core.http.request_retry`
+is the one **Retry-After-aware** backoff they all share (moved to the lib in Ring 2, #33 — it
+speaks the Langfuse REST machine, not the scenario), and on Cloud the one-at-a-time reads/writes
 get a small `post_throttle_s` spacing so they don't trip the limiter to begin with
 (self-hosted: zero overhead). `seed`, `experiment` and `verify` each log which target they hit.
 

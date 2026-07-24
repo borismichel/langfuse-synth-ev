@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, Mapping
 
-import yaml
 from pydantic import BaseModel, Field
+
+from langfuse_synth_core import config as core_config
+from langfuse_synth_core.derivation import DerivationHook
 
 
 class Target(BaseModel):
@@ -37,6 +39,12 @@ class Environments(BaseModel):
 class Generation(BaseModel):
     seed: int = 42
     archetype: str = "credit_approval_agent"
+    # `target_traces` is the CANONICAL, cross-kit operator volume knob (the portal passes
+    # `--set generation.target_traces=N`). It is resolved to the internal `total_traces`
+    # below via EV's direct-count derivation hook. None (the local/default case) means "no
+    # operator knob set" → fall back to the `total_traces` internal default. `total_traces`
+    # is now INTERNAL only — no longer an operator knob in the manifest (Ring 2, #33).
+    target_traces: int | None = None
     total_traces: int = 4000
     window_days: int = 30
     population: Population = Field(default_factory=Population)
@@ -120,38 +128,54 @@ class Config(BaseModel):
         raise KeyError(f"no model configured for role={role!r}")
 
 
-def _set_dotted(raw: dict, dotted_key: str, value) -> None:
-    """Set ``value`` at the dotted path ``a.b.c`` in the raw config dict, creating
-    intermediate mappings as needed (overwriting a non-mapping intermediate)."""
-    keys = dotted_key.split(".")
-    node = raw
-    for k in keys[:-1]:
-        child = node.get(k)
-        if not isinstance(child, dict):
-            child = {}
-            node[k] = child
-        node = child
-    node[keys[-1]] = value
+# The load-and-override *mechanism* moved into the lib (Ring 2, #33) as
+# "library-with-parameters": reading YAML and applying `--set dotted.key=value` is
+# scenario-agnostic plumbing. EV keeps its own concrete pydantic models above and passes
+# `Config.model_validate` as the factory. `apply_overrides` is re-exported so the kit's own
+# override tests and any callers keep their import surface.
+apply_overrides = core_config.apply_overrides
 
 
-def apply_overrides(raw: dict, overrides: list[str] | None) -> dict:
-    """Apply ``--set dotted.key=value`` overrides to the RAW yaml dict before validation.
+# --- the canonical target_traces knob → EV internals (derivation hook, #29/#33) ---------
+#
+# EV's derivation is a **direct count (identity)**: the operator's `target_traces` IS the
+# absolute number of backdated traces to generate, so it maps straight onto EV's internal
+# `total_traces` knob. This is the kit-side, deterministic `DerivationHook` the contract
+# describes — it runs at seed time (here, at config-load). The lib ships an
+# `identity_derivation`, but its key is the generic `"target_traces"`; EV names its own
+# internal knob `"total_traces"`, so the mapping lives here in the kit.
+def direct_count_derivation(target_traces: int, declared: Mapping[str, Any]) -> Mapping[str, Any]:
+    """EV direct count: ``target_traces -> {"total_traces": target_traces}`` (identity value).
 
-    Each value is coerced with ``yaml.safe_load`` so ``800``→int, ``true``→bool,
-    ``1.5``→float, quoted/other→str — matching how the same value would parse in the
-    yaml file. Mutates and returns ``raw``. Used to let the portal scale a single
-    shipped config via the manifest ``config_schema`` (e.g. ``generation.total_traces``).
-    """
-    for item in overrides or []:
-        key, sep, rawval = item.partition("=")
-        key = key.strip()
-        if not sep or not key:
-            raise ValueError(f"--set expects dotted.key=value, got {item!r}")
-        _set_dotted(raw, key, yaml.safe_load(rawval))
-    return raw
+    ``declared`` (the other declared generation params) completes the ``DerivationHook``
+    signature and is intentionally ignored — EV's volume is a pure count, derived from
+    nothing but the knob itself."""
+    return {"total_traces": int(target_traces)}
+
+
+# Assert the kit hook satisfies the lib's DerivationHook contract at import time.
+_EV_DERIVATION: DerivationHook = direct_count_derivation
+
+
+def resolve_target_traces(cfg: Config) -> Config:
+    """Resolve the canonical ``generation.target_traces`` operator knob to EV's internal
+    ``generation.total_traces`` via the direct-count hook. No-op when the knob is unset
+    (local/default runs keep the shipped ``total_traces``). Mutates and returns ``cfg``."""
+    tt = cfg.generation.target_traces
+    if tt is not None:
+        declared = cfg.generation.model_dump(exclude={"target_traces", "total_traces"})
+        cfg.generation.total_traces = int(direct_count_derivation(tt, declared)["total_traces"])
+    return cfg
 
 
 def load_config(path: str | Path, overrides: list[str] | None = None) -> Config:
-    raw = yaml.safe_load(Path(path).read_text())
-    apply_overrides(raw, overrides)
-    return Config.model_validate(raw)
+    """Load ``config/demo.yaml`` into EV's :class:`Config`, applying ``--set`` overrides.
+
+    Delegates the YAML-read + override plumbing to the shared lib loader; the pydantic
+    model is EV's own. The canonical ``generation.target_traces`` operator knob is resolved
+    to EV's internal ``generation.total_traces`` here via the kit-side direct-count
+    derivation hook (see :func:`resolve_target_traces`), so every command (plan/seed/verify)
+    sees the derived volume."""
+    cfg: Config = core_config.load_config(path, Config.model_validate, overrides)
+    resolve_target_traces(cfg)
+    return cfg
