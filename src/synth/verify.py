@@ -15,14 +15,13 @@ method-name churn. Each check is independent and reported pass/fail.
 """
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass, field
 from datetime import datetime
 
-import requests
+from langfuse_synth_core.http import request_retry
+from langfuse_synth_core.lfread import auth_from_env, get_all_scores, get_json, parse_ts
 
 from .config import Config
-from .http import request_retry
 from .state import RunState
 from .target import TargetProfile
 
@@ -46,49 +45,14 @@ class VerifyReport:
         return all(c.ok for c in self.checks)
 
 
-def _auth():
-    return (os.environ.get("LANGFUSE_PUBLIC_KEY", ""), os.environ.get("LANGFUSE_SECRET_KEY", ""))
-
-
-def _get(base: str, path: str, params: dict | None = None, *, throttle: float = 0.0) -> dict:
-    # Retry-After-aware: Cloud 429s the rapid paginated reads below (see synth.http).
-    resp = request_retry("GET", f"{base.rstrip('/')}{path}", params=params or {},
-                         auth=_auth(), timeout=30, throttle_s=throttle)
-    resp.raise_for_status()
-    return resp.json()
-
-
-def _scores_path(base: str, *, throttle: float = 0.0) -> str:
-    """``/api/public/v2/scores`` on current servers; a Langfuse v2 SERVER (self-
-    hosted 2.9x — naming is unrelated to the API's own /v2/ prefix, which is
-    v3-era) only serves the legacy ``/api/public/scores``. Probe once per run."""
-    try:
-        _get(base, "/api/public/v2/scores", {"limit": 1, "page": 1}, throttle=throttle)
-        return "/api/public/v2/scores"
-    except requests.HTTPError as e:
-        if e.response is not None and e.response.status_code == 404:
-            return "/api/public/scores"
-        raise
-
-
-def _get_all_scores(base: str, name: str, limit_pages: int = 30, *, throttle: float = 0.0) -> list[dict]:
-    out: list[dict] = []
-    page = 1
-    path = _scores_path(base, throttle=throttle)
-    while page <= limit_pages:
-        data = _get(base, path, {"name": name, "limit": 100, "page": page},
-                    throttle=throttle)
-        rows = data.get("data", [])
-        out.extend(rows)
-        meta = data.get("meta", {})
-        if not rows or page >= meta.get("totalPages", page):
-            break
-        page += 1
-    return out
-
-
-def _parse_ts(s: str) -> datetime:
-    return datetime.fromisoformat(s.replace("Z", "+00:00"))
+# The read-client (auth + paginated GET of scores/traces) moved to the shared core
+# (langfuse_synth_core.lfread) in the Ring 2 verify split (#33). What stays HERE is the
+# scenario talking: which assertions to make about what landed. The read helpers are
+# imported under their original local names so the assertion body below is unchanged.
+_auth = auth_from_env
+_get = get_json
+_get_all_scores = get_all_scores
+_parse_ts = parse_ts
 
 
 def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:

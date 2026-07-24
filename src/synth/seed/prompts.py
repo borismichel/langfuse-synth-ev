@@ -15,7 +15,7 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
-from ..http import request_retry
+from langfuse_synth_core.http import request_retry
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
@@ -84,7 +84,7 @@ def register_prompts(lf, cfg, effective_date: datetime, *, register_v1: bool = T
     v2 is registered as the fix but **not** promoted. The demo's experiment runs whatever
     is labelled ``production``, so the presenter flips ``production`` v1 → v2 to go red → green.
     A fresh seed always starts with production == v1 (the reset state)."""
-    from ..timegen import iso_date
+    from langfuse_synth_core.timegen import iso_date
 
     name = cfg.golden_path.prompt_name
     versions: dict[str, int] = {}

@@ -42,15 +42,18 @@ def seed(target_traces: int, params: Mapping[str, Any]) -> bytes:
     """Materialize the full pre-ingestion Spool for a fixed ``target_traces``; return bytes.
 
     EV derivation hook (Spec A §4 — "EV: direct count"): ``target_traces`` maps **identity**
-    to the kit's internal absolute-count knob ``generation.total_traces``. This is the real,
-    vendor-approved EV mapping, exact and stable through the Ring 1/2 migration.
+    to the kit's internal absolute-count knob ``generation.total_traces``. Ring 2 (#33) wired
+    that mapping through the REAL operator path — the canonical ``generation.target_traces``
+    knob is set exactly as the portal sets it (``--set``), and EV's kit-side direct-count
+    derivation hook (``config.resolve_target_traces``) derives ``total_traces`` at load. So
+    this gate now proves the acceptance criterion directly: turning ``target_traces`` through
+    the hook yields a Spool byte-identical to pre-migration EV at the same effective volume.
 
-    ``params`` completes the ``seed(target_traces, params)`` gate contract; the Step-0 oracle
-    pins the config defaults (seed 42), so nothing is read from it here — declared-param
-    knobs land when Ring 1/2 wires the real derivation.
+    ``params`` completes the ``seed(target_traces, params)`` gate contract; EV's direct count
+    derives from the knob alone, so the Step-0 oracle (config defaults, seed 42) reads nothing
+    from it.
     """
-    cfg = load_config(str(CONFIG))
-    cfg.generation.total_traces = int(target_traces)
+    cfg = load_config(str(CONFIG), overrides=[f"generation.target_traces={int(target_traces)}"])
 
     with tempfile.TemporaryDirectory(prefix="ev-golden-") as tmp:
         spool_path = Path(tmp) / "events.ndjson"
