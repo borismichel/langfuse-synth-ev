@@ -15,8 +15,8 @@ from typing import Callable
 from ..agent import GrantRule, decide, parse_decision
 from ..config import Config
 from ..models import Application
-from ..rng import Rng
-from ..seed.events import score_event
+from langfuse_synth_core.rng import Rng
+from langfuse_synth_core.seed.events import score_event
 from ..seed.ingest import Ingestor, assert_demo_project
 from ..seed.traces import TraceSpec, build_trace_events
 from ..timegen import day_anchor, iso_date
@@ -48,7 +48,7 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
 
     Returns the decision, the deterministic v2 ``expected`` (for contrast), the prompt
     version that ran, and a deep link to the freshly emitted trace."""
-    from ..lfclient import get_langfuse
+    from langfuse_synth_core.lfclient import get_langfuse
     from ..llm import get_llm
 
     base_url = cfg.target.base_url

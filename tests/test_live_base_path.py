@@ -8,7 +8,7 @@ Routes themselves never move — this only affects link *generation*.
 import pytest
 
 from synth.live import app as evapp
-from synth.live.paths import base_path, local
+from langfuse_synth_core.live.paths import base_path, local
 
 
 def test_base_path_unset_is_empty(monkeypatch):

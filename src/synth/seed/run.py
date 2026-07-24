@@ -67,7 +67,7 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     # -- 2. prompts (v1 first so its version == 1) ------------------------
     versions = {"v1": 1, "v2": 2}
     if cfg.golden_path.enabled and not dry_run:
-        from ..lfclient import get_langfuse
+        from langfuse_synth_core.lfclient import get_langfuse
         from .prompts import register_prompts, set_version_labels
 
         lf = get_langfuse(cfg)

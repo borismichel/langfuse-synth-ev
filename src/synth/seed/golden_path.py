@@ -26,7 +26,7 @@ from ..content import (
     eligible_borderline_application,
 )
 from ..models import Application, Decision
-from ..rng import Rng
+from langfuse_synth_core.rng import Rng
 from ..timegen import day_anchor, iso_date, sample_in_range
 from .traces import TraceSpec
 
