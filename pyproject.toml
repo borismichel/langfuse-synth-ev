@@ -16,7 +16,7 @@ dependencies = [
     # change — bump the pin deliberately. Public repo → plain pip install (the Docker build
     # installs `git` to fetch it, no build secret). langfuse below is still declared directly:
     # it is this kit's own SDK surface (run_experiment, prompts, datasets), not only the lib's.
-    "langfuse-synth-core @ git+https://github.com/borismichel/langfuse-synth-core@2102630e1d66ec4f0d23d3916a00f36be0430210",
+    "langfuse-synth-core @ git+https://github.com/borismichel/langfuse-synth-core@v1.0.0",
     "langfuse>=4.0,<5",      # v4 Python SDK (run_experiment, prompts, datasets, api client)
     "anthropic>=0.40.0",     # live model calls at demo time — Anthropic provider (default)
     "openai>=1.40.0",        # live model calls at demo time — OpenAI provider (LAN-378)
@@ -40,7 +40,7 @@ dev = [                  # dev/authoring-time only — NEVER in the runtime imag
     # of the runtime core pin above — SAME ref, so the gate that reproduces the oracle and the
     # core the kit runs against are the one, identical build. Bump both pins together (re-pin
     # to the v1.0.0 tag at Ring 2 completion, #34), never let them drift apart.
-    "langfuse-synth-core[authoring] @ git+https://github.com/borismichel/langfuse-synth-core@2102630e1d66ec4f0d23d3916a00f36be0430210",
+    "langfuse-synth-core[authoring] @ git+https://github.com/borismichel/langfuse-synth-core@v1.0.0",
 ]
 
 [project.scripts]
