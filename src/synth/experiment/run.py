@@ -39,7 +39,7 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     """Run the prompt carrying ``label`` against the hosted dataset. The run is named by
     label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
     v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
-    from ..lfclient import get_langfuse
+    from langfuse_synth_core.lfclient import get_langfuse
     from ..llm import get_llm
     from ..target import TargetProfile
 
@@ -102,7 +102,7 @@ def _dataset_run_url(cfg: Config, lf) -> str | None:
 def pass_rate_offline(cfg: Config, state: RunState) -> float:
     """Deterministic PASS-rate over the hosted dataset using v2 arithmetic + the judge rule.
     A code-only gate that needs no model — for a pipeline `synth experiment --gate`."""
-    from ..lfclient import get_langfuse
+    from langfuse_synth_core.lfclient import get_langfuse
 
     lf = get_langfuse(cfg)
     dataset = lf.get_dataset(cfg.golden_path.dataset.name)

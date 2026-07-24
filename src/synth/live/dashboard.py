@@ -22,8 +22,8 @@ from ..content import customer_appeal
 from ..seed.generator import Plan, build_plan
 from ..seed.scores import csat_events, disagreement_score, format_compliance_score, quality_judge_scores
 from ..state import RunState
-from .paths import local
-from .theme import page
+from langfuse_synth_core.live.paths import local
+from langfuse_synth_core.live.theme import page
 
 DAYS_SHOWN = 14
 TITLE = "Langfuse Bank — Lending Analytics"

@@ -15,7 +15,7 @@ from datetime import datetime
 
 from .agent import GrantRule
 from .models import Application, Decision, Vehicle
-from .rng import Rng
+from langfuse_synth_core.rng import Rng
 
 # Plausible model names per drivetrain, for set dressing in trace I/O.
 _BEV_MODELS = ["Aurora e-300", "Volt EX", "Lumen EV", "Nordic e-Sedan", "Pulse 40", "Helix BEV"]

@@ -21,8 +21,8 @@ from typing import Callable
 import requests
 
 from .config import Config
-from .rng import Rng
-from .seed.events import span_event, trace_event
+from langfuse_synth_core.rng import Rng
+from langfuse_synth_core.seed.events import span_event, trace_event
 from .seed.ingest import Ingestor, assert_demo_project
 from .timegen import now_utc
 

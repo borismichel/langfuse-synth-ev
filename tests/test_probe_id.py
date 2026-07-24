@@ -8,7 +8,7 @@ silently regress back to a fixed id.
 from __future__ import annotations
 
 from synth.probe import _probe_ids
-from synth.rng import Rng
+from langfuse_synth_core.rng import Rng
 
 # The pre-fix collision id (seed 42, deterministic) documented on LAN-324.
 OLD_COLLISION_TID = "ebc16bd0f806178ea49c5e8d0d546015"

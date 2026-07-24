@@ -75,7 +75,7 @@ def test_trace_events_well_formed():
     assert str(spec.application.vehicle.list_price_eur) in dec_input[1]["content"]
     # every generation's input is chat-shaped (the prompt is part of the input), its
     # claimed usage covers at least the visible text, and TTFT falls inside the call
-    from synth.distributions import text_tokens
+    from langfuse_synth_core.distributions import text_tokens
 
     for e in events:
         if e["type"] == "generation-create":

@@ -16,10 +16,10 @@ import json
 
 from ..config import Config
 from ..models import Application, Vehicle
-from .paths import local
+from langfuse_synth_core.live.paths import local
 from .prefabs import PREFABS
 from .submit import dispute, submit
-from .theme import page
+from langfuse_synth_core.live.theme import page
 
 TITLE = "Langfuse Bank — EV Auto Loans"
 _VNAME = {"BEV": "Battery-electric", "PHEV": "Plug-in hybrid", "ICE": "Petrol / diesel"}

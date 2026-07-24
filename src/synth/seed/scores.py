@@ -22,8 +22,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from ..rng import Rng
-from .events import score_event
+from langfuse_synth_core.rng import Rng
+from langfuse_synth_core.seed.events import score_event
 
 # Score configs to create up front (POST /api/public/score-configs). The decision-
 # correctness judge is deliberately ABSENT here — it is created live in the UI (§7).

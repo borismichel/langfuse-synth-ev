@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from ..agent import decide
 from ..config import Config
 from ..content import ambient_application, user_population
-from ..rng import Rng
+from langfuse_synth_core.rng import Rng
 from ..timegen import day_anchor, iso_date, sample_timestamps, window_start
 from . import golden_path as gp_mod
 from .golden_path import GoldenPath
