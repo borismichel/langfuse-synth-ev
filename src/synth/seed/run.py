@@ -193,6 +193,20 @@ def import_spool_file(cfg: Config, spool_path: str | Path | None = None,
     return ing.sent
 
 
+def count_spool_file(spool_path: str | Path | None = None) -> dict[str, int]:
+    """Measure the billable set in a materialized Spool — the read-side twin of
+    :func:`import_spool_file` (#35).
+
+    Offline and side-effect-free: no network, no config, no project guardrail. It just
+    tallies the traces/observations/scores Langfuse meters off the same NDJSON the seed
+    step wrote (experiment runs and dataset items excluded). Defaults to the same spool
+    path ``import-spool`` uses, so the pipeline can measure exactly what it will import."""
+    from langfuse_synth_core.seed.count import count_spool
+
+    path = Path(spool_path) if spool_path else DEFAULT_SPOOL
+    return count_spool(path)
+
+
 def _write_fixtures(plan: Plan) -> None:
     """Commit the golden-path v1 decisions as fixtures: literal same-function provenance,
     zero per-seed model cost (spec §7). Bounded to the disputed set."""

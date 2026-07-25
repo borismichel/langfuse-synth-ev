@@ -95,6 +95,17 @@ def import_spool(spool: str = typer.Argument(None, help="Spool file to import (d
     import_spool_file(cfg, spool, log=lambda m: typer.echo(m))
 
 
+@app.command(name="count-spool")
+def count_spool(spool: str = typer.Argument(None, help="Spool file to count (default .synth_spool/events.ndjson).")):
+    """Print the measured billable set — {traces, observations, scores} — of a materialized
+    Spool as JSON. The read-side counterpart to `import-spool`: an offline count of exactly
+    what Langfuse meters (experiment runs and dataset items excluded), read straight off the
+    NDJSON spool the seed step wrote. This is the measured count the deploy pipeline reads."""
+    from .seed.run import count_spool_file
+
+    typer.echo(json.dumps(count_spool_file(spool)))
+
+
 @app.command()
 def verify(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
            set_: list[str] = SET_OPTION):
