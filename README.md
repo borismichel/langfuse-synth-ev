@@ -236,3 +236,12 @@ model call) and exits non-zero below the threshold — drop it in a pipeline as 
 ```bash
 pip install pytest && pytest -q     # determinism, the §17 arithmetic table, golden-path invariants
 ```
+
+## Image releases
+
+Pushing a `vX.Y.Z` tag triggers `.github/workflows/publish.yml`, which builds this
+kit's image, pushes it to `ghcr.io/borismichel/langfuse-synth-ev`, and cosign-signs it
+keylessly (Spec E · E7, #102). See
+[`langfuse-synth-core`'s `docs/CI_SIGNING.md`](https://github.com/borismichel/langfuse-synth-core/blob/main/docs/CI_SIGNING.md)
+for the full contract — image naming, cadence, runner, and the signing-identity policy
+the portal's verification gate checks against.
