@@ -39,10 +39,11 @@ target:
   cloud_notes: "Free tier caps events. Run plan first and keep the trace estimate ≤80% of the tier cap; scale down with generation.target_traces."
 
 llm:
-  # Demo-time model calls (live playground submission + experiment task) route through
-  # the kit's provider layer (src/synth/llm.py). First provider = deploy-time default.
-  # The portal injects the selected provider's key via the LLM_API_KEY sentinel below,
-  # plus LLM_PROVIDER and (when declared here) LLM_MODEL.
+  # Demo-time model calls (live playground submission + experiment task) route through the
+  # Companion Adapter's shared provider layer (langfuse_synth_core.companion.llm, since the
+  # Spec G · G4 shell-swap). First provider = deploy-time default. The portal injects the
+  # selected provider's key via the LLM_API_KEY sentinel below, plus LLM_PROVIDER and (when
+  # declared here) LLM_MODEL — the contract the adapter reads is unchanged.
   providers: [anthropic, openai]
   models:
     # Anthropic intentionally omitted: with no LLM_MODEL injected, the kit keeps its

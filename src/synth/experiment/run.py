@@ -39,8 +39,8 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     """Run the prompt carrying ``label`` against the hosted dataset. The run is named by
     label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
     v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
+    from langfuse_synth_core.companion.llm import get_llm
     from langfuse_synth_core.lfclient import get_langfuse
-    from ..llm import get_llm
     from ..target import TargetProfile
 
     profile = TargetProfile.detect(cfg.target.base_url)
