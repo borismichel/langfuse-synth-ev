@@ -10,7 +10,7 @@ from __future__ import annotations
 import time
 import uuid
 from datetime import datetime, timezone
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 from ..agent import GrantRule, decide, parse_decision
 from ..config import Config
@@ -21,7 +21,26 @@ from langfuse_synth_core.seed.ingest import Ingestor, assert_demo_project
 from ..seed.traces import TraceSpec, build_trace_events
 from langfuse_synth_core.timegen import day_anchor, iso_date
 
+if TYPE_CHECKING:
+    from langfuse_synth_core.companion import CompanionAdapter
+
 PRODUCTION_LABEL = "production"
+
+
+def _clients(cfg: Config, adapter: "CompanionAdapter | None"):
+    """Resolve the ``(langfuse, llm, ingestor)`` triple the live submission needs.
+
+    With a Companion Adapter (the live-surface path, Spec G · G4, #142) all three come from
+    it — the adapter owns secret intake + provider resolution and hands back ready clients.
+    Without one (the headless ``synth submit`` path) they are built directly off the core
+    resolution module + the env, so that path is byte-for-byte unchanged."""
+    if adapter is not None:
+        return adapter.langfuse(), adapter.llm(), adapter.ingestor()
+    from langfuse_synth_core.companion.llm import get_llm
+    from langfuse_synth_core.lfclient import get_langfuse
+
+    return (get_langfuse(cfg), get_llm(cfg.golden_path.task_model),
+            Ingestor.from_env(cfg.target.base_url))
 
 
 def _live_decision(cfg: Config, lf, llm, app: Application) -> tuple:
@@ -43,22 +62,24 @@ def _live_decision(cfg: Config, lf, llm, app: Application) -> tuple:
             getattr(prompt, "version", None), latency_ms, chat)
 
 
-def submit(cfg: Config, application: Application, *, log: Callable[[str], None] = print) -> dict:
+def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter | None" = None,
+           log: Callable[[str], None] = print) -> dict:
     """Run a live application through the production prompt and emit its trace.
 
     Returns the decision, the deterministic v2 ``expected`` (for contrast), the prompt
-    version that ran, and a deep link to the freshly emitted trace."""
-    from langfuse_synth_core.lfclient import get_langfuse
-    from ..llm import get_llm
+    version that ran, and a deep link to the freshly emitted trace.
 
+    ``adapter`` is the Companion Adapter (Spec G · G4, #142): when the live surface hands one
+    in, the ready Langfuse SDK, LLM, and ingestion clients come from it (the adapter owns
+    secret intake + resolution). When absent — the headless ``synth submit`` path — the same
+    clients are built directly off the core resolution module, so that path is unchanged."""
     base_url = cfg.target.base_url
     project_id, project_name = assert_demo_project(base_url, cfg.target.project_hint)
 
     now = datetime.now(timezone.utc)
     application = application.model_copy(update={"application_date": iso_date(now)})
 
-    lf = get_langfuse(cfg)
-    llm = get_llm(cfg.golden_path.task_model)
+    lf, llm, ing = _clients(cfg, adapter)
     decision, in_tok, out_tok, version, latency_ms, messages = _live_decision(cfg, lf, llm, application)
     log(f"· production prompt v{version} decided: {decision.decision} "
         f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,}; {latency_ms}ms)")
@@ -73,7 +94,6 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
     events = build_trace_events(Rng(cfg.generation.seed), cfg, spec, version,
                                 decision_usage=(in_tok, out_tok), decision_latency_ms=latency_ms,
                                 decision_input=messages)
-    ing = Ingestor.from_env(base_url)
     ing.extend(events)
     ing.flush()
 
@@ -94,11 +114,14 @@ def submit(cfg: Config, application: Application, *, log: Callable[[str], None] 
     }
 
 
-def dispute(cfg: Config, trace_id: str, comment: str, *, log: Callable[[str], None] = print) -> dict:
+def dispute(cfg: Config, trace_id: str, comment: str, *, adapter: "CompanionAdapter | None" = None,
+            log: Callable[[str], None] = print) -> dict:
     """Attach a ``user_disagreement = true`` score (with the submitter's free-text comment)
     to a previously-emitted trace — the same lagging signal the dashboard's appeal rate
     tracks. Idempotent per trace (the score id is derived from the trace id), so re-disputing
-    updates the comment rather than duplicating."""
+    updates the comment rather than duplicating. ``adapter`` supplies the ready ingestion
+    client when the live surface hands one in (Spec G · G4, #142); otherwise it is built off
+    the env, unchanged."""
     base_url = cfg.target.base_url
     project_id, _ = assert_demo_project(base_url, cfg.target.project_hint)
     note = (comment or "").strip() or "customer disputed the decision"
@@ -106,7 +129,7 @@ def dispute(cfg: Config, trace_id: str, comment: str, *, log: Callable[[str], No
     ev = score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
                      value=1, data_type="BOOLEAN", timestamp=datetime.now(timezone.utc),
                      trace_id=trace_id, environment="production", comment=note)
-    ing = Ingestor.from_env(base_url)
+    ing = adapter.ingestor() if adapter is not None else Ingestor.from_env(base_url)
     ing.add(ev)
     ing.flush()
     log(f"· dispute logged on {trace_id[:12]}…: {note[:60]}")

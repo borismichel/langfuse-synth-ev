@@ -72,7 +72,13 @@ def _error_card(headline: str, exc: Exception) -> str:
     <a class="back" href="{local('/')}">← try again</a>"""
 
 
-def create_app(cfg: Config):
+def create_app(cfg: Config, adapter=None):
+    """Build the live playground FastAPI app.
+
+    ``adapter`` is the Companion Adapter (Spec G · G4, #142). When present, the submit/dispute
+    routes take their ready Langfuse + LLM + ingestion clients from it (the adapter owns secret
+    intake); when absent — e.g. the render-only golden/base-path tests — the clients are built
+    off the env, so pure rendering (index / analytics) is unaffected either way."""
     from fastapi import FastAPI, Form
     from fastapi.responses import HTMLResponse
 
@@ -98,7 +104,7 @@ def create_app(cfg: Config):
         try:
             application = Application(applicant_id="playground_applicant", approved_line_eur=line,
                                       vehicle=Vehicle(type=vehicle, list_price_eur=price), application_date="")
-            res = submit(cfg, application)
+            res = submit(cfg, application, adapter=adapter)
         except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
             return page(_error_card("We couldn't process your application", exc), title=TITLE)
         d = res["decision"]
@@ -129,7 +135,7 @@ def create_app(cfg: Config):
     @app.post("/dispute", response_class=HTMLResponse)
     def do_dispute(trace_id: str = Form(...), comment: str = Form("")) -> str:
         try:
-            res = dispute(cfg, trace_id, comment)
+            res = dispute(cfg, trace_id, comment, adapter=adapter)
         except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
             return page(_error_card("We couldn't log your appeal", exc), title=TITLE)
         body = f"""

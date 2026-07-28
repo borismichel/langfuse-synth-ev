@@ -170,7 +170,8 @@ def decide(
     """Return a structured Decision. ``prompt_label`` ('v1'|'v2') is the only lever.
 
     Default (seed path) is deterministic and model-free. Pass ``live=True`` with a
-    Langfuse client (``lf``) and an :class:`~synth.llm.LLMClient` (``llm``) to run the
+    Langfuse client (``lf``) and an :class:`~langfuse_synth_core.companion.llm.LLMClient`
+    (``llm``) to run the
     real agent path used by the demo-time experiment; the client owns the resolved
     provider and model.
     """

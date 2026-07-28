@@ -179,20 +179,39 @@ def submit(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
     typer.echo(f"  trace → {res['trace_url']}")
 
 
+# The live secrets the portal injects for this component (usecase.yaml
+# live_components[0].requires_secrets). The Companion Adapter reads them from the env and
+# hands the Surface ready clients only — it never sees a raw key (D4).
+LIVE_SECRETS = ["LANGFUSE_PUBLIC_KEY", "LANGFUSE_SECRET_KEY", "LLM_API_KEY"]
+
+
 @app.command()
 def playground(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
                host: str = typer.Option("127.0.0.1", "--host"),
                port: int = typer.Option(8000, "--port")):
-    """Serve the live decision configurator UI (needs the `playground` extra: pip install -e '.[playground]')."""
+    """Serve the live decision configurator UI (needs the `playground` extra: pip install -e '.[playground]').
+
+    Spec G · G4 (#142): the shell is the Companion Adapter. The fixed ``--config/--host/--port``
+    invocation is the adapter's ``Invocation`` shape (the portal templates only ``{config}``);
+    the adapter binds ``host:port``, mounts its readiness health route, and serves the Surface
+    with graceful shutdown, handing the routes ready Langfuse/LLM clients. Scenario code — the
+    routes, dashboard, decision logic, trace shapes — is untouched."""
     cfg = _load(config)
     try:
-        import uvicorn
+        from langfuse_synth_core.companion import CompanionAdapter
+
         from .live.app import create_app
     except ImportError:
         typer.echo("playground deps missing — run: pip install -e '.[playground]'", err=True)
         raise typer.Exit(code=1)
+    adapter = CompanionAdapter(cfg, requires_secrets=LIVE_SECRETS,
+                               llm_model_default=cfg.golden_path.task_model)
     typer.echo(f"→ playground on http://{host}:{port}  (production prompt is pulled live per submission)")
-    uvicorn.run(create_app(cfg), host=host, port=port, log_level="warning")
+    # The adapter runs the full inherit path: build the Surface with the adapter (for its ready
+    # clients), bind host:port (the portal passes --host 0.0.0.0), mount the readiness route
+    # (its default /healthz — the manifest keeps the in-scene index `/` as the portal's cheap
+    # liveness poll), then serve.
+    adapter.run(lambda ad: create_app(cfg, ad), host=host, port=port)
 
 
 @app.command()
