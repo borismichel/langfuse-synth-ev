@@ -26,8 +26,10 @@ from langfuse_synth_core.live.paths import local
 
 from ..experiment.outcome import ExperimentOutcome
 
-#: The two labels the buttons run, in page order, with their expected demo outcome.
-CHOICES = (("production", "red"), ("development", "green"))
+#: The prompt labels the buttons offer, in page order: ``production`` (v1, the stale grant
+#: window → red) then ``development`` (v2, the fix → green). Also the allow-list the route
+#: checks, so an arbitrary label can never reach the experiment and spend against the key.
+RUNNABLE_LABELS = ("production", "development")
 
 # Scoped to `.pnl` so nothing here can bleed into the in-scene surface. The shared theme
 # (`langfuse_synth_core.live.theme`) styles `button` as the full-width lime CTA; the panel
@@ -69,7 +71,7 @@ def trigger_panel(dataset_name: str, item_count: int | None) -> str:
         f'<form method="post" action="{local("/eval")}">'
         f'<input type="hidden" name="label" value="{label}">'
         f'<button type="submit">Run eval · {label}</button></form>'
-        for label, _expected in CHOICES)
+        for label in RUNNABLE_LABELS)
     return (f"<style>{_CSS}</style>"
             f'<details class="pnl"><summary>presenter tools</summary>'
             f'<div class="row">{buttons}</div>'
@@ -77,16 +79,37 @@ def trigger_panel(dataset_name: str, item_count: int | None) -> str:
             f"</details><script>{_JS}</script>")
 
 
-def result_card(label: str, version, outcome: ExperimentOutcome, *, dataset_name: str,
+def _detail(label: str, outcome: ExperimentOutcome) -> str:
+    """The card's one-line reading of the counts.
+
+    A mismatch and an error are opposite things in front of a room: a mismatch is the demo's
+    whole point (the prompt decided wrongly), while an item that came back with no usable
+    decision is a hiccup that proves nothing about the prompt. So the sentence never blames
+    the prompt for an error — otherwise one unparseable reply on the green run would flip the
+    climax to RED *and* misattribute it."""
+    name = html.escape(label)
+    if outcome.green:
+        return f"Every item matched its expected decision — the {name} prompt decides this dataset correctly."
+    if not outcome.total:
+        return "The run came back with no items at all — nothing was evaluated. Try again."
+    blamed = (f"{outcome.mismatched} of {outcome.total} items disagreed with the expected "
+              f"decision — the {name} prompt is not applying the grant.")
+    hiccup = (f"{outcome.errored} of {outcome.total} items came back with no usable decision, "
+              f"so this run says nothing about the {name} prompt. Try again.")
+    if not outcome.mismatched:
+        return hiccup
+    if not outcome.errored:
+        return blamed
+    return (f"{blamed} A further {outcome.errored} came back with no usable decision and were "
+            f"not judged either way.")
+
+
+def result_card(label: str, version: object, outcome: ExperimentOutcome, *, dataset_name: str,
                 run_name: str, run_url: str | None) -> str:
     """The full-size in-scene card for a finished run: verdict, counts, and the deep link
     into Langfuse's dataset-runs comparison view."""
     green = outcome.green
-    detail = (f"Every item matched its expected decision — the {html.escape(label)} prompt "
-              f"decides this dataset correctly."
-              if green else
-              f"{outcome.failed} of {outcome.total} items disagreed with the expected decision "
-              f"— the {html.escape(label)} prompt is not applying the grant.")
+    detail = _detail(label, outcome)
     errored = (f'<div class="kv"><span>No usable decision</span><span>{outcome.errored}</span></div>'
                if outcome.errored else "")
     link = (f'<div class="kv"><span>Compare in Langfuse</span>'

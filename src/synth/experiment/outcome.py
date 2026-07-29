@@ -23,12 +23,22 @@ from typing import Any, Iterable
 @dataclass(frozen=True)
 class ExperimentOutcome:
     """Counts over one experiment run. ``errored`` is a *subset* of ``failed``: items whose
-    task produced no usable decision, or which carry no expectation to check against."""
+    task produced no usable decision, or which carry no expectation to check against.
+
+    The two kinds of failure must stay distinguishable, because they mean opposite things in
+    front of a room: a *mismatch* is the demo's point (the prompt decided wrongly), while an
+    *error* is a hiccup that proves nothing about the prompt at all."""
 
     total: int
     passed: int
     failed: int
     errored: int
+
+    @property
+    def mismatched(self) -> int:
+        """Items that produced a real decision which disagreed with the expectation — the
+        failures that are actually about the prompt."""
+        return self.failed - self.errored
 
     @property
     def green(self) -> bool:

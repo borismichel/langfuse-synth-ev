@@ -120,6 +120,36 @@ def test_result_card_surfaces_unusable_decisions():
     assert "No usable decision" in card
 
 
+def test_result_card_never_blames_the_prompt_for_a_hiccup():
+    """A mismatch and an error mean opposite things in front of a room. If the only failures
+    are items that came back with no usable decision, the card must not say the prompt got
+    them wrong — one unparseable reply on the green run would otherwise both flip the climax
+    to RED *and* misattribute a transport hiccup to the fix."""
+    card = evalpanel.result_card(
+        "development", 2, ExperimentOutcome(total=24, passed=23, failed=1, errored=1),
+        dataset_name=DATASET, run_name="r", run_url=None)
+    assert "not applying the grant" not in card
+    assert "no usable decision" in card and "says nothing about the development prompt" in card
+
+
+def test_result_card_reports_mismatches_and_errors_separately():
+    """Both kinds present: the headline counts only the real disagreements, and the errors
+    are called out as unjudged rather than folded into the blame."""
+    card = evalpanel.result_card(
+        "production", 1, ExperimentOutcome(total=24, passed=18, failed=6, errored=2),
+        dataset_name=DATASET, run_name="r", run_url=None)
+    assert "4 of 24 items disagreed" in card       # 6 failed − 2 errored
+    assert "A further 2" in card and "not judged either way" in card
+
+
+def test_result_card_handles_an_empty_run():
+    card = evalpanel.result_card(
+        "production", 1, ExperimentOutcome(total=0, passed=0, failed=0, errored=0),
+        dataset_name=DATASET, run_name="r", run_url=None)
+    assert "RED" in card and "no items at all" in card
+    assert "not applying the grant" not in card
+
+
 # ---------------------------------------------------------------------------
 # The route
 # ---------------------------------------------------------------------------

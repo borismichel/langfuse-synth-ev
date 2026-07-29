@@ -23,7 +23,7 @@ from ..config import Config
 from ..models import Application, Vehicle
 from ..state import RunState
 from langfuse_synth_core.live.paths import local
-from .evalpanel import CHOICES, result_card, trigger_panel
+from .evalpanel import RUNNABLE_LABELS, result_card, trigger_panel
 from .prefabs import PREFABS
 from .submit import dispute, submit
 from langfuse_synth_core.live.theme import page
@@ -165,7 +165,7 @@ def create_app(cfg: Config, adapter=None):
         lands in the in-scene error card like every other route — never a raw 500."""
         from ..experiment.run import run_experiment
 
-        if label not in {name for name, _expected in CHOICES}:
+        if label not in RUNNABLE_LABELS:
             return page(_error_card("That evaluator run isn't available",
                                     ValueError(f"unknown prompt label {label!r}")), title=TITLE)
         try:

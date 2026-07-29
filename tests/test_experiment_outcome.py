@@ -73,7 +73,15 @@ def test_item_without_a_usable_decision_counts_as_errored_and_failed():
     it is counted as failed *and* surfaced separately so the card can say so."""
     out = summarize([_res("approve", "approve"), _res("approve", None), _res(None, "approve")])
     assert (out.total, out.passed, out.failed, out.errored) == (3, 1, 2, 2)
+    assert out.mismatched == 0  # nothing here is the prompt's fault
     assert out.verdict == "RED"
+
+
+def test_mismatches_are_countable_apart_from_errors():
+    """The card blames the prompt only for real disagreements, so the two kinds of failure
+    have to stay separable."""
+    out = summarize([_res("approve", "reject"), _res("approve", None), _res("reject", "reject")])
+    assert (out.failed, out.errored, out.mismatched) == (2, 1, 1)
 
 
 def test_empty_run_is_red_not_green():

@@ -26,6 +26,7 @@ from ..agent import GrantRule, decide
 from ..config import Config
 from ..models import Application
 from ..state import RunState
+from .. import clients
 from .outcome import summarize
 
 if TYPE_CHECKING:
@@ -45,22 +46,6 @@ def _make_task(lf, llm, cfg: Config, label: str) -> Callable:
     return task
 
 
-def _clients(cfg: Config, adapter: "CompanionAdapter | None"):
-    """Resolve the ``(langfuse, llm)`` pair the experiment needs.
-
-    With a Companion Adapter (the playground's eval triggers, #180) both come from it — the
-    adapter owns secret intake + provider resolution and hands back ready clients, so the
-    Surface never touches a raw key and the spend rides the deployment's capped shared key.
-    Without one (the headless ``synth experiment`` path) they are built directly off the core
-    resolution module + the env, so that path is byte-for-byte unchanged."""
-    if adapter is not None:
-        return adapter.langfuse(), adapter.llm()
-    from langfuse_synth_core.companion.llm import get_llm
-    from langfuse_synth_core.lfclient import get_langfuse
-
-    return get_langfuse(cfg), get_llm(cfg.golden_path.task_model)
-
-
 def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "ev-grant",
                    adapter: "CompanionAdapter | None" = None,
                    log: Callable[[str], None] = print):
@@ -75,7 +60,10 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
 
     profile = TargetProfile.detect(cfg.target.base_url)
     log(f"· experiment target: {profile.label} ({profile.base_url})")
-    lf, llm = _clients(cfg, adapter)
+    # Adapter on the playground path (its ready clients: the Surface never touches a raw key
+    # and the spend rides the deployment's capped shared key), env on the headless one.
+    lf = clients.langfuse_client(cfg, adapter)
+    llm = clients.llm_client(cfg, adapter)
     log(f"· model: {llm.provider}/{llm.model}")
     prompt_name = cfg.golden_path.prompt_name
 
