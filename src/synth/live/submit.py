@@ -15,9 +15,10 @@ from typing import TYPE_CHECKING, Callable
 from ..agent import GrantRule, decide, parse_decision
 from ..config import Config
 from ..models import Application
+from .. import clients
 from langfuse_synth_core.rng import Rng
 from langfuse_synth_core.seed.events import score_event
-from langfuse_synth_core.seed.ingest import Ingestor, assert_demo_project
+from langfuse_synth_core.seed.ingest import assert_demo_project
 from ..seed.traces import TraceSpec, build_trace_events
 from langfuse_synth_core.timegen import day_anchor, iso_date
 
@@ -28,19 +29,12 @@ PRODUCTION_LABEL = "production"
 
 
 def _clients(cfg: Config, adapter: "CompanionAdapter | None"):
-    """Resolve the ``(langfuse, llm, ingestor)`` triple the live submission needs.
-
-    With a Companion Adapter (the live-surface path, Spec G · G4, #142) all three come from
-    it — the adapter owns secret intake + provider resolution and hands back ready clients.
-    Without one (the headless ``synth submit`` path) they are built directly off the core
-    resolution module + the env, so that path is byte-for-byte unchanged."""
-    if adapter is not None:
-        return adapter.langfuse(), adapter.llm(), adapter.ingestor()
-    from langfuse_synth_core.companion.llm import get_llm
-    from langfuse_synth_core.lfclient import get_langfuse
-
-    return (get_langfuse(cfg), get_llm(cfg.golden_path.task_model),
-            Ingestor.from_env(cfg.target.base_url))
+    """The ``(langfuse, llm, ingestor)`` triple the live submission needs — taken from the
+    Companion Adapter on the live-surface path (Spec G · G4, #142), built off the env on the
+    headless ``synth submit`` path. The fork itself lives in :mod:`synth.clients`, so every
+    caller in the kit resolves its clients the same way."""
+    return (clients.langfuse_client(cfg, adapter), clients.llm_client(cfg, adapter),
+            clients.ingestor(cfg, adapter))
 
 
 def _live_decision(cfg: Config, lf, llm, app: Application) -> tuple:
@@ -129,7 +123,7 @@ def dispute(cfg: Config, trace_id: str, comment: str, *, adapter: "CompanionAdap
     ev = score_event(score_id=s.score_id("disagree", trace_id), name="user_disagreement",
                      value=1, data_type="BOOLEAN", timestamp=datetime.now(timezone.utc),
                      trace_id=trace_id, environment="production", comment=note)
-    ing = adapter.ingestor() if adapter is not None else Ingestor.from_env(base_url)
+    ing = clients.ingestor(cfg, adapter)
     ing.add(ev)
     ing.flush()
     log(f"· dispute logged on {trace_id[:12]}…: {note[:60]}")

@@ -8,6 +8,11 @@ in character. Styled with the shared Langfuse tokens (``theme.py``). Launch with
 A second, staff-facing route ``/analytics`` (``dashboard.py``) is the internal lending-analytics
 report — appeals climbing, CSAT breaking down, AI monitors green — that Lending Analytics sends
 AI Engineering to start the investigation. It's the demo's opening beat.
+
+A third, ``POST /eval``, is the presenter's own control rather than part of the fiction: it
+runs the demo's central red/green evaluator beat from the page, so a depot-delivered
+presenter reaches it without a shell (#180). Its trigger is tucked away at the bottom of the
+index (``evalpanel.py``); its result is full-size, because that result IS the demo moment.
 """
 from __future__ import annotations
 
@@ -16,7 +21,9 @@ import json
 
 from ..config import Config
 from ..models import Application, Vehicle
+from ..state import RunState
 from langfuse_synth_core.live.paths import local
+from .evalpanel import RUNNABLE_LABELS, result_card, trigger_panel
 from .prefabs import PREFABS
 from .submit import dispute, submit
 from langfuse_synth_core.live.theme import page
@@ -56,6 +63,19 @@ def _form(prefabs_js: str) -> str:
     </script>"""
 
 
+def _dataset_item_count() -> int | None:
+    """How many items the seeded dataset holds, for the muted line next to the eval buttons.
+
+    Read off the run state ``synth seed`` wrote (the spool volume is mounted into the live
+    container, same as the dashboard's own read) rather than queried from Langfuse — the
+    index must render without a network round-trip. None when there is no state to read, in
+    which case the panel simply omits the count."""
+    try:
+        return int(RunState.load().dataset_items) if RunState.exists() else None
+    except Exception:  # noqa: BLE001 — a cosmetic count must never break the page
+        return None
+
+
 def _error_card(headline: str, exc: Exception) -> str:
     """In-scene failure card (model API hiccup, unparseable reply, Langfuse down) — the
     show must go on: no raw 500s mid-presentation, and a one-line technical note so the
@@ -89,7 +109,8 @@ def create_app(cfg: Config, adapter=None):
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
         staff = f"<a class='back' href='{local('/analytics')}'>staff · lending analytics →</a>"
-        return page(_HEADER + _form(prefabs_js) + staff, title=TITLE)
+        panel = trigger_panel(cfg.golden_path.dataset.name, _dataset_item_count())
+        return page(_HEADER + _form(prefabs_js) + staff + panel, title=TITLE)
 
     @app.get("/analytics", response_class=HTMLResponse)
     def analytics() -> str:
@@ -131,6 +152,29 @@ def create_app(cfg: Config, adapter=None):
         </form>
         <a class="back" href="{local('/')}">← new application</a>"""
         return page(body, title=TITLE)
+
+    @app.post("/eval", response_class=HTMLResponse)
+    def do_eval(label: str = Form("production")) -> str:
+        """The presenter's red/green beat, triggered from the page instead of a shell (#180).
+
+        Runs synchronously: the SDK fans the dataset's items out concurrently, so at demo
+        scale one run costs roughly one model call of wall-clock and stays inside the proxy's
+        timeout budget — no job system for a demo control. Live model calls go through the
+        adapter's resolved client, so the spend rides the deployment's capped shared key and
+        the Surface never touches a raw key. Outside a deployment (no keys, no dataset) this
+        lands in the in-scene error card like every other route — never a raw 500."""
+        from ..experiment.run import run_experiment
+
+        if label not in RUNNABLE_LABELS:
+            return page(_error_card("That evaluator run isn't available",
+                                    ValueError(f"unknown prompt label {label!r}")), title=TITLE)
+        try:
+            res = run_experiment(cfg, label=label, adapter=adapter)
+        except Exception as exc:  # noqa: BLE001 — render in-scene, never a raw 500
+            return page(_error_card("We couldn't run the evaluation", exc), title=TITLE)
+        return page(result_card(res["label"], res["version"], res["outcome"],
+                                dataset_name=res["dataset_name"], run_name=res["run_name"],
+                                run_url=res["run_url"]), title=TITLE)
 
     @app.post("/dispute", response_class=HTMLResponse)
     def do_dispute(trace_id: str = Form(...), comment: str = Form("")) -> str:

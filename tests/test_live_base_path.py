@@ -65,6 +65,7 @@ def test_index_page_byte_identical_when_unset(monkeypatch):
     assert bare == empty
     assert "/live/" not in bare
     assert 'action="/submit"' in bare and "href='/analytics'" in bare
+    assert 'action="/eval"' in bare
 
 
 def test_index_page_prefixed(monkeypatch):
@@ -78,3 +79,4 @@ def test_index_page_prefixed(monkeypatch):
     text = TestClient(evapp.create_app(cfg)).get("/").text
     assert 'action="/live/x/submit"' in text
     assert "href='/live/x/analytics'" in text
+    assert 'action="/live/x/eval"' in text and 'action="/eval"' not in text
