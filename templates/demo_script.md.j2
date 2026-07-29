@@ -19,7 +19,7 @@
 ## The beats
 
 ### 0 · The report that starts it — lending analytics
-Open the staff dashboard (`synth playground` → http://127.0.0.1:8000/analytics) — the weekly risk
+Open the deployment's playground link and go to **`/analytics`** — the weekly risk
 report Lending Analytics sends **AI Engineering**: appeals climbing, decision CSAT breaking down,
 approval rate on eligible BEVs collapsing, **€-volume walking away** — while the agent's own quality
 monitors are **all green**. Every figure is derived from the same deterministic plan the seed
@@ -79,15 +79,29 @@ Reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}** — registered at 
   to BEVs ≤ **€{{ '{:,}'.format(price_cap_eur) }}** (effective `{{ grant_effective_date }}`).
 
 ### 6 · Run production → red, validate development → green, then promote
-```bash
-synth experiment --config config/demo.yaml                      # production (v{{ prompt_versions.v1 }}, stale) → RED
-synth experiment --config config/demo.yaml --label development   # development (v{{ prompt_versions.v2 }}, the fix) → GREEN
-# → promote v2 to `production` in the UI, then re-run the first command → GREEN
-```
+This happens **on the playground page** — no shell, no terminal on screen.
+
+Scroll to the very bottom of the loan application. There's a quiet grey line there:
+**`presenter tools`**. Click it — it's deliberately unobtrusive, and the room won't have
+registered it — and two buttons unfold:
+
+1. **Run eval · production** — the stale v{{ prompt_versions.v1 }} prompt against `{{ dataset_name }}` ({{ dataset_items }} items) → **RED**.
+2. **Run eval · development** — v{{ prompt_versions.v2 }}, the fix, against the same dataset → **GREEN**.
+
+Each run takes a moment (every item goes through the real model) and then renders full-size,
+in scene: the verdict, how many items matched their expected decision, and a **dataset-runs
+link** straight into the Langfuse comparison view. Click through and walk the two runs
+side-by-side. Then **promote v2 to `production`** in the Langfuse UI and press **Run eval ·
+production** once more → the same button now goes **GREEN**.
+
 - The eval runs whatever prompt carries the label. `production` == v{{ prompt_versions.v1 }} fails every disputed item (no grant applied).
 - `development` == v{{ prompt_versions.v2 }} proves the fix **without touching production**. Worked case:
   {{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }}, line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances €{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
-- After promotion the same first command goes green — the runs sit side-by-side: `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
+- After promotion the same button goes green — the runs sit side-by-side in Langfuse:
+  `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
+- The buttons' red/green is the dataset's own **expected decision** vs what the prompt decided,
+  so they work from the moment the kit is deployed — the managed judge from step 3 scores the
+  same runs in Langfuse alongside it.
 
 ### 7 · The landing line
 > "Quality scores were green the whole time — but appeals were climbing. We built a correctness judge, pulled the
@@ -95,7 +109,7 @@ synth experiment --config config/demo.yaml --label development   # development (
 > failing every case now passes them. That's the full loop, in Langfuse."
 
 ### 8 · Encore — hand the room the wheel
-Open the **playground** (`synth playground` → http://127.0.0.1:8000) on screen, or share the link. Anyone submits an
+Put the **playground** on screen, or share the deployment's link outright. Anyone submits an
 application against an **editable credit line** and gets the **real production decision** back, emitted as a live trace
 at the top of the timeline. Hit **Dispute** with a comment (*"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should
 put me under my line"*) → a `user_disagreement` appeal lands on that trace and nudges the appeal rate **live**. Then
@@ -104,13 +118,29 @@ promote v2 to `production` and resubmit the same application → it now **approv
 ---
 
 ## Break-glass fallback
-- Prompt **v2** is pre-registered and labelled **`development`** — `synth experiment --label development`
+- Prompt **v2** is pre-registered and labelled **`development`** — **Run eval · development**
   jumps straight to the green run with no UI step at all.
+- If a run errors, the page says so in scene (a service-notice card with one technical line) —
+  it never drops a raw error in front of the room. Press the button again.
 - A fresh seed sets **`production`→v{{ prompt_versions.v1 }}** and **`development`→v{{ prompt_versions.v2 }}**
   automatically, and re-seeding re-asserts them — so the red → green flip is always reproducible.
 - Controls prove the judge reasons rather than rubber-stamps: e.g. control
   `{{ control_example.trace_id }}` ({{ control_example.vehicle_type }} €{{ '{:,}'.format(control_example.list_price_eur) }})
   stays correctly **{{ control_example.expected_v2_decision }}** under v2.
+
+## Developer mode — the same beats from a shell
+> Not part of the presented demo. The runbook above is the delivered path: the kit ships as a
+> cartridge and everything happens in the browser. These commands are for working **on** the
+> kit — a local checkout, CI, or debugging a deployment.
+
+```bash
+synth experiment --config config/demo.yaml                       # production (v{{ prompt_versions.v1 }}, stale) → RED
+synth experiment --config config/demo.yaml --label development   # development (v{{ prompt_versions.v2 }}, the fix) → GREEN
+synth experiment --config config/demo.yaml --gate 0.95           # offline PASS-rate gate, no model calls
+synth playground --config config/demo.yaml                       # serve the playground locally on :8000
+```
+These are the *same* runs the buttons trigger — identical dataset, identical task, identical
+Dataset Run names — so a developer and a presenter land in the same place in Langfuse.
 
 ## Reset
 Teardown is project-level (data is append-only within a 30-day merge window): spin up a **fresh project**, set its

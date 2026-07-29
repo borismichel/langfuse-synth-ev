@@ -91,4 +91,16 @@ a{color:var(--text-links);text-decoration:none} a:hover{text-decoration:underlin
     <script>const P={"eligible": {"v": "BEV", "p": 38000, "l": 32000}, "overcap": {"v": "BEV", "p": 58000, "l": 54000}, "phev": {"v": "PHEV", "p": 42000, "l": 38000}, "approvable": {"v": "BEV", "p": 30000, "l": 40000}, "rejected": {"v": "BEV", "p": 45000, "l": 30000}};
       function fill(){const k=document.getElementById('prefab').value;if(k==='custom')return;const p=P[k];
         document.getElementById('vehicle').value=p.v;document.getElementById('price').value=p.p;document.getElementById('line').value=p.l;}
-    </script><a class='back' href='/analytics'>staff · lending analytics →</a></div><div class='overlay' id='overlay'><div class='spinner'></div><p id='ovmsg'>Processing decision</p></div><script>document.addEventListener('submit',function(e){var a=e.target.getAttribute('action')||'';document.getElementById('ovmsg').textContent=a.endsWith('/dispute')?'Logging dispute':'Processing decision';document.getElementById('overlay').style.display='flex';});</script></body></html>
+    </script><a class='back' href='/analytics'>staff · lending analytics →</a><style>
+.pnl{margin-top:40px;border-top:1px dashed var(--line-divider-dash);padding-top:12px}
+.pnl>summary{list-style:none;cursor:pointer;font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--text-disabled)}
+.pnl>summary::-webkit-details-marker{display:none}
+.pnl>summary:hover{color:var(--text-tertiary)}
+.pnl .row{display:flex;gap:10px;margin-top:12px}
+.pnl form{flex:1;margin:0}
+.pnl button{margin-top:0;background:transparent;border-color:var(--line-structure);
+  color:var(--text-tertiary);font:500 12.5px var(--font-mono);padding:9px 10px}
+.pnl button:hover{background:#403d391a;filter:none}
+.pnl .note{margin-top:10px;color:var(--text-disabled);font-size:11.5px}
+</style><details class="pnl"><summary>presenter tools</summary><div class="row"><form method="post" action="/eval"><input type="hidden" name="label" value="production"><button type="submit">Run eval · production</button></form><form method="post" action="/eval"><input type="hidden" name="label" value="development"><button type="submit">Run eval · development</button></form></div><div class="note">Runs the hosted dataset <code>ev-grant-disputed-rejections</code> · 24 items through the labelled prompt. <b>production</b> is the stale v1 → red; <b>development</b> is the fix → green.</div></details><script>document.addEventListener('submit',function(e){if(((e.target.getAttribute('action')||'').endsWith('/eval')))setTimeout(function(){document.getElementById('ovmsg').textContent='Running evaluation';},0);});</script></div><div class='overlay' id='overlay'><div class='spinner'></div><p id='ovmsg'>Processing decision</p></div><script>document.addEventListener('submit',function(e){var a=e.target.getAttribute('action')||'';document.getElementById('ovmsg').textContent=a.endsWith('/dispute')?'Logging dispute':'Processing decision';document.getElementById('overlay').style.display='flex';});</script></body></html>

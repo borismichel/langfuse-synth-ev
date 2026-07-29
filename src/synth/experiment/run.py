@@ -1,4 +1,4 @@
-"""The experiment runner the presenter runs in step 6 (spec §7).
+"""The experiment runner behind the demo's central beat (spec §7).
 
 Loads the hosted ``ev-grant-disputed-rejections`` dataset and runs **whatever prompt
 carries the requested label** (default ``production``) as the task via the v4
@@ -7,18 +7,29 @@ live labelled prompt — so the demo is: run ``production`` (== v1) → red; run
 ``development`` (== v2) → green to validate the fix **without touching production**; then
 promote v2 to ``production`` and re-run. REAL model calls (temperature 0).
 
+Two callers, one path. The presenter clicks the playground's tucked-away eval triggers
+(``live/app.py``, #180) and the run happens server-side through the Companion Adapter's
+ready clients; a developer runs ``synth experiment`` on a shell and the clients are built
+off the env. Neither path forks the experiment logic.
+
 The managed UI judge (scoped to this dataset's new runs) scores each Dataset Run. We
-leave ``evaluators`` empty so the managed judge is what scores it; an optional local
-PASS-rate aggregate is available as a CI/CD regression-gate fallback.
+leave ``evaluators`` empty so the managed judge is what scores it; ``outcome`` (see
+``.outcome``) is the immediate expected-vs-actual verdict the in-scene card renders — it
+does not wait on the judge — and an offline PASS-rate aggregate is available as a CI/CD
+regression-gate fallback.
 """
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 from ..agent import GrantRule, decide
 from ..config import Config
 from ..models import Application
 from ..state import RunState
+from .outcome import summarize
+
+if TYPE_CHECKING:
+    from langfuse_synth_core.companion import CompanionAdapter
 
 
 def _make_task(lf, llm, cfg: Config, label: str) -> Callable:
@@ -34,19 +45,37 @@ def _make_task(lf, llm, cfg: Config, label: str) -> Callable:
     return task
 
 
+def _clients(cfg: Config, adapter: "CompanionAdapter | None"):
+    """Resolve the ``(langfuse, llm)`` pair the experiment needs.
+
+    With a Companion Adapter (the playground's eval triggers, #180) both come from it — the
+    adapter owns secret intake + provider resolution and hands back ready clients, so the
+    Surface never touches a raw key and the spend rides the deployment's capped shared key.
+    Without one (the headless ``synth experiment`` path) they are built directly off the core
+    resolution module + the env, so that path is byte-for-byte unchanged."""
+    if adapter is not None:
+        return adapter.langfuse(), adapter.llm()
+    from langfuse_synth_core.companion.llm import get_llm
+    from langfuse_synth_core.lfclient import get_langfuse
+
+    return get_langfuse(cfg), get_llm(cfg.golden_path.task_model)
+
+
 def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "ev-grant",
+                   adapter: "CompanionAdapter | None" = None,
                    log: Callable[[str], None] = print):
     """Run the prompt carrying ``label`` against the hosted dataset. The run is named by
     label + version (``…-{label}-v{n}``) so the demo runs (production v1 red, development
-    v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14)."""
-    from langfuse_synth_core.companion.llm import get_llm
-    from langfuse_synth_core.lfclient import get_langfuse
+    v2 green) land as distinct Dataset Runs in the comparison view (spec §7, §14).
+
+    Returns the label, the prompt version that ran, the raw SDK result, the run name, a deep
+    link to the runs/comparison view, and ``outcome`` — the expected-vs-actual
+    :class:`~synth.experiment.outcome.ExperimentOutcome` the in-scene card renders."""
     from ..target import TargetProfile
 
     profile = TargetProfile.detect(cfg.target.base_url)
     log(f"· experiment target: {profile.label} ({profile.base_url})")
-    lf = get_langfuse(cfg)
-    llm = get_llm(cfg.golden_path.task_model)
+    lf, llm = _clients(cfg, adapter)
     log(f"· model: {llm.provider}/{llm.model}")
     prompt_name = cfg.golden_path.prompt_name
 
@@ -73,12 +102,16 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     lf.flush()
 
     # Deep link to the Dataset Run so the presenter can click straight to the comparison
-    # view. The SDK appends a " - <timestamp>" suffix to the run name, so the run shown in
-    # the UI starts with `name`; the managed judge scores it there. Best-effort only.
-    run_url = _dataset_run_url(cfg, lf)
+    # view. The SDK hands back a direct run URL when it can; otherwise fall back to the
+    # dataset's runs page. The SDK appends a " - <timestamp>" suffix to the run name, so the
+    # run shown in the UI starts with `name`; the managed judge scores it there. Best-effort.
+    run_url = getattr(res, "dataset_run_url", None) or _dataset_run_url(cfg, lf)
     if run_url:
         log(f"· dataset runs: {run_url}")
-    return {"label": label, "version": ver, "result": res, "run_name": name, "run_url": run_url}
+    outcome = summarize(getattr(res, "item_results", []) or [])
+    log(f"· expected-vs-actual: {outcome.verdict} — {outcome.passed}/{outcome.total} matched")
+    return {"label": label, "version": ver, "result": res, "run_name": name,
+            "run_url": run_url, "outcome": outcome, "dataset_name": cfg.golden_path.dataset.name}
 
 
 def _dataset_run_url(cfg: Config, lf) -> str | None:

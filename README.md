@@ -95,6 +95,15 @@ appeal (with a free-text comment) on that trace, nudging the dashboard's appeal 
 prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
 subsequent submissions from reject → approve — no code change.
 
+The playground also carries the demo's **central red/green beat**. At the very bottom of the
+page, behind a deliberately quiet `presenter tools` disclosure, sit two buttons — **Run eval ·
+production** and **Run eval · development** — that run the hosted dataset through the labelled
+prompt server-side and render the verdict, the matched-item counts and a dataset-runs deep
+link in scene. They are presenter controls, not part of the fiction: collapsed and muted so a
+prospect reading the loan application never registers them. The Presenter Runbook's step 6
+walks it. No shell is involved, and the model calls ride the deployment's own LLM key through
+the Companion Adapter.
+
 The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
 
 | 1 · Submission form | 2 · Decision + feedback | 3 · Recorded trace |
