@@ -1,8 +1,8 @@
 # EV Subsidy Silent Regression
 
-A **Demo Depot cartridge**: this repo is a complete Demo Package — the Spool, the
-Presenter Runbook, and a live Companion — that the depot deploys **as-is** from its
-catalog. An operator picks it in the portal, points it at a demo Langfuse project
+A **Demo Depot cartridge**: this repo is a complete Demo Package that the depot
+deploys **as-is** from its catalog, landing the Run-Triad — the Spool, the
+Presenter Runbook, and a live Companion. An operator picks it in the portal, points it at a demo Langfuse project
 (Cloud or self-hosted), and gets a fully seeded, presentable environment. Nothing
 on this page needs installing to *run* the demo; everything developer-facing lives
 at the bottom, under
@@ -61,13 +61,13 @@ Deploying this kit lands everything it takes to present the demo:
    **Deploy this demo**. Connect a Langfuse demo project — the kit refuses any
    project whose name doesn't contain `demo`, and the check runs before any job
    starts, so a customer's production project is never at risk.
-2. The pipeline runs this kit's own Recipe: it first materializes the
-   deterministic Spool without writing anything, pauses with the exact
-   billable-units estimate for your OK, then replays the Spool into your
-   project and runs the kit's own `verify` to prove the golden path landed.
+2. The pipeline pauses with the exact billable-units estimate for your OK
+   before anything is written, then runs this kit's own Recipe — materializing
+   the deterministic Spool and replaying it into your project — and finishes
+   with the kit's own `verify`, proving the golden path landed.
 3. Present from the **Presenter Runbook** on the deployment page and the seeded
    Langfuse project.
-4. The playground is the encore: it is never running by default — start it from
+4. The Companion is the encore: it is never running by default — start it from
    the deployment page when you want to hand the room the wheel. It needs an
    LLM key (provider chosen at deploy time) for its one real model call per
    submission.
@@ -166,8 +166,9 @@ the demo through the depot. (Running a kit standalone this way works today, but
 it is the kit-dev loop, not a supported delivery method — see the
 [delivery model](#delivery-model-a-cartridge-not-a-standalone-app) note above.)
 
-This is a cloneable repo: `git clone`, set `.env`, `synth seed`, run the demo.
-The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
+This is the first scenario in the demo-data kit. It's a cloneable repo:
+`git clone`, set `.env`, `synth seed`, run the demo. The full spec lives in
+[`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
 
 ### Quick start
 
