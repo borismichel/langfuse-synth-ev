@@ -1,4 +1,16 @@
-# Langfuse Demo Data Synthesiser — EV-subsidy regression
+# EV Subsidy Silent Regression
+
+A **Demo Depot cartridge**: this repo is a complete Demo Package that the depot
+deploys **as-is** from its catalog, landing the Run-Triad — the Spool, the
+Presenter Runbook, and a live Companion. An operator picks it in the portal, points it at a demo Langfuse project
+(Cloud or self-hosted), and gets a fully seeded, presentable environment. Nothing
+on this page needs installing to *run* the demo; everything developer-facing lives
+at the bottom, under
+[Development and running outside the depot](#development-and-running-outside-the-depot).
+
+**The story in one line:**
+
+> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt management → prove the fix with an experiment.
 
 ## The business case & story arc
  
@@ -13,6 +25,7 @@
 3. **The missing instrument.** Install the one eval that was absent: a decision-correctness managed LLM-as-judge. Backfilled over recent production, it turns red on the disputed rejections. The gap was the whole point.
 4. **Curate & fix.** Curate the eligible false-negatives into a hosted dataset, then fix the prompt through prompt management (v1 stale → v2 grant-aware), labelled `production` / `development`.
 5. **Prove it.** An experiment runs the labelled prompt over the dataset: the *same judge* that failed every case now passes them. Promote v2 to `production` and the live playground flips subsequent decisions reject → approve, no code change.
+
 **This kit tells the prompt-loop story:** catching a silent regression in production and closing the loop on it, end to end.
  
 The arithmetic that produces the regression (spec §17):
@@ -22,48 +35,85 @@ The arithmetic that produces the regression (spec §17):
 | BEV €42k, line €40k (eligible, borderline) | reject (42k > 40k) | **approve** (36k ≤ 40k) | PASS |
 | BEV €58k, line €55k (over cap) | reject | reject (no grant) | PASS |
 | PHEV €42k, line €40k (not BEV) | reject | reject (no grant) | PASS |
- 
----
- 
-Seed a fresh Langfuse project (Langfuse Cloud or self-hosted) with believable, time-distributed observability data, anchored by the one end-to-end golden path above, so a demo dashboard looks *alive* and walks an audience through that loop:
- 
-> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt management → prove the fix with an experiment.
- 
-This is the first scenario in the demo-data kit. It's a cloneable repo: `git clone`, set `.env`, `synth seed`, run the demo. The full spec lives in [`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
 
----
+The full spec lives in this repo as `langfuse-demo-synth-spec.md` — the
+**"Full spec"** doc in the portal's docs reader.
 
-## Quick start
+## What's in the package (the Run-Triad)
 
-```bash
-# 1. install
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
+Deploying this kit lands everything it takes to present the demo:
 
-# 2. point at a DEMO/SANDBOX project (the guardrail refuses non-matching project names)
-cp .env.example .env      # fill LANGFUSE_BASE_URL + keys; ANTHROPIC_API_KEY only needed for `experiment`
+- **The Spool** — ~4,000 backdated traces plus scores, sessions, a user
+  population, prompts v1/v2, and the hosted `ev-grant-disputed-rejections`
+  dataset, batch-ingested into your Langfuse project. Byte-deterministic and
+  model-free; the full inventory is under
+  [What the seeded data contains](#what-the-seeded-data-contains).
+- **The Presenter Runbook** — `DEMO_SCRIPT.md`, generated at seed time and
+  filled with *this run's real* dates, trace IDs, figures and deep links. The
+  portal renders it on the deployment page; it is the talk track.
+- **The Companion** — the live decision playground, plus the staff-facing
+  `/analytics` lending report that opens the demo. Started on demand from the
+  portal; see [The Companion, played live](#the-companion-played-live).
 
-# 3. preview, then seed
-synth plan     --config config/demo.yaml     # dry run: volumes, golden-path dates, dataset summary (no network)
-synth seed     --config config/demo.yaml     # spool backdated data to disk → batch-import, register prompts, build dataset, emit DEMO_SCRIPT.md
-synth verify   --config config/demo.yaml     # query back via the v2 API and assert the golden path
+## Deploying it from the depot
 
-# 4. follow DEMO_SCRIPT.md for the live presentation; the experiment runs the *labelled* prompt:
-synth experiment --config config/demo.yaml                     # production (v1, stale) → RED
-synth experiment --config config/demo.yaml --label development  # development (v2, the fix) → GREEN
-# then promote v2 to `production` in the UI and re-run the production command → green
-```
+1. Pick **EV Subsidy Silent Regression** in the portal catalog and click
+   **Deploy this demo**. Connect a Langfuse demo project — the kit refuses any
+   project whose name doesn't contain `demo`, and the check runs before any job
+   starts, so a customer's production project is never at risk.
+2. The pipeline pauses with the exact billable-units estimate for your OK
+   before anything is written, then runs this kit's own Recipe — materializing
+   the deterministic Spool and replaying it into your project — and finishes
+   with the kit's own `verify`, proving the golden path landed.
+3. Present from the **Presenter Runbook** on the deployment page and the seeded
+   Langfuse project.
+4. The Companion is the encore: it is never running by default — start it from
+   the deployment page when you want to hand the room the wheel. It needs an
+   LLM key (provider chosen at deploy time) for its one real model call per
+   submission.
+5. Teardown is project-level: to run the demo fresh, point a new deployment at
+   a fresh Langfuse project and re-seed.
 
-`synth seed` writes **`DEMO_SCRIPT.md`** — a presenter's runbook filled with *this run's real*
-dates, trace IDs, figures and deep links. Re-seeding regenerates a matching script
-(`synth script` regenerates it from existing run state). After seeding, confirm the data
-matches the narrative with **[`VERIFICATION.md`](VERIFICATION.md)** (`synth verify` + live
-coverage / drift / tag checks). If a large import stalls, the generated data is safe on disk
-— resume with `synth import-spool`.
+One manual step remains in the Langfuse UI — the managed judge below.
 
----
+## The managed judge (created once in the UI)
 
-## What gets created
+The decision-correctness judge is a **managed LLM-as-judge** configured in the Langfuse UI —
+it cannot live in the repo, but the Presenter Runbook's step 3 contains the exact prompt to
+paste, the variable mappings, and the scopes. It is *the same judge* on both surfaces: scoped
+to the recent production traces (backfill → **red**) and to the dataset's new runs (the
+experiment → **green**). Either target needs an LLM connection (Anthropic key, or Bedrock)
+configured in project settings for the managed judge and the experiment task.
+
+## The Companion, played live
+
+The live decision playground is a small configurator so the audience can emit *their own*
+trace: pick one of five prefabs or enter a custom application against an **editable credit
+line**, submit, and get the **real production decision** back — rendered as a native
+agent-graph trace at the top of the timeline. A **Dispute** button logs a `user_disagreement`
+appeal (with a free-text comment) on that trace, nudging the dashboard's appeal rate live. The
+prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
+subsequent submissions from reject → approve — no code change.
+
+The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
+
+| 1 · Submission form | 2 · Decision + feedback | 3 · Recorded trace |
+|---|---|---|
+| ![Playground submission form](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-form.png) | ![Lending decision with review request](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-decision.png) | ![The decision's trace in Langfuse](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-trace.png) |
+| A BEV at €38,000 against a €32,000 line — borderline-eligible under the new grant. | The stale `production` prompt **declines** it (grant €0, ignoring the €6k it qualifies for); the customer requests a review. | The native agent-graph trace lands in the deployment's project, carrying the real `decision` call (tokens + cost) and the `user_disagreement` score from the review. |
+
+Only the `decision` is a real model call (real tokens + latency); the surrounding agent graph
+is templated/computed exactly like the seed, so the live trace is shape-identical to the
+seeded data. Prefabs: `eligible` (the bug), `overcap`, `phev`, `approvable`, `rejected`.
+
+A second, staff-facing route — **`/analytics`** — is the in-scene **lending-analytics report**
+that opens the demo: the weekly risk dashboard Lending Analytics sends AI Engineering. Appeals
+climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume
+walking away — while the agent's own quality monitors stay green. Every figure is **derived from
+the same deterministic plan the seed ingested** (the score draws are replayed from the same
+id-keyed rng substreams), so the report and the data in Langfuse always agree.
+
+## What the seeded data contains
 
 - **~4,000 traces** over 30 days with diurnal/weekly shape; realistic latency (log-normal)
   with a **time-to-first-token** on every generation; **production-scale token usage**
@@ -97,35 +147,58 @@ coverage / drift / tag checks). If a large import stalls, the generated data is 
 Everything is **deterministic** (single `seed`) and **model-free at seed time** — a large seed
 is free and byte-reproducible. The model runs in exactly one place: the live experiment.
 
----
+## Delivery model: a cartridge, not a standalone app
 
-## The managed judge (created once in the UI)
-
-The decision-correctness judge is a **managed LLM-as-judge** configured in the Langfuse UI —
-it cannot live in the repo, but `DEMO_SCRIPT.md` step 3 contains the exact prompt to paste,
-the variable mappings, and the scopes. It is *the same judge* on both surfaces: scoped to the
-recent production traces (backfill → **red**) and to the dataset's new runs (the experiment →
-**green**). Either target needs an LLM connection (Anthropic key, or Bedrock) configured in
-project settings for the managed judge and the experiment task.
+Per the delivery-model decision (2026-07-29): **a kit is a cartridge that goes
+into the depot** — the primary delivery method is as-is through the portal,
+which owns deployment, seeding, artifacts, and the Companion's lifecycle. A
+standalone-run story exists (everything below runs from a clone), but the
+decision on how kits run individually *outside* the depot is explicitly
+deferred — this repo references that open question without answering it.
 
 ---
 
-## Live decision playground (hand the room the wheel)
+## Development and running outside the depot
 
-`synth playground` serves a small configurator (FastAPI) so the audience can emit *their own*
-trace: pick one of five prefabs or enter a custom application against an **editable credit
-line**, submit, and get the **real production decision** back — rendered as a native
-agent-graph trace at the top of the timeline. A **Dispute** button logs a `user_disagreement`
-appeal (with a free-text comment) on that trace, nudging the dashboard's appeal rate live. The
-prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
-subsequent submissions from reject → approve — no code change.
+Everything from here down is for **kit development** — the `synth` CLI, local
+seeding, tests, and release plumbing. None of it is needed to deploy or present
+the demo through the depot. (Running a kit standalone this way works today, but
+it is the kit-dev loop, not a supported delivery method — see the
+[delivery model](#delivery-model-a-cartridge-not-a-standalone-app) note above.)
 
-The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
+This is the first scenario in the demo-data kit. It's a cloneable repo:
+`git clone`, set `.env`, `synth seed`, run the demo. The full spec lives in
+[`langfuse-demo-synth-spec.md`](langfuse-demo-synth-spec.md).
 
-| 1 · Submission form | 2 · Decision + feedback | 3 · Recorded trace |
-|---|---|---|
-| [![Playground submission form](docs/img/playground-form.png)](docs/img/playground-form.png) | [![Lending decision with review request](docs/img/playground-decision.png)](docs/img/playground-decision.png) | [![The decision's trace in Langfuse](docs/img/playground-trace.png)](docs/img/playground-trace.png) |
-| A BEV at €38,000 against a €32,000 line — borderline-eligible under the new grant. | The stale `production` prompt **declines** it (grant €0, ignoring the €6k it qualifies for); the customer requests a review. | The native agent-graph trace lands under the `.env` project, carrying the real `decision` call (tokens + cost) and the `user_disagreement` score from the review. |
+### Quick start
+
+```bash
+# 1. install
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+
+# 2. point at a DEMO/SANDBOX project (the guardrail refuses non-matching project names)
+cp .env.example .env      # fill LANGFUSE_BASE_URL + keys; ANTHROPIC_API_KEY only needed for `experiment`
+
+# 3. preview, then seed
+synth plan     --config config/demo.yaml     # dry run: volumes, golden-path dates, dataset summary (no network)
+synth seed     --config config/demo.yaml     # spool backdated data to disk → batch-import, register prompts, build dataset, emit DEMO_SCRIPT.md
+synth verify   --config config/demo.yaml     # query back via the v2 API and assert the golden path
+
+# 4. follow DEMO_SCRIPT.md for the live presentation; the experiment runs the *labelled* prompt:
+synth experiment --config config/demo.yaml                     # production (v1, stale) → RED
+synth experiment --config config/demo.yaml --label development  # development (v2, the fix) → GREEN
+# then promote v2 to `production` in the UI and re-run the production command → green
+```
+
+`synth seed` writes **`DEMO_SCRIPT.md`** — the Presenter Runbook filled with *this run's real*
+dates, trace IDs, figures and deep links. Re-seeding regenerates a matching script
+(`synth script` regenerates it from existing run state). After seeding, confirm the data
+matches the narrative with **[`VERIFICATION.md`](VERIFICATION.md)** (`synth verify` + live
+coverage / drift / tag checks). If a large import stalls, the generated data is safe on disk
+— resume with `synth import-spool`.
+
+### Running the playground locally
 
 ```bash
 pip install -e '.[playground]'
@@ -133,20 +206,10 @@ synth playground --config config/demo.yaml          # → http://127.0.0.1:8000
 synth submit --config config/demo.yaml --prefab eligible --line 32000   # one-shot, from the terminal
 ```
 
-Only the `decision` is a real model call (real tokens + latency); the surrounding agent graph
-is templated/computed exactly like the seed, so the live trace is shape-identical to the
-seeded data. Prefabs: `eligible` (the bug), `overcap`, `phev`, `approvable`, `rejected`.
+`synth playground` serves the same configurator (FastAPI) the depot starts as the
+Companion, including the `/analytics` report route.
 
-A second, staff-facing route — **`/analytics`** — is the in-scene **lending-analytics report**
-that opens the demo: the weekly risk dashboard Lending Analytics sends AI Engineering. Appeals
-climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume
-walking away — while the agent's own quality monitors stay green. Every figure is **derived from
-the same deterministic plan the seed ingested** (the score draws are replayed from the same
-id-keyed rng substreams), so the report and the data in Langfuse always agree.
-
----
-
-## Architecture (why the batch ingestion endpoint)
+### Architecture (why the batch ingestion endpoint)
 
 The high-level OTel SDK timestamps observations from the wall clock and offers no
 `start_time` — it can't backfill history. So the seed path builds event objects directly and
@@ -205,16 +268,14 @@ fixtures/golden_v1_decisions.json   # committed v1 outputs for offline provenanc
 tests/
 ```
 
----
-
-## Configuration
+### Configuration
 
 All knobs are in [`config/demo.yaml`](config/demo.yaml): volume/window, population, the model
 pricing table, the golden-path dates (grant effective offset, drift window), the dataset shape
 (item count, eligible share, reserved count), ambient incidents, and scoring coverage. Change
 the `seed` for a different-but-reproducible run.
 
-## Guardrails & teardown
+### Guardrails & teardown
 
 - The seeder **refuses to run** unless the target project's name contains `target.project_hint`
   (default `demo`). Point it only at demo/sandbox projects.
@@ -226,18 +287,18 @@ the `seed` for a different-but-reproducible run.
   required to *change coverage* (which scores get emitted) — append-only ingestion never deletes,
   so dropped scores would otherwise linger as orphans.
 
-## CI/CD regression gate (optional)
+### CI/CD regression gate (optional)
 
 `synth experiment --gate 0.95` computes an offline PASS-rate of v2 over the hosted dataset (no
 model call) and exits non-zero below the threshold — drop it in a pipeline as a regression gate.
 
-## Tests
+### Tests
 
 ```bash
 pip install pytest && pytest -q     # determinism, the §17 arithmetic table, golden-path invariants
 ```
 
-## Image releases
+### Image releases
 
 Pushing a `vX.Y.Z` tag triggers `.github/workflows/publish.yml`, which builds this
 kit's image, pushes it to `ghcr.io/borismichel/langfuse-synth-ev`, and cosign-signs it
