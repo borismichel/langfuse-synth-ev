@@ -13,4 +13,4 @@ organised as:
 - ``cli``          — ``synth plan | seed | verify | experiment | script``
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

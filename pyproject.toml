@@ -1,6 +1,6 @@
 [project]
 name = "langfuse-demo-synth"
-version = "0.1.0"
+version = "0.2.0"
 description = "Synthesiser for believable, time-distributed Langfuse demo data, anchored by the EV-subsidy regression golden path."
 readme = "README.md"
 requires-python = ">=3.10"
