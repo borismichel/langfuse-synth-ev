@@ -66,10 +66,11 @@ def _form(prefabs_js: str) -> str:
 def _dataset_item_count() -> int | None:
     """How many items the seeded dataset holds, for the muted line next to the eval buttons.
 
-    Read off the run state ``synth seed`` wrote (the spool volume is mounted into the live
-    container, same as the dashboard's own read) rather than queried from Langfuse — the
-    index must render without a network round-trip. None when there is no state to read, in
-    which case the panel simply omits the count."""
+    Read off the run state ``synth seed`` wrote — the read-only anchors transport of
+    ``langfuse-synth-core`` ``CONTRACT.md`` §"Per-run anchors (opt-in)", same as the
+    dashboard's own read — rather than queried from Langfuse: the index must render
+    without a network round-trip. None when there is no state to read, in which case the
+    panel simply omits the count."""
     try:
         return int(RunState.load().dataset_items) if RunState.exists() else None
     except Exception:  # noqa: BLE001 — a cosmetic count must never break the page

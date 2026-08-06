@@ -39,11 +39,12 @@ class Environments(BaseModel):
 class Generation(BaseModel):
     seed: int = 42
     archetype: str = "credit_approval_agent"
-    # `target_traces` is the CANONICAL, cross-kit operator volume knob (the portal passes
-    # `--set generation.target_traces=N`). It is resolved to the internal `total_traces`
-    # below via EV's direct-count derivation hook. None (the local/default case) means "no
-    # operator knob set" → fall back to the `total_traces` internal default. `total_traces`
-    # is now INTERNAL only — no longer an operator knob in the manifest (Ring 2, #33).
+    # `target_traces` is the CANONICAL, cross-kit operator volume knob (langfuse-synth-core
+    # CONTRACT.md §"The canonical volume knob"). It is resolved to the internal
+    # `total_traces` below via EV's direct-count derivation hook. None (the local/default
+    # case) means "no operator knob set" → fall back to the `total_traces` internal
+    # default. `total_traces` is now INTERNAL only — no longer an operator knob in the
+    # manifest (Ring 2, #33).
     target_traces: int | None = None
     total_traces: int = 4000
     window_days: int = 30
