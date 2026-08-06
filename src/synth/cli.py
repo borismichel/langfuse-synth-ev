@@ -8,9 +8,11 @@
     synth script      --config demo.yaml   # (re)generate the demo runbook from current run state
 
 The pipeline commands (probe/plan/seed/verify) accept repeatable ``--set dotted.key=value``
-overrides applied to the config before validation, so the portal can scale the single shipped
-config per environment (e.g. ``--set generation.target_traces=800`` — the canonical operator
-volume knob, mapped to EV's internal ``total_traces`` by the direct-count derivation hook).
+overrides applied to the config before validation (e.g. ``--set generation.target_traces=800``
+— the canonical operator volume knob, mapped to EV's internal ``total_traces`` by the
+direct-count derivation hook). Which invocation classes carry ``--set`` — and that live and
+resume commands never do — is ``langfuse-synth-core`` ``CONTRACT.md`` §"The container
+invocation".
 """
 from __future__ import annotations
 
@@ -191,11 +193,12 @@ def playground(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
                port: int = typer.Option(8000, "--port")):
     """Serve the live decision configurator UI (needs the `playground` extra: pip install -e '.[playground]').
 
-    Spec G · G4 (#142): the shell is the Companion Adapter. The fixed ``--config/--host/--port``
-    invocation is the adapter's ``Invocation`` shape (the portal templates only ``{config}``);
-    the adapter binds ``host:port``, mounts its readiness health route, and serves the Surface
-    with graceful shutdown, handing the routes ready Langfuse/LLM clients. Scenario code — the
-    routes, dashboard, decision logic, trace shapes — is untouched."""
+    Spec G · G4 (#142): the shell is the Companion Adapter. What this surface signs up to —
+    the fixed ``--config/--host/--port`` invocation, env, health/readiness — is
+    ``langfuse-synth-core`` ``CONTRACT.md`` §"The live surface"; the adapter binds
+    ``host:port``, mounts its readiness health route, and serves the Surface with graceful
+    shutdown, handing the routes ready Langfuse/LLM clients. Scenario code — the routes,
+    dashboard, decision logic, trace shapes — is untouched."""
     cfg = _load(config)
     try:
         from langfuse_synth_core.companion import CompanionAdapter

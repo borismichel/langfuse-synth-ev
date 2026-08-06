@@ -5,11 +5,12 @@
 ``synth verify`` and ``synth script`` read it back so the demo runbook can never drift
 from the seeded data (spec §18). The file is git-ignored — it is per-run output.
 
-It lives in the spool dir, not the repo root: under the portal each step runs in its
-own ephemeral container, and the spool is the only surface mounted (as a named volume)
-into all of them, so state written by ``seed`` survives to be read by ``verify``. The
-artifact dir (``SYNTH_OUT_DIR``) is NOT shared — it is lifted from the exited container
-after each step — so state must not live there. ``SYNTH_STATE_DIR`` overrides.
+It lives in the spool dir, not the repo root — the per-run anchors rules of the
+Contract (``langfuse-synth-core`` ``CONTRACT.md`` §"Per-run anchors (opt-in)" and
+§"Filesystem conventions" · "The spool"): the spool is the only cross-container
+surface, the artifact dir is container-local and would strand the file, and
+``SYNTH_STATE_DIR`` names the location. This kit-local module predates the shared
+core mechanism (portal #199) and is migration debt listed in that document.
 """
 from __future__ import annotations
 
