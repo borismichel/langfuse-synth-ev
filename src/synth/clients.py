@@ -44,10 +44,17 @@ def llm_client(cfg: Config, adapter: "CompanionAdapter | None") -> Any:
     return get_llm(cfg.golden_path.task_model)
 
 
-def ingestor(cfg: Config, adapter: "CompanionAdapter | None") -> Any:
-    """The backdated-batch **write** client used to emit live traces and scores."""
-    if adapter is not None:
-        return adapter.ingestor()
-    from langfuse_synth_core.seed.ingest import Ingestor
+def emitter(cfg: Config, adapter: "CompanionAdapter | None", **kw: Any) -> Any:
+    """The **live-emission** client: wall-clock traces and scores for a submission.
 
-    return Ingestor.from_env(cfg.target.base_url)
+    A submission happens at *now*, so it rides the live-emission seam and never the Spool's
+    ``Ingestor``: that writer exists to backdate weeks of history from producer-supplied
+    timestamps, and coupling the playground to it coupled a live surface to machinery whose
+    entire purpose is a constraint it does not have (portal #211, CONTRACT.md — the
+    determinism line).
+    """
+    if adapter is not None:
+        return adapter.emitter(**kw)
+    from langfuse_synth_core.live.emit import LiveEmitter
+
+    return LiveEmitter.from_env(cfg.target.base_url, **kw)

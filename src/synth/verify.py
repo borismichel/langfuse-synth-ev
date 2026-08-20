@@ -1,4 +1,4 @@
-"""`synth verify` — query the data back via the v2 API and assert the golden path (spec §11).
+"""`synth verify` — query the data back through the read seam and assert the golden path (spec §11).
 
 Asserts specifically:
 - the ``user_disagreement`` drift (elevated in the drift window vs the baseline before it),
@@ -10,16 +10,23 @@ Asserts specifically:
 - dataset item count + ``sourceTraceId`` links,
 - the reserved false-negatives exist as traces but are NOT in the dataset.
 
-Uses raw REST (HTTP Basic) against known public endpoints, so it is robust to SDK
-method-name churn. Each check is independent and reported pass/fail.
+Reads go through the **read seam** (``langfuse_synth_core.read``), which owns the endpoints
+and answers the same normalised rows on either API generation — so nothing below knows
+whether a v4 or a deprecated Langfuse answered, and this file needs no edit when the target
+cuts over (portal #211). ``TargetProfile.resolved()`` is what asks; its label says which
+generation answered, because that is the first thing to know when a check that passed
+yesterday fails today.
+
+``/api/public/dataset-items`` is read with ``lfread.get_json``: datasets were never
+deprecated, so the seam does not model them — but the auth and the Retry-After-aware backoff
+are still the library's, not this kit's. Each check is independent and reported pass/fail.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from langfuse_synth_core.http import request_retry
-from langfuse_synth_core.lfread import auth_from_env, get_all_scores, get_json, parse_ts
+from langfuse_synth_core.lfread import get_json
 
 from .config import Config
 from .state import RunState
@@ -45,29 +52,38 @@ class VerifyReport:
         return all(c.ok for c in self.checks)
 
 
-# The read-client (auth + paginated GET of scores/traces) moved to the shared core
-# (langfuse_synth_core.lfread) in the Ring 2 verify split (#33). What stays HERE is the
-# scenario talking: which assertions to make about what landed. The read helpers are
-# imported under their original local names so the assertion body below is unchanged.
-_auth = auth_from_env
-_get = get_json
-_get_all_scores = get_all_scores
-_parse_ts = parse_ts
+def _system_prompt_of(observation) -> str:
+    """The system turn of a chat-shaped generation input, or ``""`` when it is not one.
+
+    The seam decodes v4's raw-JSON-string `input` back into the list of messages the
+    deprecated API returned parsed, so this reads the same either way.
+    """
+    inp = observation.input
+    if isinstance(inp, list) and inp and isinstance(inp[0], dict) and inp[0].get("role") == "system":
+        return str(inp[0].get("content", ""))
+    return ""
 
 
 def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
-    base = cfg.target.base_url
-    profile = TargetProfile.detect(base)
+    # `try_resolve`, not `resolved`: bad keys or a wrong host must come back as failed
+    # checks with the reason on each line, which is what this report is for — not as a
+    # traceback in place of it. Unresolved, each read below probes again inside its own
+    # check and fails there (portal #211).
+    profile, unreadable = TargetProfile.detect(cfg.target.base_url).try_resolve()
+    base = profile.base_url
+    reader = profile.reader()
     throttle = profile.post_throttle_s  # space out the reads on Cloud (0 self-hosted)
-    log(f"· verifying against {profile.label} ({base})")
+    log(f"· verifying against {profile.label} ({base})"
+        + (f" — cannot read it: {unreadable}" if unreadable else ""))
     report = VerifyReport()
     drift_start_s, drift_end_s = [p.strip() for p in state.drift_window.split("..")]
     drift_start = datetime.fromisoformat(drift_start_s + "T00:00:00+00:00")
 
     # -- dataset items + sourceTraceId links ------------------------------
     try:
-        items = _get(base, "/api/public/dataset-items",
-                     {"datasetName": state.dataset_name, "limit": 100}, throttle=throttle).get("data", [])
+        items = get_json(base, "/api/public/dataset-items",
+                         {"datasetName": state.dataset_name, "limit": 100},
+                         throttle=throttle).get("data", [])
         n = len(items)
         with_src = sum(1 for it in items if it.get("sourceTraceId"))
         ok = n == state.dataset_items and with_src == n
@@ -82,11 +98,11 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
     try:
         reserved = state.reserved_trace_ids
         leaked = [t for t in reserved if t in item_src_ids]
-        exists = 0
-        for tid in reserved:
-            r = request_retry("GET", f"{base.rstrip('/')}/api/public/traces/{tid}",
-                              auth=_auth(), timeout=20, throttle_s=throttle)
-            exists += 1 if r.status_code == 200 else 0
+        # "Does this trace exist?" is the assertion, and the seam answers None for one that
+        # does not — under v4 that means no observation carries the id, since there is no
+        # trace row to 404.
+        exists = sum(1 for tid in reserved
+                     if reader.trace(tid, with_scores=False) is not None)
         ok = (not leaked) and exists == len(reserved) and len(reserved) > 0
         report.add("reserved_pool", ok,
                    f"{exists}/{len(reserved)} reserved traces exist; {len(leaked)} leaked into dataset")
@@ -95,12 +111,13 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
 
     # -- user_disagreement drift vs baseline ------------------------------
     try:
-        scores = _get_all_scores(base, "user_disagreement", throttle=throttle)
-        before = [s for s in scores if _parse_ts(s["timestamp"]) < drift_start]
-        during = [s for s in scores if _parse_ts(s["timestamp"]) >= drift_start]
+        scores = reader.scores(name="user_disagreement")
+        before = [s for s in scores if s.timestamp and s.timestamp < drift_start]
+        during = [s for s in scores if s.timestamp and s.timestamp >= drift_start]
 
         def rate(rows):
-            vals = [float(s.get("value", 0)) for s in rows]
+            # BOOLEAN scores, so the appeal rate is the mean of their numeric values.
+            vals = [s.numeric_value or 0.0 for s in rows]
             return (sum(vals) / len(vals)) if vals else 0.0
 
         rb, rd = rate(before), rate(during)
@@ -113,9 +130,9 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
 
     # -- answer_quality stays green in the drift window -------------------
     try:
-        aq = _get_all_scores(base, "answer_quality", throttle=throttle)
-        during = [float(s["value"]) for s in aq if _parse_ts(s["timestamp"]) >= drift_start
-                  and s.get("value") is not None]
+        aq = reader.scores(name="answer_quality")
+        during = [s.numeric_value for s in aq
+                  if s.timestamp and s.timestamp >= drift_start and s.numeric_value is not None]
         mean = (sum(during) / len(during)) if during else 0.0
         ok = mean >= 0.7 and len(during) > 0
         report.add("quality_green", ok,
@@ -130,16 +147,12 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
         chat_ok = False
         detail = chat_detail = "no disputed example in state"
         if tid:
-            trace = _get(base, f"/api/public/traces/{tid}", throttle=throttle)
-            obs = trace.get("observations", [])
-            decisions = [o for o in obs if o.get("name") == "decision"]
+            trace = reader.trace(tid, with_scores=False)
+            decisions = [o for o in (trace.observations if trace else []) if o.name == "decision"]
             for o in decisions:
-                if o.get("promptName") == state.prompt_name and o.get("promptVersion") == state.prompt_versions.get("v1"):
+                if o.prompt_name == state.prompt_name and o.prompt_version == state.prompt_versions.get("v1"):
                     linked = True
-                inp = o.get("input")
-                if (isinstance(inp, list) and inp and isinstance(inp[0], dict)
-                        and inp[0].get("role") == "system"
-                        and "credit-decision agent" in str(inp[0].get("content", ""))):
+                if "credit-decision agent" in _system_prompt_of(o):
                     chat_ok = True
             detail = (f"trace {tid[:12]}… decision generations linked to "
                       f"{state.prompt_name} v{state.prompt_versions.get('v1')}: {linked}")
