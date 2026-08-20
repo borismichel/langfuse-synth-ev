@@ -3,7 +3,10 @@
     score configs -> prompt v1/v2 -> backdated traces + scores -> hosted dataset + items
 
 The seed path makes **no model calls**: every trace (including the golden-path v1
-rejections) is a deterministic, templated Decision ingested backdated via the batch API.
+rejections) is a deterministic, templated Decision spooled as backdated OTLP spans
+(portal #210; the pin lives in ``synth.seed.__init__``) — scores stay on legacy
+ingestion, the one envelope type that survives v4. Re-importing a Spool is refused
+rather than resumed: OTLP appends, it does not upsert.
 Writes ``.synth_state.json`` and committed v1 fixtures on the way out.
 """
 from __future__ import annotations

@@ -23,27 +23,44 @@ from synth.cli import app
 GOLDEN_PATH = Path(__file__).resolve().parent / "golden" / "ev_spool.ndjson"
 GOLDEN_TARGET_TRACES = 300
 # The snapshot's own billable tallies, frozen alongside the byte-identical oracle (a
-# deliberate re-bless of ev_spool.ndjson updates both). EV maps target_traces 1:1 to traces.
-GOLDEN_TALLIES = {"traces": 300, "observations": 2562, "scores": 483}
+# deliberate re-bless of ev_spool.ndjson updates both). EV maps target_traces 1:1 to
+# traces. Since the OTLP cutover (portal #210) every observation rides an OTLP span —
+# including one minted root per trace — the trace term is derived from distinct trace
+# ids, and the billable `total` excludes it (a v4 trace is a view over its root, already
+# inside `observations`; portal #220).
+GOLDEN_TALLIES = {"traces": 300, "observations": 2862, "scores": 483, "total": 3345}
 
-# Independent (whitelist duplicated here on purpose) recount, a different code path than
+# Independent (logic duplicated here on purpose) recount, a different code path than
 # the library's, so agreement is a real cross-check rather than a tautology.
 _OBSERVATION_TYPES = {"span-create", "generation-create", "event-create", "observation-create"}
 
 
 def _independent_tally(path: Path) -> dict[str, int]:
     counts = {"traces": 0, "observations": 0, "scores": 0}
+    otlp_trace_ids: set[str] = set()
+    billable = 0
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
             continue
-        etype = json.loads(line)["type"]
+        entry = json.loads(line)
+        if "spanId" in entry and "type" not in entry:  # an OTLP span line
+            counts["observations"] += 1
+            otlp_trace_ids.add(entry["traceId"])
+            billable += 1
+            continue
+        etype = entry["type"]
         if etype == "trace-create":
             counts["traces"] += 1
+            billable += 1
         elif etype in _OBSERVATION_TYPES:
             counts["observations"] += 1
+            billable += 1
         elif etype == "score-create":
             counts["scores"] += 1
+            billable += 1
+    counts["traces"] += len(otlp_trace_ids)
+    counts["total"] = billable
     return counts
 
 
@@ -69,4 +86,6 @@ def test_count_spool_cli_verb_prints_json(tmp_path: Path):
     )
     result = CliRunner().invoke(app, ["count-spool", str(spool)])
     assert result.exit_code == 0, result.output
-    assert json.loads(result.output) == {"traces": 1, "observations": 1, "scores": 1}
+    assert json.loads(result.output) == {
+        "traces": 1, "observations": 1, "scores": 1, "total": 3,
+    }
