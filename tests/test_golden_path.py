@@ -1,7 +1,9 @@
 """Golden-path invariants: the spine of the demo must hold structurally (spec §7)."""
 from datetime import datetime, timezone
 
-from langfuse_synth_core.seed import writepath
+import json
+
+from langfuse_synth_core.seed import otlp
 from synth.config import load_config
 from synth.seed.generator import build_plan
 from synth.seed.traces import build_trace_events
@@ -77,48 +79,79 @@ def test_trace_events_ship_as_typed_otlp_spans():
     assert {"agent", "retriever", "tool", "generation"} <= obs_types
 
 
+def _attrs(span: dict) -> dict:
+    """A span's attributes as a plain mapping, unwrapping the OTLP AnyValue."""
+    return {a["key"]: next(iter(a["value"].values())) for a in span["attributes"]}
+
+
 def test_trace_events_well_formed():
-    # The deep content semantics (prompt linkage, usage-vs-text floors, TTFT ordering) are
-    # wire-independent claims about what the builders are fed, asserted on the batch shape
-    # where the bodies are directly readable; core's own suite proves the OTLP
-    # serialisation of the same arguments, and the test above pins the shipped wire.
+    """The deep content semantics — prompt linkage, usage-vs-text floors, TTFT ordering.
+
+    These are claims about what the builders are *fed*, so they were asserted on the batch
+    envelope's readable bodies while that wire existed. It does not (portal #213), so they
+    are read off the span attributes instead. Core's suite owns the serialisation; this owns
+    the substance.
+    """
+    from langfuse_synth_core.distributions import text_tokens
+
     cfg, plan = _plan()
     spec = next(s for s in plan.golden.disputed_specs if s.kind == "golden_eligible")
-    with writepath.use_spool_write_path(writepath.BATCH):
-        events = build_trace_events(plan.rng, cfg, spec, prompt_v1_version=1)
-    types = [e["type"] for e in events]
-    assert types[0] == "trace-create"
-    assert "generation-create" in types and "span-create" in types
+    events = build_trace_events(plan.rng, cfg, spec, prompt_v1_version=1)
+    spans = [e for e in events if "spanId" in e]
+
     # decision generation links to prompt v1
-    decision = next(e for e in events if e["body"].get("name") == "decision")
-    assert decision["body"]["promptName"] == cfg.golden_path.prompt_name
-    assert decision["body"]["promptVersion"] == 1
+    decision = next(s for s in spans if s["name"] == "decision")
+    decision_attrs = _attrs(decision)
+    assert decision_attrs[otlp.PROMPT_NAME] == cfg.golden_path.prompt_name
+    assert int(decision_attrs[otlp.PROMPT_VERSION]) == 1
     # ... and its input is the actual LLM turn: system prompt + application user message
-    dec_input = decision["body"]["input"]
+    dec_input = json.loads(decision_attrs[otlp.OBS_INPUT])
     assert dec_input[0]["role"] == "system"
     assert "credit-decision agent" in dec_input[0]["content"]
     assert dec_input[1]["role"] == "user"
     assert str(spec.application.vehicle.list_price_eur) in dec_input[1]["content"]
+
     # every generation's input is chat-shaped (the prompt is part of the input), its
     # claimed usage covers at least the visible text, and TTFT falls inside the call
-    from langfuse_synth_core.distributions import text_tokens
+    for span in spans:
+        attrs = _attrs(span)
+        if attrs.get(otlp.OBS_TYPE) != "generation":
+            continue
+        msgs = json.loads(attrs[otlp.OBS_INPUT])
+        assert isinstance(msgs, list) and msgs[0]["role"] == "system", span["name"]
+        usage = json.loads(attrs[otlp.USAGE_DETAILS])
+        input_side = (usage["input"] + usage.get("cache_read_input_tokens", 0)
+                      + usage.get("cache_creation_input_tokens", 0))
+        assert input_side >= text_tokens(msgs), span["name"]
+        assert usage["output"] >= text_tokens(_decoded(attrs[otlp.OBS_OUTPUT])) * 0.8, \
+            span["name"]
+        ttft = attrs[otlp.COMPLETION_START_TIME]
+        assert _iso_ns(span["startTimeUnixNano"]) < ttft < _iso_ns(span["endTimeUnixNano"]), \
+            span["name"]
 
-    for e in events:
-        if e["type"] == "generation-create":
-            b = e["body"]
-            msgs = b["input"]
-            assert isinstance(msgs, list) and msgs[0]["role"] == "system", b["name"]
-            usage = b["usageDetails"]
-            input_side = (usage["input"] + usage.get("cache_read_input_tokens", 0)
-                          + usage.get("cache_creation_input_tokens", 0))
-            assert input_side >= text_tokens(msgs), b["name"]
-            assert usage["output"] >= text_tokens(b["output"]) * 0.8, b["name"]
-            assert b["startTime"] < b["completionStartTime"] < b["endTime"], b["name"]
     # every observation has start <= end
-    for e in events:
-        b = e["body"]
-        if "startTime" in b and "endTime" in b:
-            assert b["startTime"] <= b["endTime"]
+    for span in spans:
+        assert int(span["startTimeUnixNano"]) <= int(span["endTimeUnixNano"])
+
+
+def _decoded(value: str):
+    """An io attribute as data. The wire carries JSON text, except where the value was a
+    plain string to begin with — which core sends verbatim, and the read seam hands back
+    the same way."""
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return value
+
+
+def _iso_ns(nanos: str) -> str:
+    """An OTLP epoch-nanos stamp as the ISO string `completion_start_time` carries, so the
+    three can be ordered against each other."""
+    from datetime import datetime, timezone
+
+    from langfuse_synth_core.timegen import iso
+
+    return iso(datetime.fromtimestamp(int(nanos) / 1e9, tz=timezone.utc))
 
 
 def test_grant_effective_date_is_recent_relative_to_run():

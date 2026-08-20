@@ -45,7 +45,7 @@ Deploying this kit lands everything it takes to present the demo:
 
 - **The Spool** — ~4,000 backdated traces plus scores, sessions, a user
   population, prompts v1/v2, and the hosted `ev-grant-disputed-rejections`
-  dataset, batch-ingested into your Langfuse project. Byte-deterministic and
+  dataset, written into your Langfuse project over OTLP. Byte-deterministic and
   model-free; the full inventory is under
   [What the seeded data contains](#what-the-seeded-data-contains).
 - **The Presenter Runbook** — `DEMO_SCRIPT.md`, generated at seed time and
@@ -191,8 +191,8 @@ cp .env.example .env      # fill LANGFUSE_BASE_URL + keys; ANTHROPIC_API_KEY onl
 
 # 3. preview, then seed
 synth plan     --config config/demo.yaml     # dry run: volumes, golden-path dates, dataset summary (no network)
-synth seed     --config config/demo.yaml     # spool backdated data to disk → batch-import, register prompts, build dataset, emit DEMO_SCRIPT.md
-synth verify   --config config/demo.yaml     # query back via the v2 API and assert the golden path
+synth seed     --config config/demo.yaml     # spool backdated data to disk → import, register prompts, build dataset, emit DEMO_SCRIPT.md
+synth verify   --config config/demo.yaml     # query back through the read seam and assert the golden path
 
 # 4. follow DEMO_SCRIPT.md for the live presentation; the experiment runs the *labelled* prompt:
 synth experiment --config config/demo.yaml                     # production (v1, stale) → RED
@@ -218,22 +218,26 @@ synth submit --config config/demo.yaml --prefab eligible --line 32000   # one-sh
 `synth playground` serves the same configurator (FastAPI) the depot starts as the
 Companion, including the `/analytics` report route.
 
-### Architecture (why the batch ingestion endpoint)
+### Architecture (why raw OTLP, and not the SDK)
 
-The high-level OTel SDK timestamps observations from the wall clock and offers no
-`start_time` — it can't backfill history. So the seed path builds event objects directly and
-posts them to **`POST /api/public/ingestion`** with explicit `timestamp` / `startTime` /
-`endTime` and the `x-langfuse-ingestion-version: 4` header (real-time visibility on the v2
-endpoints). Datasets, prompts and the experiment use the v4 SDK (separate API surfaces).
+The Langfuse SDK timestamps observations from the wall clock and offers no `start_time` — it
+can't backfill history, and a Spool is by definition weeks of backdated history. So the seed
+path builds wire objects directly: every observation is an **OTLP span** posted to
+`POST /api/public/otel/v1/traces` with producer-supplied nanosecond timestamps and
+producer-minted ids, and a trace *is* its root observation (v4 has no separate trace entity).
+Scores stay `score-create` envelopes on `POST /api/public/ingestion` — the supported v4 path
+for them, not a legacy call. Every write carries `x-langfuse-ingestion-version: 4`, without
+which a v4 project files the data where no v4 query or dashboard can see it. Datasets,
+prompts and the experiment use the v4 SDK (separate API surfaces).
 
-Ingestion is **two-phase and recoverable**: generation streams every event to an NDJSON
-**spool on disk** first, then a separate pass **batch-imports** it in chunks. A wedged or slow
-upload can't lose the (deterministic, expensive) generated data — resume with
-`synth import-spool`. The spool lives under `.synth_spool/` (gitignored).
+The write is **two-phase**: generation streams every wire object to an NDJSON **spool on
+disk** first, then a separate pass **imports** it in chunks, so a wedged or slow upload can't
+lose the (deterministic, expensive) generated data. The spool lives under `.synth_spool/`
+(gitignored). That import is **not re-runnable** — see Guardrails & teardown.
 
 **Cloud vs self-hosted** is a single URL-derived fact in [`target.py`](src/synth/target.py)
-(`TargetProfile.detect`), kept out of every call site. The batch ingestion endpoint already
-retries, but the hand-rolled REST helpers (the project guardrail, prompt-label PATCH,
+(`TargetProfile.detect`), kept out of every call site. The Spool's writer already retries,
+but the hand-rolled REST helpers (the project guardrail, prompt-label PATCH,
 score-config creation, and `synth verify`'s paginated query-backs) did single shots that
 Langfuse Cloud rate-limits with 429s. The shared core's `langfuse_synth_core.http.request_retry`
 is the one **Retry-After-aware** backoff they all share (moved to the lib in Ring 2, #33 — it
@@ -244,7 +248,7 @@ get a small `post_throttle_s` spacing so they don't trip the limiter to begin wi
 ```
 config/demo.yaml ──▶ generator (deterministic plan)
                           │
-        score configs ─▶ prompts (v1→production, v2→development) ─▶ spool→batch-import traces+scores ─▶ dataset+items
+        score configs ─▶ prompts (v1→production, v2→development) ─▶ spool→import traces+scores ─▶ dataset+items
                           │                                                │
                           └────────────── .synth_state.json ──────────────┘
                                                   │
@@ -269,7 +273,7 @@ src/synth/
   agent.py                # decide(application, prompt_label) -> Decision  ← the one lever
   config.py rng.py models.py pricing.py timegen.py distributions.py content.py
   target.py http.py       # Cloud-vs-self-hosted facts + Retry-After-aware REST helper
-  seed/                   # ingest (spool+batch), events, traces, sessions, scores, golden_path, prompts, datasets, run
+  seed/                   # ingest (spool+import), events, traces, sessions, scores, golden_path, prompts, datasets, run
   experiment/run.py       # run_experiment(label) → decide(i.input, label)  ← production | development
   verify.py script.py cli.py
 templates/demo_script.md.j2
@@ -288,13 +292,18 @@ the `seed` for a different-but-reproducible run.
 
 - The seeder **refuses to run** unless the target project's name contains `target.project_hint`
   (default `demo`). Point it only at demo/sandbox projects.
-- Data is append-only within Langfuse's 30-day merge window, and seed IDs are deterministic, so
-  re-running **upserts** rather than duplicates. Prompt registration is **idempotent on content**
-  (no version churn — v1 stays version 1), and the `production`→v1 / `development`→v2 labels are
-  **re-asserted on every seed**, so the red→green flip always resets.
+- **A re-seed is not a reset.** OTLP appends; it does not upsert. Re-seeding a project that
+  already holds this demo tells the whole story twice, and `synth import-spool` refuses a
+  second run over the same spool rather than silently doubling the volume — clear the
+  project's Langfuse data and import from the top, or re-generate the spool. The old batch
+  transport did upsert on a deterministic id; that property belonged to the transport, and it
+  is gone (core `docs/WRITE_PATHS.md`).
+- Prompt registration is still **idempotent on content** (no version churn — v1 stays version
+  1), and the `production`→v1 / `development`→v2 labels are **re-asserted on every seed**, so
+  the red→green flip always resets. Prompts are a separate API surface from the Spool.
 - **Teardown is project-level**: spin up a fresh project and re-seed. A fresh project is also
-  required to *change coverage* (which scores get emitted) — append-only ingestion never deletes,
-  so dropped scores would otherwise linger as orphans.
+  required to *change coverage* (which scores get emitted) — ingestion never deletes, so
+  dropped scores would otherwise linger as orphans.
 
 ### CI/CD regression gate (optional)
 
