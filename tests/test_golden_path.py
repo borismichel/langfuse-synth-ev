@@ -1,6 +1,7 @@
 """Golden-path invariants: the spine of the demo must hold structurally (spec §7)."""
 from datetime import datetime, timezone
 
+from langfuse_synth_core.seed import writepath
 from synth.config import load_config
 from synth.seed.generator import build_plan
 from synth.seed.traces import build_trace_events
@@ -56,10 +57,35 @@ def test_disputed_traces_fall_in_drift_window():
         assert start <= s.timestamp <= end
 
 
-def test_trace_events_well_formed():
+def test_trace_events_ship_as_typed_otlp_spans():
+    """The wire the kit actually ships (portal #210): the trace shell is the minted root
+    span, the agent-graph steps carry their real types natively, and only scores remain
+    ingestion envelopes."""
     cfg, plan = _plan()
     spec = next(s for s in plan.golden.disputed_specs if s.kind == "golden_eligible")
     events = build_trace_events(plan.rng, cfg, spec, prompt_v1_version=1)
+    spans = [e for e in events if "spanId" in e]
+    envelopes = [e for e in events if e.get("type")]
+    assert spans and all(e["type"] == "score-create" for e in envelopes)
+    assert events[0] in spans  # the root span rides where the trace envelope used to
+
+    obs_types = set()
+    for s in spans:
+        for a in s["attributes"]:
+            if a["key"] == "langfuse.observation.type":
+                obs_types.add(a["value"]["stringValue"])
+    assert {"agent", "retriever", "tool", "generation"} <= obs_types
+
+
+def test_trace_events_well_formed():
+    # The deep content semantics (prompt linkage, usage-vs-text floors, TTFT ordering) are
+    # wire-independent claims about what the builders are fed, asserted on the batch shape
+    # where the bodies are directly readable; core's own suite proves the OTLP
+    # serialisation of the same arguments, and the test above pins the shipped wire.
+    cfg, plan = _plan()
+    spec = next(s for s in plan.golden.disputed_specs if s.kind == "golden_eligible")
+    with writepath.use_spool_write_path(writepath.BATCH):
+        events = build_trace_events(plan.rng, cfg, spec, prompt_v1_version=1)
     types = [e["type"] for e in events]
     assert types[0] == "trace-create"
     assert "generation-create" in types and "span-create" in types
