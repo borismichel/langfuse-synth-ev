@@ -103,8 +103,14 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
 
 
 def _dataset_run_url(cfg: Config, lf) -> str | None:
-    """`{base}/project/{id}/datasets/{id}` — the runs/comparison page. None if it can't
-    be resolved (never fatal: the run already landed; this is just a convenience link)."""
+    """`{base}/project/{id}/datasets/{id}/experiments` — the runs/comparison page.
+
+    Under v4 a dataset run is an **experiment** and the run list lives on the dataset's
+    Experiments tab; the bare `datasets/{id}` is an alias that redirects to Items, which is
+    not where a presenter clicking "dataset runs" expects to land (portal #212).
+
+    None if it can't be resolved (never fatal: the run already landed; this is just a
+    convenience link)."""
     try:
         from langfuse_synth_core.seed.ingest import assert_demo_project
 
@@ -113,7 +119,7 @@ def _dataset_run_url(cfg: Config, lf) -> str | None:
         dataset = lf.get_dataset(cfg.golden_path.dataset.name)
         dataset_id = getattr(dataset, "id", None)
         if project_id and dataset_id:
-            return f"{base}/project/{project_id}/datasets/{dataset_id}"
+            return f"{base}/project/{project_id}/datasets/{dataset_id}/experiments"
     except Exception:  # noqa: BLE001 — convenience only
         return None
     return None
