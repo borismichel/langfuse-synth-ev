@@ -68,9 +68,8 @@ def test_the_dataset_run_link_lands_on_the_experiments_tab():
     """The presenter clicks this to reach the comparison view. `datasets/{id}` alone
     redirects to Items, and `datasets/{id}/runs` does not exist at all."""
     text = (SRC / "synth" / "experiment" / "run.py").read_text()
-    assert "/datasets/{dataset_id}/experiments" in text
-    assert "/datasets/{dataset_id}}\"" not in text
-    assert "/runs" not in text
+    built = {_template(s) for s in _URL.findall(text)}
+    assert built == {"datasets/{}/experiments"}, built
 
 
 def test_the_runbook_links_use_known_routes():
