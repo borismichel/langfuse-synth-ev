@@ -72,18 +72,10 @@ def _first_token_at(r: Rng, s: datetime, e: datetime) -> datetime:
 def _subsidy_eligibility(cfg: Config, spec: TraceSpec) -> tuple[dict, bool]:
     """What ``check_subsidy_eligibility`` reports, and whether the agent ignored it.
 
-    For a *live* submission the policy is active today, so an eligible BEV sees the **real
-    grant** — and a v1 decision that didn't apply it is flagged ``ignored_by_agent`` (the bug
-    made visible). Seed traces keep the stale-window / no-subsidy text that the §7 regression
-    relies on."""
-    if spec.kind == "live":
-        app = spec.application
-        if app.vehicle.type == "BEV" and app.vehicle.list_price_eur <= cfg.golden_path.price_cap_eur:
-            g = cfg.golden_path.grant_amount_eur
-            out = {"applicable_subsidies": [{"name": "EV Purchase Grant", "amount_eur": g}],
-                   "note": f"BEV ≤ €{cfg.golden_path.price_cap_eur:,} qualifies for the €{g:,} EV purchase grant"}
-            return out, spec.decision.applied_grant_eur == 0   # grant offered but not applied
-        return {"applicable_subsidies": [], "note": "no subsidy applies to this vehicle"}, False
+    Seed traces only: the stale-window / no-subsidy text the §7 regression relies on. A live
+    submission runs against *today's* policy and reports a real grant, and it says so from
+    its own writer (:func:`synth.live.trace.live_subsidy_eligibility`) — the playground moved
+    off the Spool's builders in portal #211, so this branch no longer has a live caller."""
     if spec.stale_grant_window:
         return {"applicable_subsidies": [], "note": "no subsidy programs configured for this policy version"}, True
     return {"applicable_subsidies": [], "note": "no active subsidy at application date"}, False
