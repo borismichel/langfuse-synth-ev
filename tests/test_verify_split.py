@@ -109,7 +109,8 @@ def _install_seeded_env(monkeypatch, *, generation: str,
                 "startTime": DURING_TS, "promptName": "credit_decision", "promptVersion": 1,
                 "input": json.dumps(SYSTEM_TURN) if raw_io else SYSTEM_TURN}
 
-    def handler(method, url, *, params=None, auth=None, timeout=30, throttle_s=0.0):
+    def handler(method, url, *, params=None, auth=None, timeout=30, throttle_s=0.0,
+                attempts=8):
         params = params or {}
         path = url.replace("http://localhost:3000", "")
 
