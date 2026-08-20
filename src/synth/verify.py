@@ -65,11 +65,16 @@ def _system_prompt_of(observation) -> str:
 
 
 def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
-    profile = TargetProfile.detect(cfg.target.base_url).resolved()
+    # `try_resolve`, not `resolved`: bad keys or a wrong host must come back as failed
+    # checks with the reason on each line, which is what this report is for — not as a
+    # traceback in place of it. Unresolved, each read below probes again inside its own
+    # check and fails there (portal #211).
+    profile, unreadable = TargetProfile.detect(cfg.target.base_url).try_resolve()
     base = profile.base_url
     reader = profile.reader()
     throttle = profile.post_throttle_s  # space out the reads on Cloud (0 self-hosted)
-    log(f"· verifying against {profile.label} ({base})")
+    log(f"· verifying against {profile.label} ({base})"
+        + (f" — cannot read it: {unreadable}" if unreadable else ""))
     report = VerifyReport()
     drift_start_s, drift_end_s = [p.strip() for p in state.drift_window.split("..")]
     drift_start = datetime.fromisoformat(drift_start_s + "T00:00:00+00:00")

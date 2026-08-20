@@ -201,3 +201,28 @@ def test_verify_recognises_a_v4_host_and_says_so(monkeypatch):
     lines: list[str] = []
     V.run_verify(load_config("config/demo.yaml"), _state(), log=lines.append)
     assert any("v4 read APIs" in line for line in lines), lines
+
+
+def test_an_unreadable_target_is_reported_rather_than_raised(monkeypatch):
+    """Bad keys, a wrong host, a server error: the seam's probe cannot tell those apart and
+    refuses to resolve them into an arm. `verify` is a report, though, so it must come back
+    with every check failed and the reason on each line — never a traceback in place of the
+    report (portal #211)."""
+    class _Resp:
+        status_code = 403
+
+        def json(self):
+            return {}
+
+        def raise_for_status(self):
+            import requests
+            raise requests.HTTPError("403")
+
+    monkeypatch.setattr(read, "request_retry", lambda *a, **k: _Resp())
+    monkeypatch.setattr(V, "get_json",
+                        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("403")))
+
+    checks = _run()
+
+    assert set(checks) == set(ALL_CHECKS)
+    assert not any(checks.values()), checks
