@@ -24,7 +24,6 @@ from __future__ import annotations
 
 import tempfile
 from collections.abc import Mapping
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -32,10 +31,14 @@ from synth.config import load_config
 from synth.seed.run import run_seed
 from synth.state import REPO_ROOT
 
-# Fixed oracle inputs. The run date is pinned (identical to the determinism test's anchor)
-# so the backdated timestamps are reproducible; the config seed (42) is the declared seed.
+# Fixed oracle inputs. The as-of date is pinned HERE (the dev-only gate), never in `src/`:
+# production resolves it from the operator's `--set generation.as_of_date` or the clock
+# (portal #229), and the oracle pins it so the backdated timestamps are reproducible on
+# any day. It anchors at noon UTC — identical to the determinism test's anchor and to the
+# `run_date=` this adapter passed before the knob was honoured, so the golden bytes did
+# not move. The config seed (42) is the declared seed.
 CONFIG = REPO_ROOT / "config" / "demo.yaml"
-RUN_DATE = datetime(2026, 6, 9, 12, 0, 0, tzinfo=timezone.utc)
+AS_OF_DATE = "2026-06-09"
 
 
 def seed(target_traces: int, params: Mapping[str, Any]) -> bytes:
@@ -49,11 +52,20 @@ def seed(target_traces: int, params: Mapping[str, Any]) -> bytes:
     this gate now proves the acceptance criterion directly: turning ``target_traces`` through
     the hook yields a Spool byte-identical to pre-migration EV at the same effective volume.
 
+    The as-of date travels the same way (``--set generation.as_of_date=YYYY-MM-DD``), so
+    the gate proves the portal's third input reaches the Spool's bytes too (portal #229).
+
     ``params`` completes the ``seed(target_traces, params)`` gate contract; EV's direct count
     derives from the knob alone, so the Step-0 oracle (config defaults, seed 42) reads nothing
     from it.
     """
-    cfg = load_config(str(CONFIG), overrides=[f"generation.target_traces={int(target_traces)}"])
+    cfg = load_config(
+        str(CONFIG),
+        overrides=[
+            f"generation.target_traces={int(target_traces)}",
+            f"generation.as_of_date={AS_OF_DATE}",
+        ],
+    )
 
     with tempfile.TemporaryDirectory(prefix="ev-golden-") as tmp:
         spool_path = Path(tmp) / "events.ndjson"
@@ -63,7 +75,6 @@ def seed(target_traces: int, params: Mapping[str, Any]) -> bytes:
             cfg,
             dry_run=True,
             persist=False,
-            run_date=RUN_DATE,
             spool_path=spool_path,
             do_import=False,
             log=lambda _m: None,
