@@ -7,6 +7,7 @@ the *shape* of the generated data lives here so a run is auditable and reproduci
 from __future__ import annotations
 
 import os
+from datetime import date
 from pathlib import Path
 from typing import Any, Literal, Mapping
 
@@ -48,6 +49,11 @@ class Generation(BaseModel):
     target_traces: int | None = None
     total_traces: int = 4000
     window_days: int = 30
+    # The operator's as-of date (portal #72 sends `--set generation.as_of_date=YYYY-MM-DD`
+    # on every forward generate; portal #229 made the kit honour it). The seeded window
+    # ends on this day; None means "no tether set" and resolves to the wall clock at seed
+    # time (`timegen.resolve_run_date`). A future date is by design — never clamped.
+    as_of_date: date | None = None
     population: Population = Field(default_factory=Population)
     environments: Environments = Field(default_factory=Environments)
 
