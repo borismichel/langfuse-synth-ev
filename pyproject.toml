@@ -1,6 +1,6 @@
 [project]
 name = "langfuse-demo-synth"
-version = "0.6.1"
+version = "0.6.2"
 description = "Synthesiser for believable, time-distributed Langfuse demo data, anchored by the EV-subsidy regression golden path."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,7 +26,7 @@ dependencies = [
     # core's DELIBERATE pin (portal #211): 4.14.0 is the first SDK carrying a client for the
     # v4 Experiments API, which is where a dataset run lives once a target has cut over.
     "langfuse>=4.14,<5",
-    "anthropic>=0.40.0",     # live model calls at demo time — Anthropic provider (default)
+    "anthropic>=1.0.0",      # live model calls at demo time — Anthropic provider (default); 1.0.0 removed the sampling params, core v4.1.1 no longer sends them (portal #231)
     "openai>=1.40.0",        # live model calls at demo time — OpenAI provider (LAN-378)
     "pydantic>=2.6",
     "pyyaml>=6.0",
