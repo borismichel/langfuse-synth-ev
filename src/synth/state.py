@@ -68,6 +68,7 @@ class RunState(AnchorsIO):
     dry_run: bool = False
     # Optional anchors keep older saved runs readable without inventing resources.
     history_window_days: int | None = None
+    history_imported: bool | None = None
     dataset_id: str = ""
     demo_dataset_name: str = ""
     demo_dataset_id: str = ""

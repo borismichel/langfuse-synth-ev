@@ -126,6 +126,7 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     # -- fixtures + state -------------------------------------------------
     state = _build_state(cfg, plan, versions, project_name, dataset_info, dry_run)
     state.project_id = project_id
+    state.history_imported = not dry_run and do_import
     if persist:
         _write_fixtures(plan)
         state.save()

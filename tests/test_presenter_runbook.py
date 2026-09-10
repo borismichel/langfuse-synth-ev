@@ -36,6 +36,11 @@ def test_runbook_keeps_uploaded_counts_policy_and_curation_when_config_changes(t
     expected = state.reserved_item['expected_output']
     assert expected['financed_principal_eur'] == application['vehicle']['list_price_eur'] - 4000
     assert state.reserved_item['source_trace_id'] == state.reserved_example['trace_id']
+    state.history_imported = False
+    pending = render_script(cfg, state, out_path=tmp_path / 'pending.md').read_text()
+    assert 'without importing it' in pending
+    assert '/traces/' not in pending
+    assert '/datasets/returned-dataset-id/items' in pending
 
 
 def test_older_empty_state_and_dry_run_have_setup_instead_of_invented_links(tmp_path):
@@ -47,7 +52,7 @@ def test_older_empty_state_and_dry_run_have_setup_instead_of_invented_links(tmp_
                      spool_path=tmp_path / 'events.ndjson', log=lambda _: None)
     # Simulate a saved run from before presenter anchors were introduced.
     raw = state.__dict__.copy()
-    for key in ('history_window_days', 'demo_dataset_name', 'demo_dataset_id',
+    for key in ('history_window_days', 'history_imported', 'demo_dataset_name', 'demo_dataset_id',
                 'demo_dataset_items', 'reserved_item', 'ambient_incidents', 'dataset_id'):
         raw.pop(key)
     raw.update(project_id='unverified-project')

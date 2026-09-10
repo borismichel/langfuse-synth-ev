@@ -26,6 +26,11 @@
 > Complete a real deployment before using these anchors live. No project resource links are fabricated.
 
 {% endif %}
+{% if not dry_run and history_imported is not true %}
+> [!NOTE] Verify historical import
+> {% if history_imported is false %}This seed generated history without importing it (`--no-import`). Complete its first import and verify the project before presenting trace examples. Trace links are withheld.{% else %}This older state does not record import completion. Verify the linked historical examples exist before presenting.{% endif %}
+
+{% endif %}
 {% if ambient_incidents is none or ambient_incidents %}
 **Focused setup required:** {% if ambient_incidents %}this seed includes {{ ambient_incidents | join(', ') }}.{% else %}incident settings were not saved by this older seed.{% endif %} For a fresh short-demo deployment, turn off Cost-spike ambience, Error-burst ambience and Latency-degrade ambience in deployment configuration. The equivalent existing kit overrides are in the developer fallback below. Changing configuration cannot remove incidents already ingested.
 

@@ -23,6 +23,8 @@ def output_dir() -> Path:
 def _deep_link(state: RunState, suffix: str, label: str) -> str:
     if not state.project_id or state.dry_run:
         return ""
+    if suffix.startswith("traces/") and state.history_imported is False:
+        return ""
     return f"[{label}]({state.base_url.rstrip('/')}/project/{quote(state.project_id, safe='')}/{suffix})"
 
 
