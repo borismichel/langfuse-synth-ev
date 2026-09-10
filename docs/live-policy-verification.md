@@ -5,13 +5,18 @@ Use the native `policy_correctness` evaluator from `POLICY_EVALUATOR.py`. It che
 grant, principal and decision; a correct rejection can pass. Project access and
 successful hosted execution are prerequisites for claiming Cloud completion.
 
+See the [10 September 2026 verification record](live-policy-verification-results.md)
+for a completed rehearsal, including retained model failures and coverage evidence.
+
 ## Prepare the deployment and rule
 
 1. Use a designated demo project and the Companion running this kit revision.
    Record project URL, kit revision, deployment policy and prompt name. Complete
    the native experiment comparison from #235 and record the tested numeric
    candidate version, cohort, settings, policy scores and rejection controls.
-   Stop if candidate acceptance or hosted evaluator execution is still pending.
+   Review failures before deciding whether this bounded demo can proceed; do not
+   present a partial or failed comparison as a clean candidate. Stop if the hosted
+   evaluator cannot execute or the intended live cases have no reviewed expectations.
 2. Download the Demo Package. `POLICY_EVALUATION.json.production_rule` is a UI
    recipe, not a request body. Its scope identifies this prompt name and the exact
    deployment policy. Reuse the tested evaluator with those constants. Do not
@@ -27,7 +32,7 @@ successful hosted execution are prerequisites for claiming Cloud completion.
    name exactly `credit_agent`, type `AGENT`, environment exactly `production`,
    and metadata key `evaluation_scope` equal to the recipe's value. Inspect the
    actual matched rows before activation: exactly one agent per submitted trace,
-   including the undisputed case. Check the excluded sibling `decision`, root,
+   including the undisputed case. Check the excluded child `decision`, root,
    tools and simulated generations. Staging, native/SDK experiments and evaluator
    executions must not match. The unique marker is only attached to the live
    agent; do not broaden the rule to names alone or a logical-root shortcut.
@@ -38,6 +43,12 @@ successful hosted execution are prerequisites for claiming Cloud completion.
    filter may require `disputed` or `user_disagreement`. No expected-output
    dataset or mapping is needed. Saving package files never enables this rule,
    launches a historical batch, or creates a notification destination.
+
+In the inspected Cloud UI, **Rules → Attach to rule → Create a new rule** starts
+with a root-observation filter even when the editor sample is already scoped.
+Replace it with all four recipe conditions and recheck the actual match. Use the
+Builder to confirm exact Name selection (the editor's free-text name query can
+default to `contains`), Metadata `=`, and 100% sampling before **Save and activate**.
 
 The initial scope-review submission predates activation and is an editor sample,
 not evidence of automatic scoring. Submit again after activation to prove the
@@ -59,7 +70,7 @@ incoming rule fires without manual batch evaluation or customer feedback.
    line unchanged; live submission stamps today's UTC application date, so run
    both submissions on the same UTC date and check that date against the policy.
    The Companion reads `production` with cache TTL zero on every request. Record
-   the fresh trace and `credit_agent` ID. On its sibling `decision` generation,
+   the fresh trace and `credit_agent` ID. On its child `decision` generation,
    inspect the **native managed prompt link** and numeric version. Agent metadata
    also records that version for convenience; it is not a substitute for the
    native generation link. Evaluator input/output come only from the agent.
@@ -73,7 +84,9 @@ incoming rule fires without manual batch evaluation or customer feedback.
    still reject, with the qualifying grant and net principal correct, and receive
    `true`. If the current date precedes the policy, choose/review an applicable
    ineligible control instead and record the reason. Never promise the candidate
-   passes until the real model output and score have arrived.
+   passes until the real model output and score have arrived. If a control returns
+   the wrong decision, retain that failure and score; do not retry until green or
+   substitute a different control without recording both outcomes.
 
 Promotion affects subsequent decisions. Old traces and their prompt links remain
 historical evidence; historical appeal rates and cached Companion analytics are

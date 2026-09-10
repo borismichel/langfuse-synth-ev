@@ -1,0 +1,765 @@
+{
+  "project_id": "cmtvq2l5x00u8ad0d7rpc0uvp",
+  "kit_revision": "78b96c2",
+  "verified_on": "2026-09-10",
+  "policy": {
+    "amount_eur": 6000,
+    "price_cap_eur": 50000,
+    "effective_date": "2026-09-03"
+  },
+  "rule": {
+    "id": "cmtvsbobx022iad0dtzdyubx5",
+    "name": "ev_live_decision_5f1f890e74cc436b",
+    "active": true,
+    "sampling": 1,
+    "match_all": {
+      "name": "credit_agent",
+      "type": "AGENT",
+      "environment": "production",
+      "metadata.evaluation_scope": "ev_live_decision_5f1f890e74cc436b"
+    },
+    "reviewed_match_count_before_activation": 1,
+    "reviewed_match_count_final": 6,
+    "pre_activation_sample_trace_id": "6dab942573658d486c9e9779ea6abc91"
+  },
+  "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+  "evaluator_version": 1,
+  "promotion": {
+    "prompt": "credit_decision",
+    "from_version": 1,
+    "to_version": 2,
+    "updated_at": "2026-09-10T17:18:44.780Z",
+    "promotion_count": 1
+  },
+  "submissions": [
+    {
+      "trace_id": "a8599b575bcdc4b6be1b472583a6e94d",
+      "observation_id": "32ecb479254a528a",
+      "started_at": "2026-09-10T17:12:29.983Z",
+      "input": {
+        "application": {
+          "applicant_id": "playground_applicant",
+          "approved_line_eur": 32000,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 38000
+          },
+          "application_date": "2026-09-10"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        }
+      },
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 38000,
+        "approved_line_eur": 32000,
+        "reason": "The financed principal of \u20ac38,000 exceeds the applicant's approved credit line of \u20ac32,000 by \u20ac6,000."
+      },
+      "trace_tags": [
+        "ev-grant",
+        "playground"
+      ],
+      "generation": {
+        "id": "4b0bf6086f118814",
+        "promptId": "34601b26-9c75-47be-b6d2-8083dbbfa7b6",
+        "promptName": "credit_decision",
+        "promptVersion": 1
+      },
+      "score": {
+        "id": "da1ba9a7-639a-5990-afed-580a428eec14",
+        "name": "policy_correctness",
+        "timestamp": "2026-09-10T17:12:31.143Z",
+        "source": "EVAL",
+        "environment": "production",
+        "value": false,
+        "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 32000, got 38000; decision: expected approve, got reject",
+        "metadata": {
+          "status": "policy_error",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 32000,
+            "decision": "approve"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "183cfde9f478c1cc1482583da7990cab",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "a8599b575bcdc4b6be1b472583a6e94d",
+          "target_observation_id": "32ecb479254a528a",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "32ecb479254a528a",
+          "traceId": "a8599b575bcdc4b6be1b472583a6e94d"
+        }
+      },
+      "trace_observation_count": 9,
+      "scoped_observation_count": 1,
+      "feedback_score_count": 0
+    },
+    {
+      "trace_id": "b750d570dcb2a81e42830cdb1405714e",
+      "observation_id": "486218552f4c704a",
+      "started_at": "2026-09-10T17:19:02.528Z",
+      "input": {
+        "application": {
+          "applicant_id": "playground_applicant",
+          "approved_line_eur": 32000,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 38000
+          },
+          "application_date": "2026-09-10"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        }
+      },
+      "output": {
+        "decision": "approve",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 32000,
+        "reason": "The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-10 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exactly meets the approved line of EUR 32,000."
+      },
+      "trace_tags": [
+        "ev-grant",
+        "playground"
+      ],
+      "generation": {
+        "id": "e240db7dab2529d7",
+        "promptId": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+        "promptName": "credit_decision",
+        "promptVersion": 2
+      },
+      "score": {
+        "id": "b8b3ffdc-8a5d-5f85-aef9-208cce32b4fa",
+        "name": "policy_correctness",
+        "timestamp": "2026-09-10T17:19:03.300Z",
+        "source": "EVAL",
+        "environment": "production",
+        "value": true,
+        "comment": "Policy correct: grant EUR 6000; 38000 - 6000 = 32000; principal <= line 32000: approve.",
+        "metadata": {
+          "status": "pass",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 32000,
+            "decision": "approve"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "0f5da27e7368326ef1c5a359d7124a39",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "b750d570dcb2a81e42830cdb1405714e",
+          "target_observation_id": "486218552f4c704a",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "486218552f4c704a",
+          "traceId": "b750d570dcb2a81e42830cdb1405714e"
+        }
+      },
+      "trace_observation_count": 9,
+      "scoped_observation_count": 1,
+      "feedback_score_count": 0
+    },
+    {
+      "trace_id": "115382be9948757875e1ee2539891705",
+      "observation_id": "d590fb47a3099be1",
+      "started_at": "2026-09-10T17:19:18.990Z",
+      "input": {
+        "application": {
+          "applicant_id": "playground_applicant",
+          "approved_line_eur": 31000,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 38000
+          },
+          "application_date": "2026-09-10"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        }
+      },
+      "output": {
+        "decision": "approve",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 31000,
+        "reason": "The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-10 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exceeds the approved line of EUR 31,000."
+      },
+      "trace_tags": [
+        "ev-grant",
+        "playground"
+      ],
+      "generation": {
+        "id": "9063c53fb608d447",
+        "promptId": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+        "promptName": "credit_decision",
+        "promptVersion": 2
+      },
+      "score": {
+        "id": "58f7872f-bd26-586d-9f62-5d727f63243f",
+        "name": "policy_correctness",
+        "timestamp": "2026-09-10T17:19:20.636Z",
+        "source": "EVAL",
+        "environment": "production",
+        "value": false,
+        "comment": "decision: expected reject, got approve",
+        "metadata": {
+          "status": "policy_error",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 32000,
+            "decision": "reject"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "ebb87a77bfea81587521a0485c008907",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "115382be9948757875e1ee2539891705",
+          "target_observation_id": "d590fb47a3099be1",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "d590fb47a3099be1",
+          "traceId": "115382be9948757875e1ee2539891705"
+        }
+      },
+      "trace_observation_count": 9,
+      "scoped_observation_count": 1,
+      "feedback_score_count": 0
+    },
+    {
+      "trace_id": "325483789efd1b2b981961ca4d6ab2ba",
+      "observation_id": "977f3f994e27a619",
+      "started_at": "2026-09-10T17:20:23.571Z",
+      "input": {
+        "application": {
+          "applicant_id": "playground_applicant",
+          "approved_line_eur": 40000,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 48000
+          },
+          "application_date": "2026-09-10"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        }
+      },
+      "output": {
+        "decision": "approve",
+        "list_price_eur": 48000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-10 >= 2026-09-03, list price EUR 48,000 <= EUR 50,000), reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000, resulting in a rejection."
+      },
+      "trace_tags": [
+        "ev-grant",
+        "playground"
+      ],
+      "generation": {
+        "id": "d52bcbe896307de0",
+        "promptId": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+        "promptName": "credit_decision",
+        "promptVersion": 2
+      },
+      "score": {
+        "id": "e0013264-a7ff-52a3-b101-2acf45c23061",
+        "name": "policy_correctness",
+        "timestamp": "2026-09-10T17:20:24.345Z",
+        "source": "EVAL",
+        "environment": "production",
+        "value": false,
+        "comment": "decision: expected reject, got approve",
+        "metadata": {
+          "status": "policy_error",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 42000,
+            "decision": "reject"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "e2d7cc83d55b56a1f0eb095f9c0cd065",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "325483789efd1b2b981961ca4d6ab2ba",
+          "target_observation_id": "977f3f994e27a619",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "977f3f994e27a619",
+          "traceId": "325483789efd1b2b981961ca4d6ab2ba"
+        }
+      },
+      "trace_observation_count": 9,
+      "scoped_observation_count": 1,
+      "feedback_score_count": 0
+    },
+    {
+      "trace_id": "f5d6af752d0598af48a84752eb3f770a",
+      "observation_id": "2b11d3349fea08df",
+      "started_at": "2026-09-10T17:21:00.462Z",
+      "input": {
+        "application": {
+          "applicant_id": "playground_applicant",
+          "approved_line_eur": 40000,
+          "vehicle": {
+            "type": "PHEV",
+            "list_price_eur": 42000
+          },
+          "application_date": "2026-09-10"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        }
+      },
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 42000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "The vehicle is a PHEV and does not qualify for the EV Purchase Grant, resulting in a financed principal of EUR 42,000 which exceeds the approved credit line of EUR 40,000."
+      },
+      "trace_tags": [
+        "ev-grant",
+        "playground"
+      ],
+      "generation": {
+        "id": "407045689f82d524",
+        "promptId": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+        "promptName": "credit_decision",
+        "promptVersion": 2
+      },
+      "score": {
+        "id": "0da9ba5b-cb52-553b-8db0-8a554ae650a2",
+        "name": "policy_correctness",
+        "timestamp": "2026-09-10T17:21:01.161Z",
+        "source": "EVAL",
+        "environment": "production",
+        "value": true,
+        "comment": "Policy correct: grant EUR 0; 42000 - 0 = 42000; principal > line 40000: reject.",
+        "metadata": {
+          "status": "pass",
+          "expected": {
+            "applied_grant_eur": 0,
+            "financed_principal_eur": 42000,
+            "decision": "reject"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "d185fec77554bcbc749b6335fe7e9818",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "f5d6af752d0598af48a84752eb3f770a",
+          "target_observation_id": "2b11d3349fea08df",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "2b11d3349fea08df",
+          "traceId": "f5d6af752d0598af48a84752eb3f770a"
+        }
+      },
+      "trace_observation_count": 9,
+      "scoped_observation_count": 1,
+      "feedback_score_count": 0
+    }
+  ],
+  "expected_ids": [
+    "32ecb479254a528a",
+    "486218552f4c704a",
+    "d590fb47a3099be1",
+    "977f3f994e27a619",
+    "2b11d3349fea08df"
+  ],
+  "coverage_records": [
+    {
+      "item_id": "32ecb479254a528a",
+      "status": "completed",
+      "name": "policy_correctness",
+      "value": false,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 32000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        },
+        "job_execution_id": "183cfde9f478c1cc1482583da7990cab",
+        "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+        "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+        "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+        "target_trace_id": "a8599b575bcdc4b6be1b472583a6e94d",
+        "target_observation_id": "32ecb479254a528a",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      }
+    },
+    {
+      "item_id": "486218552f4c704a",
+      "status": "completed",
+      "name": "policy_correctness",
+      "value": true,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 32000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        },
+        "job_execution_id": "0f5da27e7368326ef1c5a359d7124a39",
+        "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+        "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+        "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+        "target_trace_id": "b750d570dcb2a81e42830cdb1405714e",
+        "target_observation_id": "486218552f4c704a",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      }
+    },
+    {
+      "item_id": "d590fb47a3099be1",
+      "status": "completed",
+      "name": "policy_correctness",
+      "value": false,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 32000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        },
+        "job_execution_id": "ebb87a77bfea81587521a0485c008907",
+        "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+        "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+        "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+        "target_trace_id": "115382be9948757875e1ee2539891705",
+        "target_observation_id": "d590fb47a3099be1",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      }
+    },
+    {
+      "item_id": "977f3f994e27a619",
+      "status": "completed",
+      "name": "policy_correctness",
+      "value": false,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 42000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        },
+        "job_execution_id": "e2d7cc83d55b56a1f0eb095f9c0cd065",
+        "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+        "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+        "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+        "target_trace_id": "325483789efd1b2b981961ca4d6ab2ba",
+        "target_observation_id": "977f3f994e27a619",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      }
+    },
+    {
+      "item_id": "2b11d3349fea08df",
+      "status": "completed",
+      "name": "policy_correctness",
+      "value": true,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 42000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-09-03"
+        },
+        "job_execution_id": "d185fec77554bcbc749b6335fe7e9818",
+        "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+        "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+        "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+        "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+        "target_trace_id": "f5d6af752d0598af48a84752eb3f770a",
+        "target_observation_id": "2b11d3349fea08df",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      }
+    }
+  ],
+  "coverage": {
+    "expected_count": 5,
+    "scored_count": 5,
+    "passed_count": 2,
+    "policy_failure_count": 3,
+    "malformed_output_ids": [],
+    "missing_score_ids": [],
+    "execution_error_ids": [],
+    "pending_ids": [],
+    "invalid_record_ids": [],
+    "duplicate_ids": [],
+    "unexpected_ids": [],
+    "complete": true
+  },
+  "native_experiments": [
+    {
+      "experiment_id": "cmtvqtv8e01c3ad0f1567evze",
+      "observations": [
+        {
+          "observation_id": "c9d49f1cd157a5cf",
+          "score_id": "aaf365cc-2633-5d20-878f-0e5bc70bbb19",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "39fe4584d5eb7c06",
+          "score_id": "e640923d-4132-5d0b-8c9c-22ff403fb513",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "a643f38e916342df",
+          "score_id": "b5c35745-2ea7-540b-bf9d-34096b98e324",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "4c9008dbac205bb1",
+          "score_id": "4b6ea763-cf9e-51b0-beab-5822623e3e7e",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "fe43dad43b5c5bd0",
+          "score_id": "683360eb-81e6-5fa0-85e1-ca7932a70c4e",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "9795d6835625d586",
+          "score_id": "5a4b73e0-a51c-51b0-a3bf-56211460bd3f",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "5080ab1542833808",
+          "score_id": "316feb58-43d5-5334-91ab-69c46aa5357e",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "c52a73a884550d9d",
+          "score_id": "e35e69b5-5db5-512c-842f-ac3dc61202cd",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "71405d0dc4e8b61f",
+          "score_id": "306f2115-2b25-5e62-abd4-a0f602105248",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "5262366a3e61c90f",
+          "score_id": "2a8e8c45-02e0-5e84-8c61-67d0ec915621",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "913c429db958657e",
+          "score_id": "d1c0d88b-152c-5a18-bbfd-0cafe571ab48",
+          "value": false,
+          "status": "policy_error"
+        },
+        {
+          "observation_id": "b39113c28901b041",
+          "score_id": "49a11330-86dd-52f0-9db9-d0f21d7eff63",
+          "value": false,
+          "status": "policy_error"
+        }
+      ],
+      "counts": {
+        "policy_error": 8,
+        "pass": 4
+      }
+    },
+    {
+      "experiment_id": "cmtvqx0za01c1ad0dpecjjt61",
+      "observations": [
+        {
+          "observation_id": "9a7792ded48b2ba8",
+          "score_id": "2193f258-ce9d-5e69-8225-5bdb77f9306a",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "5d480ed80434a4fb",
+          "score_id": "95797241-8428-5ff5-80a1-d8ede761eb12",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "712c9f77dbd6ff6e",
+          "score_id": "7bf6d42c-b115-50cf-ba4d-ffb900b5bb3a",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "916fa8b0ac96024f",
+          "score_id": "f839abcc-b8b9-5767-8fc5-013bb63e4271",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "60ab5701dd952e9d",
+          "score_id": "d0d129a9-91aa-5faf-bf85-d30eb70eae73",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "b757561df4f3168c",
+          "score_id": "ca4d82b9-77d4-5c6a-b5d3-6cca02819237",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "4e5cd4da24106f3a",
+          "score_id": "132c7c79-d8aa-507f-a63c-3bb7cdb094a1",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "c04a565ddb3b8b73",
+          "score_id": "77f97964-049c-5b7e-b57b-5a8154f5188b",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "8209528a47bcac79",
+          "score_id": "c4ae02e0-5867-5d5a-a1d0-d536780bbd31",
+          "value": false,
+          "status": "malformed_output"
+        },
+        {
+          "observation_id": "9faff1869618a8cb",
+          "score_id": "e7b6b8df-0d0f-56db-8e3c-52de0bc97298",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "b7cd4ac5845d586a",
+          "score_id": "5ce04053-de42-535d-815c-0745458cdbd1",
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "observation_id": "05ba783b39dc4b88",
+          "score_id": "32015fef-1cae-5791-ad67-b5dcef19e766",
+          "value": true,
+          "status": "pass"
+        }
+      ],
+      "counts": {
+        "pass": 11,
+        "malformed_output": 1
+      }
+    }
+  ],
+  "optional_alert_created": false,
+  "notification_destinations_created": false
+}
