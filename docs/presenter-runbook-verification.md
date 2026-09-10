@@ -59,3 +59,24 @@ Merge/release the prerequisite and runbook kit changes together before registeri
 the new kit image in the depot. Existing registered releases are not modified by
 these branches. Bookmark real evaluation/comparison/rule resources at rehearsal;
 seed neither invents their IDs nor launches evaluations or notification setup.
+
+## Screenshot follow-up
+
+Eight original Cloud screenshots now accompany the relevant runbook steps with
+descriptive alt text, captions and full-size links. The user reviewed all eight
+and explicitly approved public publication. Assets are pinned to commit
+`3f316dded0cec21e3740c593aa3cbe25411cbc9d`; no portal runtime or image-policy
+change is required. The captured UI also confirms the Tracing navigation label
+and Playground → Fresh playground menu.
+
+Captions identify rehearsal values, an unsaved schema configuration, the latest
+dataset-version default, an evaluator picker before attachment and a live-scope
+sample picker that does not configure the ongoing rule. None claims a completed
+comparison, passing evaluator test or live production proof.
+
+Re-ran the full kit suite: **143 passed**. Portal: **452 passed**, including
+the eight image nodes, immutable sources and matching full-size links;
+TypeScript typecheck passed. Inspected the published images in the local
+Talk track and Demo Package reader components, including captions and sizing.
+This remains reader verification, not a production deployment or Cloud policy
+acceptance. Other sessions' live-verification work and worktrees were untouched.

@@ -1,8 +1,11 @@
+{% set screenshots = 'https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/3f316dded0cec21e3740c593aa3cbe25411cbc9d/docs/img/presenter' %}
 # Presenter Runbook — EV policy regression
 
 > Generated from this deployment's saved seed state (`{{ run_date }}`). Allow 12–15 minutes:
 > two native comparison runs, one promotion, then one fresh customer-facing proof.
 > Counts below describe the seed snapshot; confirm the current dataset and prompt labels in rehearsal.
+
+**Screenshot reference:** captured in Langfuse Cloud on 10 September 2026 using a synthetic rehearsal project. Image dates, counts, versions and filters are examples; use this deployment's saved values and instructions below. Setup screenshots are not evidence of completed evaluation. Each image has a full-size link.
 
 ## Before the audience arrives
 
@@ -52,13 +55,21 @@ The Companion report is a **cached historical snapshot** of generated data. Its 
 
 ## 1:00–2:30 · Discover the case in Observations
 
-Open **Observations**, choose a date range covering **{{ drift_window }}**, and enter this query in the filter search bar. Use autocomplete and press Enter; the sidebar reflects the same filters.
+Open **Observations** (labelled **Tracing** in the captured UI), choose a date range covering **{{ drift_window }}**, and enter this query in the filter search bar. Use autocomplete and press Enter; the sidebar reflects the same filters.
 
 ```text
 environment:production type:AGENT name:=credit_agent scores.user_disagreement:true
 ```
 
+![Tracing with production, AGENT, credit_agent and Boolean disagreement filters]({{ screenshots }}/observations-filter.png)
+
+*Filter reference: the search bar and sidebar select the same cohort. Choose your deployment's date range; the screenshot's 7-day window is only an example.* [Open full size]({{ screenshots }}/observations-filter.png)
+
 This chooses one decision-bearing agent observation per application. The score can be on its trace. Open the `user_disagreement` score and read its customer comment. Live **Dispute writes a score, not a disputed tag**; do not rely on `tags:disputed`. If the target lacks the v4 search bar, use equivalent available sidebar filters and open the linked example directly.
+
+![Trace Scores tab showing user_disagreement and the customer's grant complaint]({{ screenshots }}/customer-feedback.png)
+
+*Feedback reference: select the trace's Scores tab to find the complaint; inspect the full comment before following the decision-bearing agent.* [Open full size]({{ screenshots }}/customer-feedback.png)
 
 {% if disputed_example %}
 {{ disputed_trace_link or 'Locate the seeded disputed example in the verified project.' }}: applicant **{{ disputed_example.applicant_id }}**, {{ disputed_example.vehicle_type }} **€{{ '{:,}'.format(disputed_example.list_price_eur) }}**, line **€{{ '{:,}'.format(disputed_example.approved_line_eur) }}**, application date **{{ disputed_example.application_date }}**. The recorded result is **{{ disputed_example.decision }}**, grant **€{{ '{:,}'.format(disputed_example.applied_grant_eur) }}**, principal **€{{ '{:,}'.format(disputed_example.financed_principal_eur) }}**.
@@ -117,11 +128,19 @@ Copy the matching reserved item's metadata from `NATIVE_EXPERIMENT_ITEMS.json` a
 {% endif %}
 Freeze this final cohort for both runs. Record its actual count and dataset version timestamp. If the experiment wizard has no Dataset Version selector, keep all items unchanged until both runs complete. This is a targeted regression set, not an estimate of population accuracy.
 
+![Saved dataset item with application JSON string and structured policy expectation]({{ screenshots }}/curated-item.png)
+
+*Curation reference: the saved reserved case keeps an application string and a reviewed Expected output object. Use the generated payload above, not the screenshot's fixed values.* [Open full size]({{ screenshots }}/curated-item.png)
+
 > “This complaint is now a test we can keep. The failed answer explains why the case matters; the correct expectation comes from the policy.”
 
 ## 5:30–7:00 · Compare the decision prompt in Playground
 
-Open the example's **decision** generation and choose **Open in Playground**. Keep the same application in both comparison variants. Load the baseline numeric version and the prepared candidate from **{{ prompt_name }}**. Confirm `application` contains the JSON string and that no variable is unresolved. The candidate applies the qualifying grant before comparing principal to the line.
+Open the example's **decision** generation and choose **Open in Playground** (captured as **Playground → Fresh playground**). Keep the same application in both comparison variants. Load the baseline numeric version and the prepared candidate from **{{ prompt_name }}**. Confirm `application` contains the JSON string and that no variable is unresolved. The candidate applies the qualifying grant before comparing principal to the line.
+
+![Decision generation showing stale rejection, prompt version reference and Playground menu]({{ screenshots }}/decision-playground.png)
+
+*Playground entry: start from the decision generation, whose Input, Output and managed prompt reference are visible together.* [Open full size]({{ screenshots }}/decision-playground.png)
 
 Use the same verified connection, model, token limit and structured output schema in both variants. Run the side-by-side comparison. In the short demo, keep the prepared candidate; if authoring live, save a new version and record that exact number for experiments and promotion. Keep `production` on the baseline for now.
 
@@ -140,6 +159,18 @@ Open the chosen dataset's **Experiments → Run experiment → via User Interfac
 
 Require `decision` (enum `approve`, `reject`), integer `list_price_eur`, `applied_grant_eur`, `financed_principal_eur`, `approved_line_eur`, and string `reason` in the reusable Decision JSON schema; disallow additional properties. Rehearsal showed that prompt instructions alone can produce Markdown fences or conflicting answers, so inspect actual outputs.
 
+![Native experiment prompt and model configuration with structured output enabled]({{ screenshots }}/experiment-configure.png)
+
+*Prompt and model: this unsaved example selects candidate v2. Add the reviewed Decision schema before running; the enabled switch alone is insufficient.* [Open full size]({{ screenshots }}/experiment-configure.png)
+
+![Native experiment dataset selection with version selector and application variable coverage]({{ screenshots }}/experiment-dataset.png)
+
+*Dataset: verify application coverage and select the same frozen version for both runs. This screenshot still shows the latest-version default; its 12/12 count belongs to the rehearsal cohort.* [Open full size]({{ screenshots }}/experiment-dataset.png)
+
+![Native experiment evaluator picker offering policy_correctness as a code evaluator]({{ screenshots }}/experiment-evaluator.png)
+
+*Evaluator: choose policy_correctness and review the attachment for both runs. The open picker shows availability, not an already attached evaluator or scored result.* [Open full size]({{ screenshots }}/experiment-evaluator.png)
+
 Open the two results side by side. Show an eligible rejection repaired by the candidate, a still-above-line BEV, an over-cap BEV and a non-BEV control. Read the amounts and `policy_correctness` explanations beside the outputs. Confirm the final item count is scored in **each** run; separate false policy scores, malformed results, missing scores and failed executions. Do not promise an all-green candidate before seeing the result.
 
 If execution is slow, open the completed comparison bookmarked in rehearsal and say when it ran. If its scores are missing too, show the available outputs and say evaluation is incomplete; do not call it a policy pass or promote an unverified candidate.
@@ -155,6 +186,10 @@ Return to the Companion App (local fallback: http://127.0.0.1:8000). Submit the 
 The production rule must already select this deployment's **production / AGENT / credit_agent** plus **metadata.evaluation_scope** equal to `POLICY_EVALUATION.json.production_rule.match_all`'s recorded value. Use all recipe conditions and full sampling; the scope marker excludes seeded history, staging, experiments, siblings and evaluator executions. Do not require disagreement or a disputed tag. Follow `LIVE_POLICY_VERIFICATION.md` in the Demo Package and verify the observation's own Input carries `application` and `policy`. If that guide or rule recipe is missing, this kit predates the live evaluation prerequisite; deploy the release containing it before claiming the ending works. If the rule is absent, set it up and verify it before presenting; do not substitute the Companion's decision-agreement card for a native score.
 
 If the score is pending, show its execution status and wait or use the explicitly labelled rehearsal proof. If execution failed, inspect the evaluation trace; if the score is false, inspect the explanation. These are different outcomes. Do not describe the live proof as complete until the new version and passing score are visible.
+
+![Python evaluator editor with a sample picker restricted to live production credit_agent observations]({{ screenshots }}/evaluator-editor.png)
+
+*Evaluator reference: the right-hand sample picker here uses the live scope. Historical testing uses the manifest's bounded historical IDs instead. Sample-picker filters do not configure the ongoing rule; review it through Rules. This screen does not show a passing test or live score.* [Open full size]({{ screenshots }}/evaluator-editor.png)
 
 **Closing words — after that verification:**
 
