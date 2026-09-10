@@ -5,14 +5,14 @@
 schema_version: 1
 slug: ev-subsidy-regression
 name: "EV Subsidy Silent Regression"
-tagline: "Catch a silent decision-quality regression and close the loop: trace → judge → dataset → prompt fix → experiment."
+tagline: "Investigate a disputed loan, score the policy, test the prompt and verify the production fix."
 vertical: "Financial Services / Consumer Lending"
 story: |
-  A subsidy rule change lands quietly and the credit-decision agent starts
-  silently disagreeing with itself: a red→green prompt flip that never threw an
-  error. This kit backfills ~4,000 backdated traces, a hosted dataset of disputed
-  rejections, an LLM-as-judge `user_disagreement` beat, and prompt v1→v2 so an SA
-  can walk the full close-the-loop story — trace to fix to experiment — in one sitting.
+  A stale financing policy ignores an available EV grant and rejects eligible
+  customers. Investigate generated history and sampled disagreement, define a
+  native policy evaluator, curate a regression case and compare two prompt
+  versions in Langfuse. Promote once, then verify a fresh Companion decision.
+  The generated Presenter Runbook guides a 12–15 minute presentation.
 
 langfuse_features:
   - tracing
@@ -30,6 +30,12 @@ assets:
       title: "Full spec"
     - path: VERIFICATION.md
       title: "Verification checks"
+    - path: docs/native-prompt-experiments.md
+      title: "Native experiment setup"
+    - path: docs/policy-evaluation.md
+      title: "Policy evaluation setup"
+    - path: docs/live-policy-verification.md
+      title: "Live policy verification"
   screenshots:
     - docs/img/playground-form.png
 
@@ -87,6 +93,16 @@ config_schema:
       default: true
       title: "Cost-spike ambience"
       description: "Adds a backdated cost-spike incident for a richer dashboard."
+    ambient_incidents.error_burst.enabled:
+      type: boolean
+      default: true
+      title: "Error-burst ambience"
+      description: "Turn off with the other incident cohorts for the short policy demo."
+    ambient_incidents.latency_degrade.enabled:
+      type: boolean
+      default: false
+      title: "Latency-degrade ambience"
+      description: "Keep off for the short policy demo; enable for an operational detour."
   required: []
 
 pipeline:
@@ -111,9 +127,12 @@ pipeline:
 artifacts:
   - path: DEMO_SCRIPT.md
     render: markdown
-    title: "Demo script"
+    title: "Presenter Runbook"
   - path: NATIVE_EXPERIMENT_ITEMS.json
     title: "Native experiment and reserved curation inputs"
+  - path: NATIVE_EXPERIMENTS.md
+    render: markdown
+    title: "Native experiment setup"
 
   - path: POLICY_EVALUATOR.py
     title: "Policy correctness code evaluator"
@@ -124,6 +143,9 @@ artifacts:
   - path: POLICY_EVALUATION.md
     render: markdown
     title: "Policy evaluation setup"
+  - path: LIVE_POLICY_VERIFICATION.md
+    render: markdown
+    title: "Live policy verification"
 
 live_components:
   - name: playground

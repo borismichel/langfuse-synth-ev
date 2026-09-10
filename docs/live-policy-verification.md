@@ -5,7 +5,7 @@ Use the native `policy_correctness` evaluator from `POLICY_EVALUATOR.py`. It che
 grant, principal and decision; a correct rejection can pass. Project access and
 successful hosted execution are prerequisites for claiming Cloud completion.
 
-See the [10 September 2026 verification record](live-policy-verification-results.md)
+See the [10 September 2026 verification record](https://github.com/borismichel/langfuse-synth-ev/blob/09547dd2d42d5898b3a884313765c68d79febed0/docs/live-policy-verification-results.md)
 for a completed rehearsal, including retained model failures and coverage evidence.
 
 ## Prepare the deployment and rule

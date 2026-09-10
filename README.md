@@ -96,18 +96,25 @@ The live decision playground is a small configurator so the audience can emit *t
 trace: pick one of five prefabs or enter a custom application against an **editable credit
 line**, submit, and get the **real production decision** back — rendered as a native
 agent-graph trace at the top of the timeline. A **Dispute** button logs a `user_disagreement`
-appeal (with a free-text comment) on that trace, nudging the dashboard's appeal rate live. The
+appeal (with a free-text comment) on that trace. The Companion analytics stay a cached historical snapshot. The
 prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
 subsequent submissions from reject → approve — no code change.
 
-The playground also carries the demo's **central red/green beat**. At the very bottom of the
-page, behind a deliberately quiet `presenter tools` disclosure, sit two buttons — **Run eval ·
-production** and **Run eval · development** — that run the hosted dataset through the labelled
-prompt server-side and render the verdict, the matched-item counts and a dataset-runs deep
-link in scene. They are presenter controls, not part of the fiction: collapsed and muted so a
-prospect reading the loan application never registers them. The Presenter Runbook's step 6
-walks it. No shell is involved, and the model calls ride the deployment's own LLM key through
-the Companion Adapter.
+The Presenter Runbook puts investigation, policy evaluation, curation, Playground comparison
+and two native prompt experiments in Langfuse. It ends with one promotion and a fresh
+Companion submission whose version and native policy score are checked in Langfuse.
+Allow 12–15 minutes; finish connection/evaluator/rule setup and a scored rehearsal first.
+The generated artifact records missing resources honestly and includes setup instructions.
+
+For the short demo, switch off all three ambient incident cohorts in the depot's existing
+configuration form. The generated runbook includes equivalent `--set` commands for local
+use. This is a focused configuration, so the default operational scenario and its Spool
+remain unchanged. Prepare a fresh project: changing settings cannot remove ingested history.
+
+The **presenter tools** disclosure keeps **Run eval · production** and **Run eval · development**
+as SDK fallbacks on the full regression dataset. Their card measures decision agreement,
+not the native grant/principal policy check. A completed native rehearsal comparison is
+the preferred fallback for slow execution.
 
 The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
 
