@@ -110,7 +110,13 @@ real item context and reconcile expected/scored/missing/error counts.
 Compare the score column alongside each output. Inspect the false negative,
 still-above-line BEV and ineligible rejection controls, including grant and principal.
 Only promote after inspecting actual results. Move `production` to the tested
-candidate, resubmit the same application in the loan app, and inspect its fresh trace.
+candidate once, following `LIVE_POLICY_VERIFICATION.md`: first activate and verify
+the scoped incoming production rule on an undisputed baseline submission. After
+promotion, resubmit the same application and inspect the fresh trace's native
+prompt-version link and `policy_correctness` score. Submit a correct rejection
+control too. Keep pending evaluation, execution error and policy failure distinct.
+Promotion changes subsequent decisions; old traces, historical appeal rates and
+the Companion analytics snapshot remain historical.
 
 **Companion fallback:** the presenter tools' **Run eval · production/development**
 buttons still run SDK experiments. Their immediate red/green card is **decision
@@ -128,8 +134,10 @@ application against an **editable credit line** and gets the **real production d
 at the top of the timeline. Hit **Dispute** with a comment (*"the €{{ '{:,}'.format(grant_amount_eur) }} EV grant should
 put me under my line"*) → a `user_disagreement` score and comment land on that trace.
 Open the trace in Langfuse to inspect the feedback; the Companion analytics snapshot stays unchanged.
-If v2 was promoted in step 6, the eligible application already approves. To demonstrate the contrast again,
-reset `production` to v1, submit and dispute, then promote v2 and resubmit the same eligible application.
+If the candidate was promoted in step 6, keep that label in place. Fresh decisions
+receive the policy check even without a dispute; inspect each actual result.
+Use the optional alert walkthrough in `LIVE_POLICY_VERIFICATION.md` to explain
+pass-rate windows and no-data behavior. Notification destinations are opt-in.
 
 ---
 

@@ -85,6 +85,10 @@ bounded historical selection and explicitly score native baseline/candidate
 experiments. An optional Boolean LLM judge uses the aligned rubric and reviewed
 expectations. Seed remains model-free and never launches historical evaluations.
 The Companion card is **decision agreement** only; it does not check grant or principal.
+Then follow [fresh-decision verification](docs/live-policy-verification.md), also
+shipped as `LIVE_POLICY_VERIFICATION.md`, to activate the scoped production rule,
+promote once and verify native scores on fresh, undisputed Companion submissions.
+The optional alert walkthrough leaves notification destinations explicitly opt-in.
 
 ## The Companion, played live
 
