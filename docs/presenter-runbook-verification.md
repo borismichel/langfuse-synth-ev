@@ -55,7 +55,7 @@ its rejection control. The runbook names `LIVE_POLICY_VERIFICATION.md` and the
 production-rule recipe supplied by that prerequisite; if absent, it directs the
 presenter to the release containing them before presenting the ending.
 
-Merge/release the prerequisite and runbook kit changes together before registering
+Release the prerequisite and runbook kit changes together before registering
 the new kit image in the depot. Existing registered releases are not modified by
 these branches. Bookmark real evaluation/comparison/rule resources at rehearsal;
 seed neither invents their IDs nor launches evaluations or notification setup.
@@ -80,3 +80,8 @@ TypeScript typecheck passed. Inspected the published images in the local
 Talk track and Demo Package reader components, including captions and sizing.
 This remains reader verification, not a production deployment or Cloud policy
 acceptance. Other sessions' live-verification work and worktrees were untouched.
+
+Screenshot follow-up review: Standards **0 findings**, Spec **0 findings** after
+inspection of all eight captures and their pinned references. The user approved
+publication and requested landing on main; the release prerequisites above
+remain separate from merging this guide.
