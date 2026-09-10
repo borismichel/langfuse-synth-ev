@@ -15,6 +15,11 @@ and optional judge definition. `POLICY_EVALUATION.md` is this setup guide.
 Creating these files does not create rules, evaluate history, or call a model.
 Do not reuse an evaluator from a deployment with different policy constants.
 
+For the live ending after the tested candidate is ready, use
+`LIVE_POLICY_VERIFICATION.md` and this manifest's `production_rule` recipe. The
+guide covers undisputed submissions, one scoped agent observation per application,
+prompt promotion, native score coverage and an optional alert walkthrough.
+
 ## Editor and bounded history
 
 1. Open **Evaluators → New evaluator → Code evaluator → Python**. Paste the

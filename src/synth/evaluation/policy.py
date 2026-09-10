@@ -86,6 +86,8 @@ def evaluate(ctx: Any) -> EvaluationResult:
         raise ValueError("policy: amount and cap must be non-negative")
     raw = _message(ctx.observation.input, "user", "input")
     app = _object(raw, "input")
+    if "policy" in app and _object(app["policy"], "input.policy") != POLICY:
+        raise ValueError("input.policy: deployment policy differs from evaluator constants")
     if "application" in app:
         app = _object(app["application"], "input.application")
     vehicle = _object(app.get("vehicle"), "input.vehicle")

@@ -26,6 +26,7 @@ seeded operations are all simulated; live submissions use one actual decision ca
 """
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Any
 
 from langfuse_synth_core.distributions import cache_split, sample_tokens, text_tokens
@@ -35,6 +36,7 @@ from langfuse_synth_core.rng import Rng
 from ..agent import GrantRule
 from ..config import Config
 from ..content import explain_io, extract_io, model_label, retrieve_io
+from ..evaluation.production import live_scope
 from ..models import Application, Decision
 
 TRACE_NAME = "credit_agent.assess_application"
@@ -79,9 +81,13 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
                       {"id": afford_call_id, "name": "compute_affordability"}]
 
         with trace.observation("credit_agent", as_type="agent",
-                               input=application.model_dump(),
+                               input={"application": application.model_dump(),
+                                      "policy": asdict(rule)},
                                metadata={"tool_calls": tool_calls,
                                          "ignored_grant": ignored_by_agent,
+                                         "evaluation_scope": live_scope(cfg.golden_path.prompt_name, rule),
+                                         "prompt_name": cfg.golden_path.prompt_name,
+                                         "prompt_version": getattr(prompt, "version", None),
                                          "execution": "representative_simulation"}) as agent:
             raw, extract_in, extract_out = extract_io(application)
             with agent.span("load_application", input={"raw": raw}) as load:
