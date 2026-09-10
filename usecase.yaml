@@ -34,6 +34,8 @@ assets:
       title: "Native experiment setup"
     - path: docs/policy-evaluation.md
       title: "Policy evaluation setup"
+    - path: docs/live-policy-verification.md
+      title: "Live policy verification"
   screenshots:
     - docs/img/playground-form.png
 
@@ -141,6 +143,9 @@ artifacts:
   - path: POLICY_EVALUATION.md
     render: markdown
     title: "Policy evaluation setup"
+  - path: LIVE_POLICY_VERIFICATION.md
+    render: markdown
+    title: "Live policy verification"
 
 live_components:
   - name: playground

@@ -85,3 +85,24 @@ Screenshot follow-up review: Standards **0 findings**, Spec **0 findings** after
 inspection of all eight captures and their pinned references. The user approved
 publication and requested landing on main; the release prerequisites above
 remain separate from merging this guide.
+
+## Integration with concurrent main changes
+
+Before landing, fetched #236's newly merged kit commit `09547dd`. Resolved its
+template overlap by retaining the illustrated timed runbook and explicitly
+carrying forward the undisputed baseline check, live rejection control, retained
+failures and no-reset instruction. Added its generated `LIVE_POLICY_VERIFICATION.md`
+to the manifest so the runbook's package link is actually delivered.
+
+The newly landed `docs/live-policy-verification-results.md` now records the
+completed incoming-rule workflow: baseline false, same eligible application true
+after one promotion, and a correct rejection true. It also retains two failing
+BEV controls and a malformed native candidate output. That evidence supersedes
+the earlier pending #236 status above; it does not establish an all-green
+candidate or close the remaining #235 comparison acceptance.
+
+Integration checks: **143 kit tests**, **452 portal tests**, targeted pyright and
+portal typecheck pass; manifest blocking checks pass with the two existing
+advisories. Standards review has no findings. Spec review caught the live guide's
+relative evidence link, which the package reader cannot open; replaced it with
+an absolute link pinned to #236's landed commit.

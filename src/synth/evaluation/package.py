@@ -9,6 +9,7 @@ from ..agent import GrantRule
 from ..seed.demo_cohort import demonstration_items
 from ..seed.generator import Plan
 from ..state import REPO_ROOT
+from .production import production_rule
 
 
 def evaluator_source(rule: GrantRule) -> str:
@@ -70,6 +71,7 @@ def write_package(plan: Plan, destination: Path) -> list[Path]:
             "output": spec.decision.model_dump()})
     source = evaluator_source(rule)
     manifest = {"policy": asdict(rule), "score_name": "policy_correctness",
+        "production_rule": production_rule(plan.cfg.golden_path.prompt_name, rule),
         "code_evaluator": {"type": "code", "name": "policy_correctness",
                            "sourceCodeLanguage": "PYTHON", "sourceCode": source},
         "historical": {"expected_count": len(historical), "observations": historical},
@@ -84,6 +86,7 @@ def write_package(plan: Plan, destination: Path) -> list[Path]:
     files = {"POLICY_EVALUATOR.py": source,
              "POLICY_EVALUATION.json": json.dumps(manifest, indent=2) + "\n",
              "POLICY_COVERAGE.py": Path(__file__).with_name("coverage.py").read_text(),
+             "LIVE_POLICY_VERIFICATION.md": (REPO_ROOT / "docs" / "live-policy-verification.md").read_text(),
              "POLICY_EVALUATION.md": (REPO_ROOT / "docs" / "policy-evaluation.md").read_text()}
     for name, content in files.items():
         (destination / name).write_text(content)
