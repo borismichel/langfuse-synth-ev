@@ -1,6 +1,6 @@
 # Policy evaluation verification — 10 September 2026
 
-Scope: portal issue #235, EV kit base `afc3131`. Local implementation is reviewed;
+Scope: portal issue #235, rebased onto EV kit `78b5e3d` after #234 PR #35. Local implementation is reviewed;
 Cloud acceptance is **pending**. Do not close the issue based on this report.
 
 ## Local evidence
@@ -32,14 +32,33 @@ Cloud acceptance is **pending**. Do not close the issue based on this report.
 
 ## Remaining Cloud evidence
 
-The prerequisite #234 session owns Chrome. No browser changes or historical/model
-runs were performed for #235. The read-only experiments endpoint returned no runs
-on 10 September at 16:26 UTC; this does not establish current or eventual results.
+The #234 Cloud rehearsal is now merged in PR #35. This session left Chrome
+untouched and used the read-only experiment-items API to retrieve its 24 synthetic
+items (12 per run; no further cursor). All inputs were JSON-encoded chat arrays.
+The evaluator now decodes that envelope before selecting the sole user message,
+then parses the application JSON. This also supports already-decoded runtime arrays.
+
+Executing the standalone source locally on the actual exported inputs/outputs, with
+the deployment policy EUR 6,000 / EUR 50,000 / effective 2026-09-03, produced:
+
+| Native run | Expected / locally scored | Pass | Policy failure | Malformed | Execution error |
+|---|---:|---:|---:|---:|---:|
+| `cmtvqtv8e01c3ad0f1567evze` (v1) | 12 / 12 | 4 | 8 | 0 | 0 |
+| `cmtvqx0za01c1ad0dpecjjt61` (v2) | 12 / 12 | 11 | 0 | 1 | 0 |
+
+The candidate's item `bc564606-4899-5301-92cd-4c2d3b95f0f2` contains two
+conflicting fenced Decision objects. It is rejected as malformed rather than
+silently choosing a corrected answer. These results match #234's independently
+reviewed expectations. Both runs contain the same 12 item IDs; there are no missing
+or duplicate local results. These are **local evaluations of actual Cloud outputs**,
+not hosted `policy_correctness` scores or proof of the Cloud evaluator runtime.
+See [the native rehearsal record](native-prompt-experiments.md#cloud-verification-record)
+for experiment URLs, source provenance and pinned model/dataset settings.
 
 Still required:
 
-1. Actual native experiment item input/output shapes and successful normalization
-   in Langfuse's runtime (local fixtures do not prove this).
+1. Successful execution in Langfuse's evaluator runtime; the real exported
+   payloads are now checked locally but do not establish hosted execution.
 2. Contrasting editor tests, evaluator URL/version and explanations.
 3. A deliberately bounded historical UI batch, with one `credit_agent` per
    application and reconciled expected/scored/missing/execution-error coverage.

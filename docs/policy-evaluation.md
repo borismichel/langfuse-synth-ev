@@ -44,14 +44,16 @@ as a substitute for the observation name: logical roots can have physical parent
 ## Native experiment scoring
 
 Follow the native prompt experiment guide to freeze the cohort and model settings.
-In **Start Experiment → Prompt Experiment**, explicitly select `policy_correctness`
+In **Experiments → Run experiment → via User Interface → Configure**, explicitly select `policy_correctness`
 for BOTH baseline and candidate. A production observation rule does not configure
 experiments. For already-completed experiments use the available experiment
 re-evaluation control, or rerun both prompts with the evaluator explicitly selected.
 
-Before the full comparison, inspect real item context in the evaluator editor.
+Enable Structured output with the Decision schema in both runs, as described in
+the native experiment guide. Before the full comparison, inspect real item context
+in the evaluator editor.
 Input normalization supports the bare application and the dataset's `application`
-JSON string wrapper. Native chat input must have exactly one user message carrying
+JSON string wrapper. Native chat input (an array or a JSON-encoded array) must have exactly one user message carrying
 that application JSON. Output can be a Decision object, JSON text (optionally one
 JSON code fence), or a single assistant message carrying that text. Unsupported or
 ambiguous shapes must be surfaced, never guessed from sibling spans or expected

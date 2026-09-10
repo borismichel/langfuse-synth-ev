@@ -60,6 +60,13 @@ def _day(value: Any, label: str) -> date:
 
 
 def _message(value: Any, role: str, label: str) -> Any:
+    # Native experiment API exports may encode the whole chat array as JSON.
+    # Decode the envelope before selecting its one user/assistant message.
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            pass  # Plain output/fenced JSON is handled by _object below.
     if isinstance(value, list):
         messages = [m for m in value if isinstance(m, dict) and m.get("role") == role]
         if len(messages) != 1:
