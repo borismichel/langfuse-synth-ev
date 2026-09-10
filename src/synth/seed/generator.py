@@ -76,7 +76,7 @@ def _build_ambient(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
         env = "production" if r.chance(prod_share) else "staging"
         specs.append(TraceSpec(
             trace_id=r.trace_id("ambient", nid), timestamp=ts, application=app, decision=dec,
-            user_id=user["userId"], session_id=None, environment=env, kind="ambient",
+            user_id=user["userId"], session_id=None, environment=env, kind="ambient", grant_rule=rule,
             plan_step=r.chance(cfg.model_mix.plan_step_share)))
     return specs
 

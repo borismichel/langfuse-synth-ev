@@ -158,3 +158,22 @@ def test_grant_effective_date_is_recent_relative_to_run():
     cfg, plan = _plan()
     # effective date = run_date + offset (negative) -> in the past, within the window
     assert plan.golden.effective_date < RUN_DATE
+
+
+def test_seeded_rejection_ignores_an_available_deployment_grant():
+    cfg = load_config("config/demo.yaml")
+    cfg.generation.total_traces = 120
+    cfg.golden_path.grant_amount_eur = 4000
+    cfg.golden_path.price_cap_eur = 45000
+    plan = build_plan(cfg, RUN_DATE)
+    spec = next(s for s in plan.specs if s.kind == "golden_eligible")
+    spans = {s["name"]: _attrs(s) for s in build_trace_events(plan.rng, cfg, spec, 1)}
+    evidence = json.loads(spans["check_subsidy_eligibility"][otlp.OBS_OUTPUT])
+    assert evidence["applicable_subsidies"] == [{"name": "EV Purchase Grant", "amount_eur": 4000}]
+    assert evidence["policy"] == {"amount_eur": 4000, "price_cap_eur": 45000,
+                                  "effective_date": "2026-06-02"}
+    assert json.loads(spans["check_subsidy_eligibility"]["langfuse.observation.metadata.ignored_by_agent"]) is True
+    affordability = json.loads(spans["compute_affordability"][otlp.OBS_INPUT])
+    assert affordability["financed_principal_eur"] == spec.application.vehicle.list_price_eur
+    assert json.loads(spans["compute_affordability"][otlp.OBS_OUTPUT]) == {"within_line": False}
+    assert spec.decision.decision == "reject" and spec.decision.applied_grant_eur == 0

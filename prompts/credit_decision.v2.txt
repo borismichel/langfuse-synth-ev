@@ -9,9 +9,10 @@ INPUT (provided in the user message as JSON):
 POLICY:
 - Determine any point-of-sale purchase grant the vehicle qualifies for, record it
   in applied_grant_eur, and set financed_principal_eur = list price - applied grant.
-    EV Purchase Grant (effective {{grant_date}}): battery-electric vehicles (BEV)
-    with list_price_eur <= 50000 qualify for a EUR 6,000 grant deducted at point of
-    sale. Non-BEV vehicles, or BEVs priced above EUR 50,000, qualify for no grant
+    EV Purchase Grant: applications on/after {{grant_date}} for battery-electric
+    vehicles (BEV) with list_price_eur <= {{price_cap}} qualify for a EUR {{grant_amount}}
+    grant deducted at point of sale. Applications before the effective date, non-BEV
+    vehicles, or BEVs priced above EUR {{price_cap_formatted}}, qualify for no grant
     (applied_grant_eur = 0).
 - Approve if financed_principal_eur <= approved_line_eur. Otherwise reject.
 - In `reason`, state the figures that drove the decision, in one sentence.

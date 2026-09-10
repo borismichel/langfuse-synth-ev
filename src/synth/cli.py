@@ -155,15 +155,17 @@ def submit(config: str = typer.Option(DEFAULT_CONFIG, "--config", "-c"),
            price: int = typer.Option(None, "--price", help="Custom: vehicle list price (EUR)."),
            line: int = typer.Option(None, "--line", help="Approved credit line (EUR); overrides the prefab default.")):
     """Submit one application through the live production prompt and emit its trace."""
-    from .live.prefabs import PREFABS, PREFABS_BY_KEY
+    from .live.prefabs import prefabs_for_rule
+    from .state import deployment_rule
     from .live.submit import submit as _submit
     from .models import Application, Vehicle
 
     cfg = _load(config)
     if prefab:
-        p = PREFABS_BY_KEY.get(prefab)
+        prefabs = {p.key: p for p in prefabs_for_rule(deployment_rule(cfg))}
+        p = prefabs.get(prefab)
         if not p:
-            typer.echo(f"unknown prefab {prefab!r}; choose from: {', '.join(k for k in PREFABS_BY_KEY)}", err=True)
+            typer.echo(f"unknown prefab {prefab!r}; choose from: {', '.join(prefabs)}", err=True)
             raise typer.Exit(code=2)
         app_in = p.application(approved_line_eur=line)
     else:

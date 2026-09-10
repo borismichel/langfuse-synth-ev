@@ -18,12 +18,13 @@ from typing import TYPE_CHECKING, Callable
 
 from langfuse_synth_core.rng import Rng
 from langfuse_synth_core.seed.ingest import assert_demo_project
-from langfuse_synth_core.timegen import day_anchor, iso_date
+from langfuse_synth_core.timegen import iso_date
 
 from .. import clients
-from ..agent import GrantRule, decide, parse_decision
+from ..agent import decide, parse_decision
 from ..config import Config
 from ..models import Application
+from ..state import deployment_rule
 from .trace import emit_live_trace
 
 if TYPE_CHECKING:
@@ -78,6 +79,7 @@ def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter 
     now = datetime.now(timezone.utc)
     application = application.model_copy(update={"application_date": iso_date(now)})
 
+    rule = deployment_rule(cfg)
     lf, llm, emitter = _clients(cfg, adapter)
     decision, in_tok, out_tok, prompt, latency_ms, messages = _live_decision(cfg, lf, llm, application)
     version = getattr(prompt, "version", None)
@@ -87,14 +89,11 @@ def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter 
     # Emit the native-looking agent-graph trace at *now*, with the real decision + usage.
     # The seam stamps wall clock and flushes when the block ends, so the deep link below
     # points at a trace already on its way.
-    trace_id = emit_live_trace(emitter, cfg, application=application, decision=decision,
+    trace_id = emit_live_trace(emitter, cfg, application=application, decision=decision, rule=rule,
                                decision_input=messages, decision_usage=(in_tok, out_tok),
                                prompt=prompt, tags=["ev-grant", "playground"])
 
     # The deterministic "correct under v2" answer, for side-by-side contrast.
-    rule = GrantRule(amount_eur=cfg.golden_path.grant_amount_eur,
-                     price_cap_eur=cfg.golden_path.price_cap_eur,
-                     effective_date=iso_date(day_anchor(now, cfg.golden_path.grant_effective_day_offset)))
     expected = decide(application, "v2", rule=rule)
 
     trace_url = f"{base_url.rstrip('/')}/project/{project_id}/traces/{trace_id}"
@@ -111,8 +110,8 @@ def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter 
 def dispute(cfg: Config, trace_id: str, comment: str, *, adapter: "CompanionAdapter | None" = None,
             log: Callable[[str], None] = print) -> dict:
     """Attach a ``user_disagreement = true`` score (with the submitter's free-text comment)
-    to a previously-emitted trace — the same lagging signal the dashboard's appeal rate
-    tracks. Idempotent per trace (the score id is derived from the trace id), so re-disputing
+    to a previously-emitted trace. The cached historical dashboard does not refresh
+    from these live scores. Idempotent per trace (the score id is derived from the trace id), so re-disputing
     updates the comment rather than duplicating. ``adapter`` supplies the ready emission
     client when the live surface hands one in (Spec G · G4, #142); otherwise it is built off
     the env, unchanged."""
