@@ -69,13 +69,20 @@ reserved item is the observation-linked addition used to demonstrate curation.
 
 ## Execute and compare inside Langfuse
 
-Open the chosen dataset and **Start Experiment → Prompt Experiment**. Select
+Open the chosen dataset's **Experiments → Run experiment → via User Interface → Configure**. Select
 `credit_decision`'s baseline numeric version and the verified connection/settings.
 Preview a compiled item: there must be no unresolved `{{application}}`. Start the
 baseline, then repeat with the candidate version and the same frozen dataset/settings.
 No terminal or Companion trigger is involved in either native execution.
 Compare generated outputs side by side, including all numeric Decision fields;
 matching approve/reject alone does not prove grant correctness.
+
+Enable **Structured output** with a Decision JSON schema for both runs. Require
+`decision` (enum `approve`, `reject`), integer `list_price_eur`, `applied_grant_eur`,
+`financed_principal_eur`, `approved_line_eur`, and string `reason`; disallow additional
+properties. Saving a reusable schema makes it available to all project members.
+Prompt instructions alone did not guarantee JSON-only responses in the Cloud rehearsal:
+Sonnet 4.6 added Markdown fences and one response contained two conflicting decisions.
 [Native experiment workflow](https://langfuse.com/docs/evaluation/experiments/experiments-via-ui)
 
 For the default fictional EUR 6,000 grant, EUR 50,000 cap (D = effective date), the
@@ -111,12 +118,47 @@ The offline `--gate` path accepts the wrapper as well.
 
 ## Cloud verification record
 
-Local verification covers prompt compilation, hosted schema enforcement, fallback
-execution, independently checked cohort expectations and source-linked curation
-payloads. It does **not** constitute a Cloud run.
+Rehearsed on 2026-09-10 in Langfuse Cloud v4.33.0, project
+[new-ev-demo](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp).
+The project's Anthropic connection passed a Playground smoke request with
+`claude-sonnet-4-6` (response: `OK.`). The seed uploaded 100 deterministic,
+model-free traces, registered `credit_decision` versions 1 and 2, retained the
+24-item regression dataset, and created the 11-item demonstration cohort.
 
-Cloud acceptance is pending: no target project URL, authenticated browser session or
-project credentials were available in the implementation environment. Before closing
-#234, record the project/connection smoke test, actual version-selector availability,
-reviewed added item and source-observation URLs, both native experiment URLs, identical
-settings and item snapshots, and sampled generated decisions/amounts from each run.
+The reserved observation was curated through **Add to datasets**, making 12 demo
+items. Its raw chat-message input initially failed hosted schema validation;
+the exact user-message content mapped to `application` passed. The expectation was
+reviewed against the fictional policy: EUR 40,000 BEV price, EUR 6,000 grant,
+EUR 34,000 financed principal, EUR 38,500 line, decision `approve`.
+API verification confirmed the input remained a string, the expected output an
+object, and the scenario/basis metadata and both source IDs were retained.
+
+- [Curated item](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/datasets/cmtvqkwdv015nad0dfnit60qm/items/483c6fdf-dc3e-45f8-b2b3-1f1a3d7633ff)
+- [Source decision observation](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/traces/bc4afcbe0e4090193a387b52af8d8229?observation=e6ac976ced90f67b)
+
+The actual native experiment wizard exposed **Dataset Version (Optional)** and
+reported `application: 12 / 12`. Both initial runs pinned
+`2026-09-10T16:26:15.856Z`, confirmed through experiment metadata. The UI displayed
+the local 18:26 time with an `(UTC)` label; use the API timestamp in recorded evidence.
+Both used Anthropic / Sonnet 4.6, temperature 0, max tokens 512, with structured
+output disabled. The generated user message matched the stored application string
+byte-for-byte for all 24 executions. No Companion or terminal trigger was used.
+
+| Initial native run | Items / API errors | Decision + numeric fields | Format |
+|---|---:|---|---|
+| [v1](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/experiments/results?baseline=cmtvqtv8e01c3ad0f1567evze) | 12 / 0 | 4/12 fully match; 6/12 decision labels match | All 12 wrapped in Markdown fences |
+| [v2](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/experiments/results?baseline=cmtvqx0za01c1ad0dpecjjt61) | 12 / 0 | 11/12 unambiguous matches | 11 single fenced objects; one conflicting two-object response |
+
+These are independent API comparisons against the reviewed expectations, excluding
+free-text reason wording, not hosted evaluator scores. The one ambiguous candidate
+was the EUR 35,999 line / EUR 36,000 principal case: it first emitted `approve`, then
+corrected itself to `reject`. It is counted as a failure, not silently repaired.
+
+The 12-item snapshot (IDs, status, input, expectation, metadata and source links)
+was identical before and after both runs. Canonical JSON SHA-256:
+`1fa2d91f46eff4274e14f580a5c87930a240d089b55f489375cf0f514459968a`.
+
+Schema-enforced reruns are pending approval to save the prepared shared
+`ev_credit_decision` schema. The initial native workflow, mapping, pinned version,
+source-linked curation and actual outputs are verified; strict candidate output
+acceptance is not yet complete.
