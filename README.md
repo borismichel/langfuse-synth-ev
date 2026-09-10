@@ -22,9 +22,9 @@ at the bottom, under
  
 1. **Production reality.** ~4,000 backdated traces show the agent working at scale: a planner → `retrieve_policy` → `check_subsidy_eligibility` + `compute_affordability` tools → the Sonnet `decision` → a Haiku `explain`, with realistic latency, token usage and cost. Quality/tone/format monitors are all green.
 2. **The smoke.** The in-scene Lending Analytics report (`/analytics`) that opens the demo: appeals climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume walking away, while the agent's own quality monitors stay green. Something is wrong that nobody is measuring.
-3. **The missing instrument.** Install the one eval that was absent: a decision-correctness managed LLM-as-judge. Backfilled over recent production, it turns red on the disputed rejections. The gap was the whole point.
+3. **The missing instrument.** Install the one eval that was absent: a native Boolean `policy_correctness` code evaluator that checks the grant, principal and decision. Backfilled over recent production, it turns red on the disputed rejections. The gap was the whole point.
 4. **Curate & fix.** Curate the eligible false-negatives into a hosted dataset, then fix the prompt through prompt management (v1 stale → v2 grant-aware), labelled `production` / `development`.
-5. **Prove it.** An experiment runs the labelled prompt over the dataset: the *same judge* that failed every case now passes them. Promote v2 to `production` and the live playground flips subsequent decisions reject → approve, no code change.
+5. **Prove it.** An experiment runs the labelled prompt over the dataset: explicitly select the policy evaluator for both runs and inspect scores alongside outputs and rejection controls. Promote v2 to `production` and the live playground flips subsequent decisions reject → approve, no code change.
 
 **This kit tells the prompt-loop story:** catching a silent regression in production and closing the loop on it, end to end.
  
@@ -74,16 +74,17 @@ Deploying this kit lands everything it takes to present the demo:
 5. Teardown is project-level: to run the demo fresh, point a new deployment at
    a fresh Langfuse project and re-seed.
 
-One manual step remains in the Langfuse UI — the managed judge below.
+Configure and test the native policy evaluator in Langfuse using the Demo Package.
 
-## The managed judge (created once in the UI)
+## Native policy evaluation
 
-The decision-correctness judge is a **managed LLM-as-judge** configured in the Langfuse UI —
-it cannot live in the repo, but the Presenter Runbook's step 3 contains the exact prompt to
-paste, the variable mappings, and the scopes. It is *the same judge* on both surfaces: scoped
-to the recent production traces (backfill → **red**) and to the dataset's new runs (the
-experiment → **green**). Either target needs an LLM connection (Anthropic key, or Bedrock)
-configured in project settings for the managed judge and the experiment task.
+The Demo Package includes a standalone `POLICY_EVALUATOR.py`, deployment-specific
+`POLICY_EVALUATION.json` definitions/examples and `POLICY_EVALUATION.md` setup guide.
+Follow [policy evaluation](docs/policy-evaluation.md) to test the editor, score a
+bounded historical selection and explicitly score native baseline/candidate
+experiments. An optional Boolean LLM judge uses the aligned rubric and reviewed
+expectations. Seed remains model-free and never launches historical evaluations.
+The Companion card is **decision agreement** only; it does not check grant or principal.
 
 ## The Companion, played live
 
@@ -254,7 +255,7 @@ config/demo.yaml ──▶ generator (deterministic plan)
                                                   │
                               DEMO_SCRIPT.md  ◀────┘   (synth script)
 
-demo time:  synth experiment [--label production|development] ──▶ run_experiment(task = decide(item.input, label))  + managed judge
+demo time:  synth experiment [--label production|development] ──▶ run_experiment(task = decide(item.input, label))  + explicitly configured policy evaluator
 ```
 
 `decide(application, prompt_label) -> Decision` is the **single agent function** — seeding and

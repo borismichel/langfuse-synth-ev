@@ -15,8 +15,9 @@
 - **Dataset:** `{{ dataset_name }}` — {{ summary.dataset_eligible_items }} eligible false-negatives
   + {{ summary.dataset_control_items }} controls = {{ dataset_items }} items
   ({{ reserved_count }} eligible false-negatives **reserved** for the live add)
-- **Reminder:** the decision-correctness **judge is created once in the UI** (it cannot live in the repo).
-  Prompt text + scopes are in step 3 below.
+- **Evaluator:** `policy_correctness` is a native Boolean code evaluator. Download
+  `POLICY_EVALUATOR.py`, `POLICY_EVALUATION.json` and `POLICY_EVALUATION.md` from the
+  Demo Package. Definitions are reusable; creating assets never starts evaluations.
 
 ---
 
@@ -56,20 +57,31 @@ Open trace **`{{ disputed_example.trace_id }}`**{{ disputed_trace_link }}
   prompt ("financed amount is the list price, grant = 0") plus the application JSON — so the
   stale instruction is sitting right there in every trace. The rationale never mentions the grant.
 
-### 3 · Build the decision-correctness judge → red
-Create a **managed LLM-as-judge** in the UI ({{ judge_model }}, temperature 0). Paste this prompt:
+### 3 · Score policy correctness
+Open **Evaluators → New evaluator → Code evaluator → Python** and paste
+`POLICY_EVALUATOR.py`. Its policy is this deployment's EUR {{ grant_amount_eur }}
+grant, EUR {{ price_cap_eur }} cap, effective {{ grant_effective_date }}.
+In the sample picker select the disputed **credit_agent** observation: its own
+Input and Output contain everything needed. Test it, then test a rejection control.
+Use the reviewed manifest examples to show that a BEV still above its line must
+reject **with the correct grant and financed principal**. A matching reject label
+with wrong amounts fails. Malformed output and evaluator execution errors are separate.
+
+Save without an ongoing rule. Follow `POLICY_EVALUATION.md` to select only the
+manifest's bounded historical observation IDs in Observations and use batch
+evaluation. Confirm one `credit_agent` per application and the final count.
+Show `policy_correctness`, its explanation and coverage; missing scores are not failures.
+
+**Optional LLM method:** use a separate Boolean `policy_correctness_judge`, with
+{{ judge_model }} through a verified project LLM Connection. Map `input` and `output`
+to **the same selected credit_agent observation's Input and Output** (root `$`).
+For native experiments configure those mappings explicitly on the experiment
+observation. Calibrate against the manifest's reviewed expectations; the model is
+not the authority on arithmetic. Paste this rubric:
 
 ```
 {{ judge_prompt }}
 ```
-
-**Variable mappings:** `{{ '{{input}}' }}` ← the **trace input** (the bare application JSON — the
-`decision` generation's input is the full chat turn including the system prompt, so map the
-trace, not the generation); `{{ '{{output}}' }}` ← the `decision` generation **output**;
-`{{ '{{grant_date}}' }}` is the constant above.
-Emit a **CATEGORICAL** score (`pass`/`fail`), reason as the comment.
-**Scope it to recent production traces** (tag `disputed`, last {{ drift_window_days }} days) and run the backfill →
-the disputed rejections go **red**.
 
 ### 4 · Curate — add a fresh case from a reserved trace
 Open dataset **`{{ dataset_name }}`**{{ dataset_link }} (already holds the disputed cases). Add the **reserved**
@@ -85,35 +97,30 @@ Reveal prompt **{{ prompt_name }} v{{ prompt_versions.v2 }}** — registered at 
 - **v2:** `financed_principal = list price − qualifying grant`; EV Purchase Grant gives **€{{ '{:,}'.format(grant_amount_eur) }}**
   to BEVs ≤ **€{{ '{:,}'.format(price_cap_eur) }}** (effective `{{ grant_effective_date }}`).
 
-### 6 · Run production → red, validate development → green, then promote
-This happens **on the playground page** — no shell, no terminal on screen.
+### 6 · Compare native experiments, then promote
+Open `{{ dataset_name }}-demo` in Langfuse. Finish reserved-item curation with the
+reviewed `NATIVE_EXPERIMENT_ITEMS.json` input and expected output first. Keep the
+cohort unchanged and use identical model settings and dataset version for both runs.
+Use **Experiments → Run experiment → via User Interface → Configure**, choose numeric prompt version
+{{ prompt_versions.v1 }}, and explicitly select **policy_correctness**. Repeat with
+version {{ prompt_versions.v2 }} and the same evaluator. A production rule alone
+does not configure experiment scoring. Follow `POLICY_EVALUATION.md` to verify
+real item context and reconcile expected/scored/missing/error counts.
 
-Scroll to the very bottom of the loan application. There's a quiet grey line there:
-**`presenter tools`**. Click it — it's deliberately unobtrusive, and the room won't have
-registered it — and two buttons unfold:
+Compare the score column alongside each output. Inspect the false negative,
+still-above-line BEV and ineligible rejection controls, including grant and principal.
+Only promote after inspecting actual results. Move `production` to the tested
+candidate, resubmit the same application in the loan app, and inspect its fresh trace.
 
-1. **Run eval · production** — the stale v{{ prompt_versions.v1 }} prompt against `{{ dataset_name }}` ({{ dataset_items }} items) → **RED**.
-2. **Run eval · development** — v{{ prompt_versions.v2 }}, the fix, against the same dataset → **GREEN**.
-
-Each run takes a moment (every item goes through the real model) and then renders full-size,
-in scene: the verdict, how many items matched their expected decision, and a **dataset-runs
-link** straight into the Langfuse comparison view. Click through and walk the two runs
-side-by-side. Then **promote v2 to `production`** in the Langfuse UI and press **Run eval ·
-production** once more → the same button now goes **GREEN**.
-
-- The eval runs whatever prompt carries the label. `production` == v{{ prompt_versions.v1 }} fails every disputed item (no grant applied).
-- `development` == v{{ prompt_versions.v2 }} proves the fix **without touching production**. Worked case:
-  {{ disputed_example.vehicle_type }} €{{ '{:,}'.format(disputed_example.list_price_eur) }}, line €{{ '{:,}'.format(disputed_example.approved_line_eur) }} → v2 finances €{{ '{:,}'.format(disputed_example.expected_v2_financed_eur) }} ≤ line → **{{ disputed_example.expected_v2_decision }}**.
-- After promotion the same button goes green — the runs sit side-by-side in Langfuse:
-  `production-v{{ prompt_versions.v1 }}` red vs `development-v{{ prompt_versions.v2 }}` green.
-- The buttons' red/green is the dataset's own **expected decision** vs what the prompt decided,
-  so they work from the moment the kit is deployed — the managed judge from step 3 scores the
-  same runs in Langfuse alongside it.
+**Companion fallback:** the presenter tools' **Run eval · production/development**
+buttons still run SDK experiments. Their immediate red/green card is **decision
+agreement** with dataset expectations. It does not check amounts or show a native
+`policy_correctness` result. Configure evaluator use explicitly in Langfuse.
 
 ### 7 · The landing line
-> "Quality scores were green the whole time — but appeals were climbing. We built a correctness judge, pulled the
-> disputed cases into a dataset, fixed the system prompt to apply the new grant, and the **same judge** that was
-> failing every case now passes them. That's the full loop, in Langfuse."
+> "The original quality scores missed the policy error. We checked the grant,
+> financed amount and decision, kept the case in a dataset, and tested the candidate
+> alongside rejection controls before promoting it."
 
 ### 8 · Encore — hand the room the wheel
 Put the **playground** on screen, or share the deployment's link outright. Anyone submits an
@@ -133,7 +140,7 @@ reset `production` to v1, submit and dispute, then promote v2 and resubmit the s
   it never drops a raw error in front of the room. Press the button again.
 - A fresh seed sets **`production`→v{{ prompt_versions.v1 }}** and **`development`→v{{ prompt_versions.v2 }}**
   automatically, and re-seeding re-asserts them — so the red → green flip is always reproducible.
-- Controls prove the judge reasons rather than rubber-stamps: e.g. control
+- Controls distinguish policy correctness from blanket approval: e.g. control
   `{{ control_example.trace_id }}` ({{ control_example.vehicle_type }} €{{ '{:,}'.format(control_example.list_price_eur) }})
   stays correctly **{{ control_example.expected_v2_decision }}** under v2.
 
