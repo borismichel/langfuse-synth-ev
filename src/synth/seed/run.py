@@ -246,6 +246,8 @@ def _write_fixtures(plan: Plan) -> None:
     destination = output_dir() / "NATIVE_EXPERIMENT_ITEMS.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(native_items, indent=2) + "\n")
+    (output_dir() / "NATIVE_EXPERIMENTS.md").write_text(
+        (REPO_ROOT / "docs" / "native-prompt-experiments.md").read_text())
 
     from ..evaluation.package import write_package
     write_package(plan, output_dir())
@@ -266,6 +268,8 @@ def _example(application, decision) -> dict:
 
 def _build_state(cfg: Config, plan: Plan, versions: dict, project_name: str,
                  dataset_info: dict, dry_run: bool) -> RunState:
+    from .datasets import reserved_items
+
     g = plan.golden
     spec_by_id = {s.trace_id: s for s in plan.specs}
 
@@ -315,4 +319,13 @@ def _build_state(cfg: Config, plan: Plan, versions: dict, project_name: str,
         control_example=control_example,
         reserved_trace_ids=g.reserved_trace_ids,
         dry_run=dry_run,
+        history_window_days=cfg.generation.window_days,
+        dataset_id=dataset_info.get("id", ""),
+        demo_dataset_name=dataset_info.get("demo_name", ""),
+        demo_dataset_id=dataset_info.get("demo_id", ""),
+        demo_dataset_items=dataset_info.get("demo_items_created"),
+        reserved_item=next((row for row in reserved_items(g)
+                            if row["source_trace_id"] == reserved_example.get("trace_id")), {}),
+        ambient_incidents=[name for name, incident in cfg.ambient_incidents
+                           if incident.enabled],
     )

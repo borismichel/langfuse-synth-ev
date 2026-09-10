@@ -65,7 +65,7 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
     ds = cfg.golden_path.dataset
     demo_name = f"{ds.name}-demo"
     demo_items = demonstration_items(golden.rule, demo_name)
-    _tolerate_v2_response(lambda: lf.create_dataset(
+    dataset = _tolerate_v2_response(lambda: lf.create_dataset(
         name=ds.name, input_schema=INPUT_SCHEMA,
         expected_output_schema=Decision.model_json_schema(),
         description=("Disputed EV-grant credit rejections: eligible false-negatives (should-approve) "
@@ -87,7 +87,7 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
         ), f"create_dataset_item {it.item_id}")
         created += 1
 
-    _tolerate_v2_response(lambda: lf.create_dataset(
+    demo_dataset = _tolerate_v2_response(lambda: lf.create_dataset(
         name=demo_name, input_schema=INPUT_SCHEMA,
         expected_output_schema=Decision.model_json_schema(),
         description="Small native prompt experiment cohort: fictional policy boundaries and controls.",
@@ -100,7 +100,9 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
 
     return {
         "name": ds.name,
+        "id": getattr(dataset, "id", "") or "",
         "demo_name": demo_name,
+        "demo_id": getattr(demo_dataset, "id", "") or "",
         "demo_items_created": len(demo_items),
         "items_created": created,
         "eligible_items": sum(1 for it in golden.dataset_plan if it.eligible),

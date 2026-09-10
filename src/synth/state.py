@@ -66,6 +66,14 @@ class RunState(AnchorsIO):
     reserved_trace_ids: list = field(default_factory=list)
     project_id: str = ""
     dry_run: bool = False
+    # Optional anchors keep older saved runs readable without inventing resources.
+    history_window_days: int | None = None
+    dataset_id: str = ""
+    demo_dataset_name: str = ""
+    demo_dataset_id: str = ""
+    demo_dataset_items: int | None = None
+    reserved_item: dict = field(default_factory=dict)
+    ambient_incidents: list[str] | None = None
 
 
 def deployment_rule(cfg: Config) -> GrantRule:
