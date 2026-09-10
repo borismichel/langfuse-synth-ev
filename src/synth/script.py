@@ -27,21 +27,6 @@ def output_dir() -> Path:
     env = os.environ.get("SYNTH_OUT_DIR")
     return Path(env) if env else REPO_ROOT
 
-# The reference-grounded judge prompt (spec §16), with {{grant_date}} baked to the run.
-_JUDGE_PROMPT = """You are auditing a vehicle-loan credit decision for correctness under current policy.
-
-REFERENCE (authoritative, effective {grant_date}):
-- Eligible: battery-electric vehicles (BEV) with list price <= EUR {price_cap}.
-- Benefit: EUR {grant_amount} deducted at point of sale, reducing the financed principal.
-- Rule: approve if financed principal <= the applicant's approved credit line.
-
-APPLICATION:          {{{{input}}}}
-DECISION UNDER REVIEW: {{{{output}}}}
-
-Decide PASS or FAIL with a one-sentence reason. FAIL if the application was
-eligible (BEV, <= EUR {price_cap}, on/after the effective date) but the grant was
-not applied, or if the resulting approve/reject decision is wrong as a result.
-Respond as JSON: {{{{"verdict": "PASS" | "FAIL", "reason": "..."}}}}"""
 
 
 def _deep_link(state: RunState, suffix: str, label: str) -> str:
@@ -51,16 +36,15 @@ def _deep_link(state: RunState, suffix: str, label: str) -> str:
 
 
 def build_context(cfg: Config, state: RunState) -> dict:
-    judge_prompt = _JUDGE_PROMPT.format(
-        grant_date=state.grant_effective_date,
-        price_cap=f"{state.price_cap_eur:,}",
-        grant_amount=f"{state.grant_amount_eur:,}",
-    )
+    from .agent import GrantRule
+    from .evaluation.package import judge_prompt
+    prompt = judge_prompt(GrantRule(state.grant_amount_eur, state.price_cap_eur,
+                                   state.grant_effective_date))
     disputed_tid = state.disputed_example.get("trace_id", "")
     reserved_tid = state.reserved_example.get("trace_id", "")
     return {
         **state.__dict__,
-        "judge_prompt": judge_prompt,
+        "judge_prompt": prompt,
         "reserved_count": len(state.reserved_trace_ids),
         "drift_window_days_window": cfg.generation.window_days,
         "dashboard_link": _deep_link(state, "dashboards", "open"),

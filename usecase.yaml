@@ -115,6 +115,16 @@ artifacts:
   - path: NATIVE_EXPERIMENT_ITEMS.json
     title: "Native experiment and reserved curation inputs"
 
+  - path: POLICY_EVALUATOR.py
+    title: "Policy correctness code evaluator"
+  - path: POLICY_EVALUATION.json
+    title: "Evaluation definitions and reviewed examples"
+  - path: POLICY_COVERAGE.py
+    title: "Offline evaluation coverage reporter"
+  - path: POLICY_EVALUATION.md
+    render: markdown
+    title: "Policy evaluation setup"
+
 live_components:
   - name: playground
     description: "Live decision configurator + /analytics in-scene dashboard. Production prompt pulled live per submission."

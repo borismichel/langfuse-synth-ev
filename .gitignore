@@ -21,3 +21,9 @@ venv/
 
 # OS
 .DS_Store
+
+# Generated deployment evaluation assets
+/POLICY_EVALUATOR.py
+/POLICY_EVALUATION.json
+/POLICY_EVALUATION.md
+/POLICY_COVERAGE.py

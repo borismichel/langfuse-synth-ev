@@ -247,6 +247,9 @@ def _write_fixtures(plan: Plan) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(native_items, indent=2) + "\n")
 
+    from ..evaluation.package import write_package
+    write_package(plan, output_dir())
+
 
 def _example(application, decision) -> dict:
     return {

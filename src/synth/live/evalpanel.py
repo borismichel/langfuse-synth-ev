@@ -90,11 +90,11 @@ def _detail(label: str, outcome: ExperimentOutcome) -> str:
     climax to RED *and* misattribute it."""
     name = html.escape(label)
     if outcome.green:
-        return f"Every item matched its expected decision — the {name} prompt decides this dataset correctly."
+        return f"Every item matched its expected decision — all decision labels agree. Grant and principal amounts are not checked."
     if not outcome.total:
         return "The run came back with no items at all — nothing was evaluated. Try again."
     blamed = (f"{outcome.mismatched} of {outcome.total} items disagreed with the expected "
-              f"decision — the {name} prompt is not applying the grant.")
+              f"decision. Inspect the outputs to identify the cause.")
     hiccup = (f"{outcome.errored} of {outcome.total} items came back with no usable decision, "
               f"so this run says nothing about the {name} prompt. Try again.")
     if not outcome.mismatched:
@@ -117,10 +117,11 @@ def result_card(label: str, version: object, outcome: ExperimentOutcome, *, data
             f'<span><a href="{html.escape(run_url, quote=True)}" target="_blank">dataset runs →</a></span></div>'
             if run_url else "")
     return f"""
-    <div class="eyebrow">Langfuse Bank · evaluator run</div>
+    <div class="eyebrow">Langfuse Bank · decision agreement</div>
     <div class="card active">
       <div class="verdict {'approve' if green else 'reject'}">{outcome.verdict}<span class="pill">{html.escape(label)} v{html.escape(str(version))}</span></div>
       <p class="sub" style="margin:6px 0 14px">{detail}</p>
+      <p class="sub">Decision agreement only. Native policy_correctness scores are shown in Langfuse.</p>
       <div class="kv"><span>Dataset</span><span>{html.escape(dataset_name)}</span></div>
       <div class="kv"><span>Matched expected decision</span><span>{outcome.passed} / {outcome.total}</span></div>
       {errored}
