@@ -231,6 +231,22 @@ def _write_fixtures(plan: Plan) -> None:
         })
     (FIXTURES_DIR / "golden_v1_decisions.json").write_text(json.dumps(rows, indent=2))
 
+    from .datasets import reserved_items
+    from .demo_cohort import demonstration_items
+    from ..script import output_dir
+
+    # Review/copy payloads for the presenter; generating them never calls a model.
+    if not plan.cfg.golden_path.enabled:
+        return
+    native_items = {
+        "demo_dataset": plan.summary["dataset_name"] + "-demo",
+        "demonstration": demonstration_items(plan.golden.rule, plan.summary["dataset_name"] + "-demo"),
+        "reserved": reserved_items(plan.golden),
+    }
+    destination = output_dir() / "NATIVE_EXPERIMENT_ITEMS.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(native_items, indent=2) + "\n")
+
 
 def _example(application, decision) -> dict:
     return {

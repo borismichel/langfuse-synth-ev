@@ -324,3 +324,12 @@ keylessly (Spec E · E7, #102). See
 [`langfuse-synth-core`'s `docs/CI_SIGNING.md`](https://github.com/borismichel/langfuse-synth-core/blob/main/docs/CI_SIGNING.md)
 for the full contract — image naming, cadence, runner, and the signing-identity policy
 the portal's verification gate checks against.
+
+### Native prompt experiments
+
+Seeding also creates `<dataset-name>-demo`, an 11-item policy cohort, and exports
+`NATIVE_EXPERIMENT_ITEMS.json` as a deployment artifact. Both hosted datasets map
+`application` to the same serialised JSON as the live caller. Follow the
+[native experiment runbook](docs/native-prompt-experiments.md) to check the project
+LLM Connection, curate a reserved observation, and compare the two prompt versions
+in Langfuse. The SDK and Companion experiment routes remain available.

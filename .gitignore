@@ -4,6 +4,7 @@
 .synth_spool/
 # DEMO_SCRIPT.md is generated per-run by `synth seed` / `synth script`
 DEMO_SCRIPT.md
+NATIVE_EXPERIMENT_ITEMS.json
 
 # Python
 __pycache__/

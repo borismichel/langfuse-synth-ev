@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 VehicleType = Literal["BEV", "PHEV", "ICE"]
 DecisionType = Literal["approve", "reject"]
@@ -19,7 +19,7 @@ class Vehicle(BaseModel):
 
 
 class Application(BaseModel):
-    """The dataset-item ``input`` (spec §16)."""
+    """Application content; native datasets wrap its JSON in ``application``."""
 
     applicant_id: str
     approved_line_eur: int
@@ -31,6 +31,14 @@ class Application(BaseModel):
         """Coerce whatever ``run_experiment`` hands the task back into an Application."""
         if isinstance(data, Application):
             return data
+        if isinstance(data, dict) and "application" in data:
+            content = data["application"]
+            if not isinstance(content, str):
+                raise ValueError("dataset input.application must be a JSON string")
+            try:
+                return cls.model_validate_json(content)
+            except ValidationError as exc:
+                raise ValueError(f"invalid dataset input.application: {exc}") from exc
         return cls.model_validate(data)
 
 
