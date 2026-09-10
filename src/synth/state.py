@@ -16,7 +16,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from datetime import datetime, time, timezone
 from typing import ClassVar
+
+from .agent import GrantRule
+from .config import Config
+from langfuse_synth_core.timegen import day_anchor, iso_date
 
 from langfuse_synth_core.anchors import AnchorsIO
 from langfuse_synth_core.anchors import state_dir as _state_dir
@@ -61,3 +66,15 @@ class RunState(AnchorsIO):
     reserved_trace_ids: list = field(default_factory=list)
     project_id: str = ""
     dry_run: bool = False
+
+
+def deployment_rule(cfg: Config) -> GrantRule:
+    """Use the seed's policy anchors; only an unseeded preview uses config and its run date."""
+    if RunState.exists():
+        state = RunState.load()
+        return GrantRule(amount_eur=state.grant_amount_eur, price_cap_eur=state.price_cap_eur,
+                         effective_date=state.grant_effective_date)
+    as_of = cfg.generation.as_of_date
+    anchor = (datetime.combine(as_of, time.min, tzinfo=timezone.utc) if as_of
+              else datetime.now(timezone.utc))
+    return GrantRule.from_config(cfg, iso_date(day_anchor(anchor, cfg.golden_path.grant_effective_day_offset)))

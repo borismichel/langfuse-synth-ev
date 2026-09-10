@@ -19,12 +19,13 @@ from __future__ import annotations
 import html
 import json
 
+from ..agent import DEFAULT_RULE, GrantRule
 from ..config import Config
 from ..models import Application, Vehicle
-from ..state import RunState
+from ..state import RunState, deployment_rule
 from langfuse_synth_core.live.paths import local
 from .evalpanel import RUNNABLE_LABELS, result_card, trigger_panel
-from .prefabs import PREFABS
+from .prefabs import prefabs_for_rule
 from .submit import dispute, submit
 from langfuse_synth_core.live.theme import page
 
@@ -37,10 +38,11 @@ _HEADER = ("<div class='eyebrow'>Langfuse Bank · EV financing</div>"
            "you an instant lending decision.</p>")
 
 
-def _form(prefabs_js: str) -> str:
+def _form(prefabs_js: str, rule: GrantRule = DEFAULT_RULE) -> str:
+    prefabs = prefabs_for_rule(rule)
     opts = "".join(
         f'<option value="{p.key}" data-v="{p.vehicle_type}" data-p="{p.list_price_eur}" data-l="{p.approved_line_eur}">'
-        f'{_VNAME[p.vehicle_type]} · €{p.list_price_eur:,}</option>' for p in PREFABS)
+        f'{_VNAME[p.vehicle_type]} · €{p.list_price_eur:,}</option>' for p in prefabs)
     vopts = "".join(f'<option value="{k}" {"selected" if k=="BEV" else ""}>{html.escape(v)}</option>'
                     for k, v in _VNAME.items())
     return f"""
@@ -50,11 +52,11 @@ def _form(prefabs_js: str) -> str:
       <label>Vehicle</label>
       <select name="vehicle" id="vehicle">{vopts}</select>
       <label>Vehicle price (€)</label>
-      <input name="price" id="price" type="number" value="38000" min="1000" step="500">
+      <input name="price" id="price" type="number" value="{prefabs[0].list_price_eur}" min="1000" step="500">
       <div class="line"><label>Your pre-approved credit line (€)</label>
-      <input name="line" id="line" type="number" value="32000" min="1000" step="500"></div>
-      <div class="note">Battery-electric vehicles under €50,000 qualify for the €6,000 EV purchase grant,
-        applied at point of sale.</div>
+      <input name="line" id="line" type="number" value="{prefabs[0].approved_line_eur}" min="1000" step="500"></div>
+      <div class="note">Battery-electric vehicles at or below €{rule.price_cap_eur:,} qualify for the €{rule.amount_eur:,} EV purchase grant,
+        applied at point of sale for applications on or after {rule.effective_date}.</div>
       <button type="submit">Get my decision →</button>
     </form>
     <script>const P={prefabs_js};
@@ -104,14 +106,14 @@ def create_app(cfg: Config, adapter=None):
     from fastapi.responses import HTMLResponse
 
     app = FastAPI(title=TITLE)
-    prefabs_js = json.dumps({p.key: {"v": p.vehicle_type, "p": p.list_price_eur, "l": p.approved_line_eur}
-                             for p in PREFABS})
-
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
+        rule = deployment_rule(cfg)
+        prefabs_js = json.dumps({p.key: {"v": p.vehicle_type, "p": p.list_price_eur, "l": p.approved_line_eur}
+                                 for p in prefabs_for_rule(rule)})
         staff = f"<a class='back' href='{local('/analytics')}'>staff · lending analytics →</a>"
         panel = trigger_panel(cfg.golden_path.dataset.name, _dataset_item_count())
-        return page(_HEADER + _form(prefabs_js) + staff + panel, title=TITLE)
+        return page(_HEADER + _form(prefabs_js, rule) + staff + panel, title=TITLE)
 
     @app.get("/analytics", response_class=HTMLResponse)
     def analytics() -> str:
@@ -148,7 +150,7 @@ def create_app(cfg: Config, adapter=None):
         <form method="post" action="{local('/dispute')}" class="ghost card">
           <input type="hidden" name="trace_id" value="{res['trace_id']}">
           <label>Think this is wrong? Request a review</label>
-          <textarea name="comment" rows="3" placeholder="e.g. the €6,000 EV grant should put me under my line"></textarea>
+          <textarea name="comment" rows="3" placeholder="e.g. the EV purchase grant should put me under my line"></textarea>
           <button type="submit">Request a review</button>
         </form>
         <a class="back" href="{local('/')}">← new application</a>"""

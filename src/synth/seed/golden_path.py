@@ -55,12 +55,6 @@ class GoldenPath:
     next_id: int = 0  # first free applicant index after the golden-path block
 
 
-def _grant_rule(cfg: Config, effective_date: datetime) -> GrantRule:
-    gp = cfg.golden_path
-    return GrantRule(amount_eur=gp.grant_amount_eur, price_cap_eur=gp.price_cap_eur,
-                     effective_date=iso_date(effective_date))
-
-
 def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
           id_start: int) -> GoldenPath:
     gp = cfg.golden_path
@@ -70,7 +64,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
         effective_date,
     )
     drift_end = run_date
-    rule = _grant_rule(cfg, effective_date)
+    rule = GrantRule.from_config(cfg, iso_date(effective_date))
     out = GoldenPath(effective_date=effective_date, drift_start=drift_start,
                      drift_end=drift_end, rule=rule)
 
@@ -111,7 +105,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
         spec = TraceSpec(
             trace_id=tid, timestamp=ts, application=app, decision=dec_v1,
             user_id=next_officer(n), session_id=r.trace_id("gsession", n),
-            environment="production", kind="golden_eligible", stale_grant_window=True,
+            environment="production", kind="golden_eligible", stale_grant_window=True, grant_rule=rule,
             plan_step=r.chance(0.5), tags=["ev-grant"])  # `disputed` added by the judge verdict
         eligible_specs.append(spec)
         out.disputed_specs.append(spec)
@@ -127,7 +121,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
         spec = TraceSpec(trace_id=r.trace_id("golden", n), timestamp=ts, application=app,
                          decision=dec_v1, user_id=next_officer(n),
                          session_id=r.trace_id("gsession", n), environment="production",
-                         kind="control_overcap", stale_grant_window=True,
+                         kind="control_overcap", stale_grant_window=True, grant_rule=rule,
                          tags=["ev-grant", "control"])
         overcap_specs.append(spec); out.disputed_specs.append(spec); n += 1
 
@@ -139,7 +133,7 @@ def build(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
         spec = TraceSpec(trace_id=r.trace_id("golden", n), timestamp=ts, application=app,
                          decision=dec_v1, user_id=next_officer(n),
                          session_id=r.trace_id("gsession", n), environment="production",
-                         kind="control_phev", stale_grant_window=True,
+                         kind="control_phev", stale_grant_window=True, grant_rule=rule,
                          tags=["ev-grant", "control"])
         phev_specs.append(spec); out.disputed_specs.append(spec); n += 1
 

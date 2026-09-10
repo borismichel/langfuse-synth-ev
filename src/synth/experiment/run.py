@@ -38,6 +38,8 @@ def _make_task(lf, llm, cfg: Config, label: str) -> Callable:
 
     def task(*args, **kwargs):
         item = kwargs.get("item") if "item" in kwargs else (args[0] if args else None)
+        if item is None:
+            raise ValueError("experiment task requires a dataset item")
         # SAME agent fn as seeding; runs whatever carries `label` right now.
         decision = decide(item.input, label, live=True, lf=lf, llm=llm,
                           prompt_name=prompt_name)
@@ -78,6 +80,11 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     name = f"{run_name}-{label}-v{ver}"
 
     dataset = lf.get_dataset(cfg.golden_path.dataset.name)
+    for item in dataset.items:
+        try:
+            Application.from_input(item.input)
+        except ValueError as exc:
+            raise ValueError(f"Dataset item {item.id}: {exc}") from exc
     log(f"· {label} = {prompt_name} v{ver}; running it against "
         f"{cfg.golden_path.dataset.name!r} as {name!r} …")
     res = dataset.run_experiment(

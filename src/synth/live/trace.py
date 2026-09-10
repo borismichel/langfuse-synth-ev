@@ -22,7 +22,7 @@ whose whole design is that it takes no timestamp (CONTRACT.md, the determinism l
 
 The two writers share the *scenario* instead: every string in the graph below comes from
 ``synth.content``, the same module the seeder renders from. Shape and content stay in step;
-only the timestamps differ, and they differ because they must.
+seeded operations are all simulated; live submissions use one actual decision call.
 """
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ from langfuse_synth_core.distributions import cache_split, sample_tokens, text_t
 from langfuse_synth_core.pricing import cost_details, usage_details
 from langfuse_synth_core.rng import Rng
 
+from ..agent import GrantRule
 from ..config import Config
 from ..content import explain_io, extract_io, model_label, retrieve_io
 from ..models import Application, Decision
@@ -39,28 +40,8 @@ from ..models import Application, Decision
 TRACE_NAME = "credit_agent.assess_application"
 
 
-def live_subsidy_eligibility(cfg: Config, app: Application, decision: Decision) -> tuple[dict, bool]:
-    """What ``check_subsidy_eligibility`` reports for a submission, and whether the agent
-    ignored it.
-
-    A live submission runs against *today's* policy, so an eligible BEV sees the real grant
-    — and a v1 decision that did not apply it is flagged ``ignored_by_agent``: the bug, made
-    visible in the tool step the presenter opens. (The seeded pool's stale-window text is a
-    different story with a different mechanism, and it lives in ``seed/traces.py``.)
-    """
-    if app.vehicle.type == "BEV" and app.vehicle.list_price_eur <= cfg.golden_path.price_cap_eur:
-        grant = cfg.golden_path.grant_amount_eur
-        report = {
-            "applicable_subsidies": [{"name": "EV Purchase Grant", "amount_eur": grant}],
-            "note": (f"BEV ≤ €{cfg.golden_path.price_cap_eur:,} qualifies for the "
-                     f"€{grant:,} EV purchase grant"),
-        }
-        return report, decision.applied_grant_eur == 0   # offered, but not applied
-    return {"applicable_subsidies": [], "note": "no subsidy applies to this vehicle"}, False
-
-
 def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, decision: Decision,
-                    decision_input: list[dict], decision_usage: tuple[int, int],
+                    decision_input: list[dict], decision_usage: tuple[int, int], rule: GrantRule,
                     prompt: Any = None, tags: list[str] | None = None,
                     user_id: str = "playground_user", environment: str = "production") -> str:
     """Emit the submission's agent graph and return its trace id (for the deep link).
@@ -74,6 +55,7 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
     Latencies are not passed at all — the seam stamps wall clock, which for a live surface
     is the true number.
     """
+    elig_out, ignored_by_agent = rule.subsidy_evidence(application, decision)
     r = Rng(cfg.generation.seed).sub("live", str(application.application_date))
     # No planner step: the ambiguous-application plan generation belongs to the seeded
     # pool, and a submission runs the production path straight through.
@@ -88,7 +70,8 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
 
     with emitter.trace(TRACE_NAME, user_id=user_id, environment=environment,
                        tags=list(tags or []), input=application.model_dump(),
-                       metadata={"kind": "live", "vehicle_type": application.vehicle.type}) as trace:
+                       metadata={"kind": "live", "vehicle_type": application.vehicle.type,
+                                 "execution": "live_decision_with_simulated_steps"}) as trace:
         # Everything hangs off the orchestrator, so the trace renders as an agent graph.
         elig_call_id = r.obs_id("toolcall_elig", trace.id)
         afford_call_id = r.obs_id("toolcall_afford", trace.id)
@@ -98,7 +81,8 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
         with trace.observation("credit_agent", as_type="agent",
                                input=application.model_dump(),
                                metadata={"tool_calls": tool_calls,
-                                         "stale_grant_window": False}) as agent:
+                                         "ignored_grant": ignored_by_agent,
+                                         "execution": "representative_simulation"}) as agent:
             raw, extract_in, extract_out = extract_io(application)
             with agent.span("load_application", input={"raw": raw}) as load:
                 usage, cost = _sampled("light", haiku, extract_in, extract_out)
@@ -114,9 +98,9 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
                                    metadata={"retriever": "vector_search"}) as retrieve:
                 retrieve.update(output={"documents": documents})
 
-            elig_out, ignored_by_agent = live_subsidy_eligibility(cfg, application, decision)
             with agent.observation("check_subsidy_eligibility", as_type="tool",
-                                   input={"vehicle": application.vehicle.model_dump()},
+                                   input={"vehicle": application.vehicle.model_dump(),
+                                          "application_date": application.application_date},
                                    metadata={"tool": "subsidy_lookup",
                                              "toolCallId": elig_call_id,
                                              "ignored_by_agent": ignored_by_agent}) as elig:
@@ -137,7 +121,7 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application, deci
                                   usage=usage_details(in_tok, out_tok, 0, 0),
                                   cost=cost_details(sonnet, in_tok, out_tok, 0, 0),
                                   input=decision_input, model_parameters={"temperature": 0},
-                                  metadata={"tool_calls": tool_calls},
+                                  metadata={"tool_calls": tool_calls, "execution": "live_model_call"},
                                   prompt=prompt) as gen:
                 gen.update(output=decision.model_dump())
 

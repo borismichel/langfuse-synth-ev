@@ -21,6 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
+from ..agent import GrantRule
 from ..config import Config
 from ..content import decision_messages, explain_io, extract_io, model_label, plan_io, retrieve_io
 from langfuse_synth_core.distributions import cache_split, sample_latency_ms, sample_tokens, text_tokens, tool_latency_ms
@@ -44,6 +45,7 @@ class TraceSpec:
     session_id: str | None
     environment: str
     kind: str  # ambient | golden_eligible | control_overcap | control_phev
+    grant_rule: GrantRule | None = None  # absent when the grant scenario is disabled
     stale_grant_window: bool = False  # agent ignores the (now-active) subsidy
     turn_index: int = 0  # position within a multi-turn session (0 = first/only turn)
     plan_step: bool = False
@@ -69,16 +71,10 @@ def _first_token_at(r: Rng, s: datetime, e: datetime) -> datetime:
     return s + (e - s) * r.uniform(0.3, 0.65)
 
 
-def _subsidy_eligibility(cfg: Config, spec: TraceSpec) -> tuple[dict, bool]:
-    """What ``check_subsidy_eligibility`` reports, and whether the agent ignored it.
-
-    Seed traces only: the stale-window / no-subsidy text the §7 regression relies on. A live
-    submission runs against *today's* policy and reports a real grant, and it says so from
-    its own writer (:func:`synth.live.trace.live_subsidy_eligibility`) — the playground moved
-    off the Spool's builders in portal #211, so this branch no longer has a live caller."""
-    if spec.stale_grant_window:
-        return {"applicable_subsidies": [], "note": "no subsidy programs configured for this policy version"}, True
-    return {"applicable_subsidies": [], "note": "no active subsidy at application date"}, False
+def _subsidy_eligibility(spec: TraceSpec) -> tuple[dict, bool]:
+    if spec.grant_rule is not None:
+        return spec.grant_rule.subsidy_evidence(spec.application, spec.decision)
+    return {"applicable_subsidies": [], "note": "no grant policy configured"}, False
 
 
 def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None,
@@ -170,11 +166,11 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
     # -- check_subsidy_eligibility (TOOL, load-bearing) ------------------
     fail_here = spec.error_step == "check_subsidy_eligibility"
     s, e = cur.advance(tool_latency_ms(r, 90, 0.4, spec.slow_factor))
-    elig_out, ignored_by_agent = _subsidy_eligibility(cfg, spec)
+    elig_out, ignored_by_agent = _subsidy_eligibility(spec)
     events.append(observation_event(
         obs_id=r.obs_id("eligib", tid), trace_id=tid, name="check_subsidy_eligibility",
         obs_type="TOOL", start=s, end=e, parent_id=agent_id, environment=env,
-        input={"vehicle": app.vehicle.model_dump()},
+        input={"vehicle": app.vehicle.model_dump(), "application_date": app.application_date},
         output=elig_out, level="ERROR" if fail_here else None,
         status_message="subsidy service timeout" if fail_here else None,
         metadata={"tool": "subsidy_lookup", "toolCallId": elig_call_id,
@@ -194,11 +190,11 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         metadata={"tool": "affordability_engine", "toolCallId": afford_call_id}))
 
     # -- decision generation (Sonnet) — decide(), links to prompt v1 ------
-    # Input is the actual LLM turn: the managed system prompt + the application JSON
+    # Input represents the v1 chat template; no LLM ran: policy + application JSON
     # as the user message (multi-turn history / planner reasoning only grow the tokens).
     s, e = cur.advance(decision_latency_ms if decision_latency_ms is not None
                        else sample_latency_ms(r, "work", spec.slow_factor))
-    if decision_input is None:                   # seed: every backdated decision ran v1
+    if decision_input is None:                   # seed: every backdated decision mirrors v1
         decision_input = decision_messages(prompt_text("v1"), app)
     if decision_usage is not None:               # live: real token counts, no cache split
         ti, ot, cr, cc = decision_usage[0], decision_usage[1], 0, 0
@@ -245,7 +241,8 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         obs_id=agent_id, trace_id=tid, name="credit_agent", obs_type="AGENT",
         start=spec.timestamp, end=cur.t, environment=env,
         input=app.model_dump(), output=spec.decision.model_dump(),
-        metadata={"tool_calls": tool_calls, "stale_grant_window": spec.stale_grant_window}))
+        metadata={"tool_calls": tool_calls, "stale_grant_window": spec.stale_grant_window,
+                  "execution": "generated_history"}))
 
     # -- trace shell (timestamp at start; carries final IO) ---------------
     events.insert(0, trace_event(
@@ -253,5 +250,6 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         session_id=spec.session_id, tags=tags or None, environment=env,
         input=app.model_dump(), output=spec.decision.model_dump(),
         metadata={"kind": spec.kind, "vehicle_type": app.vehicle.type,
-                  "stale_grant_window": spec.stale_grant_window}))
+                  "stale_grant_window": spec.stale_grant_window,
+                  "execution": "generated_history"}))
     return events

@@ -17,6 +17,8 @@ from pathlib import Path
 
 from langfuse_synth_core.http import request_retry
 
+from ..agent import GrantRule
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
 
@@ -96,7 +98,12 @@ def register_prompts(lf, cfg, effective_date: datetime, *, register_v1: bool = T
             "stale prompt: gross-price affordability")
 
     if register_v2:
-        v2_text = prompt_text("v2").replace("{{grant_date}}", iso_date(effective_date))
+        rule = GrantRule.from_config(cfg, iso_date(effective_date))
+        v2_text = (prompt_text("v2")
+                   .replace("{{grant_date}}", rule.effective_date)
+                   .replace("{{grant_amount}}", f"{rule.amount_eur:,}")
+                   .replace("{{price_cap}}", str(rule.price_cap_eur))
+                   .replace("{{price_cap_formatted}}", f"{rule.price_cap_eur:,}"))
         versions["v2"] = _reuse_or_create(
             lf, name, _chat_prompt(v2_text), "v2", ["v2"],
             "fix: apply EV purchase grant before affordability")

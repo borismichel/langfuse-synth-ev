@@ -1,20 +1,20 @@
 """The single agent function — the only lever is the prompt label (spec §7, §17).
 
 ``decide(application, prompt_label) -> Decision`` is the shared spine: seeding and
-the live experiment both route through it, so they can never drift apart.
+the live experiment both route through it. History is deterministic; live execution
+calls a model.
 
 Two execution paths, identical contract:
 
-- **Deterministic (seed path, default).** Pure arithmetic that *mirrors the prompt
-  text byte-for-byte*: v1 finances the gross list price; v2 subtracts a qualifying
+- **Deterministic (seed path, default).** Pure arithmetic that mirrors the policy
+  in the prompt: v1 finances the gross list price; v2 subtracts a qualifying
   EV grant first. No model call — a few-thousand-trace seed is free and reproducible
   (spec §2, §9). The seeded v1 rejections are exactly what ``decide(app, "v1")``
-  produces, so they are authentic *and* judge-failable.
+  produces, so they are reproducible policy failures a judge can detect.
 
 - **Live (demo path).** ``decide(app, label, live=True, lf=..., llm=...)`` fetches the
-  system prompt from Langfuse prompt management by label, calls the model at
-  temperature 0, and parses the structured Decision. This is the production agent
-  path the experiment exercises with the fixed prompt.
+  system prompt from Langfuse prompt management by label, calls the configured model,
+  and parses the structured Decision. Experiments exercise this decision prompt.
 
 The grant rule (amount, cap, effective date) is data, passed in ``GrantRule`` — the
 same numbers the v2 prompt and the judge reference, sourced from ``config/demo.yaml``.
@@ -22,7 +22,11 @@ same numbers the v2 prompt and the judge reference, sourced from ``config/demo.y
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .config import Config
 
 from .models import Application, Decision
 
@@ -35,6 +39,11 @@ class GrantRule:
     price_cap_eur: int = 50000
     effective_date: str = ""  # ISO date; applications on/after this date may qualify
 
+    @classmethod
+    def from_config(cls, cfg: Config, effective_date: str) -> GrantRule:
+        return cls(amount_eur=cfg.golden_path.grant_amount_eur,
+                   price_cap_eur=cfg.golden_path.price_cap_eur, effective_date=effective_date)
+
     def qualifies(self, app: Application) -> bool:
         """BEV, at/under the cap, on/after the effective date."""
         if app.vehicle.type != "BEV":
@@ -44,6 +53,24 @@ class GrantRule:
         if self.effective_date and app.application_date < self.effective_date:
             return False
         return True
+
+
+    def subsidy_evidence(self, app: Application, decision: Decision) -> tuple[dict, bool]:
+        """Representative tool evidence, shared by generated history and live traces."""
+        eligible = self.qualifies(app)
+        if eligible:
+            note = "qualifying EV purchase grant available at application date"
+        elif self.effective_date and app.application_date < self.effective_date:
+            note = "grant not yet effective at application date"
+        else:
+            note = "vehicle does not qualify for the EV purchase grant"
+        report = {
+            "applicable_subsidies": ([{"name": "EV Purchase Grant", "amount_eur": self.amount_eur}]
+                                    if eligible else []),
+            "policy": asdict(self),
+            "note": note,
+        }
+        return report, eligible and decision.applied_grant_eur == 0
 
 
 DEFAULT_RULE = GrantRule()

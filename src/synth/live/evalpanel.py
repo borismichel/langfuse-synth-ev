@@ -61,8 +61,9 @@ def _dataset_note(dataset_name: str, item_count: int | None) -> str:
     count comes from the seed's run state, and is simply omitted when it is unreadable."""
     size = f" · {item_count} items" if item_count is not None else ""
     return (f"Runs the hosted dataset <code>{html.escape(dataset_name)}</code>{size} through the "
-            f"labelled prompt. <b>production</b> is the stale v1 → red; <b>development</b> is "
-            f"the fix → green.")
+            f"labelled decision prompt. <b>production</b> is the stale v1 → red; <b>development</b> is "
+            f"the fix → green. These experiments test the decision prompt. History is generated; "
+            f"live submissions make one real decision call with representative simulated steps.")
 
 
 def trigger_panel(dataset_name: str, item_count: int | None) -> str:

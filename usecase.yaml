@@ -112,6 +112,8 @@ artifacts:
   - path: DEMO_SCRIPT.md
     render: markdown
     title: "Demo script"
+  - path: NATIVE_EXPERIMENT_ITEMS.json
+    title: "Native experiment and reserved curation inputs"
 
 live_components:
   - name: playground

@@ -9,8 +9,8 @@ hook: nothing the AI team watches is red, yet the business is bleeding.
 Every number is **derived from the same deterministic plan the seed ingested**: the
 specs come from ``build_plan(config, run_date)`` and the score verdicts replay the
 exact rng substreams the seeder drew (they're keyed by trace/session id, not draw
-order). So the dashboard and the data in Langfuse always agree — drill into any
-figure and the traces back it up.
+order). This is a cached historical snapshot, not a live Langfuse query. New
+submissions and dispute scores do not update it.
 """
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ _SERIES_CACHE: dict[tuple, "Series"] = {}
 
 def cached_series(cfg: Config, run_date: datetime) -> "Series":
     """Replaying 4k traces' draws takes a moment — derive once per (run, config)."""
-    key = (run_date.isoformat(), cfg.generation.seed, cfg.generation.total_traces)
+    key = (run_date.isoformat(), cfg.model_dump_json())
     if key not in _SERIES_CACHE:
         _SERIES_CACHE[key] = build_series(cfg, run_date)
     return _SERIES_CACHE[key]
@@ -222,6 +222,13 @@ def render_analytics(cfg: Config) -> str:
                     "</code> first — the report is generated from the seeded book of business."
                     "</p></div>", title=TITLE, wide=True)
     state = RunState.load()
+    # Policy anchors describe the generated book of business even if runtime defaults change.
+    cfg = cfg.model_copy(deep=True)
+    cfg.golden_path.grant_amount_eur = state.grant_amount_eur
+    cfg.golden_path.price_cap_eur = state.price_cap_eur
+    cfg.golden_path.grant_effective_day_offset = (
+        date.fromisoformat(state.grant_effective_date) - datetime.fromisoformat(state.run_date).date()
+    ).days
     run_date = datetime.fromisoformat(state.run_date)
     s = cached_series(cfg, run_date)
 
@@ -249,6 +256,8 @@ def render_analytics(cfg: Config) -> str:
     <h1>EV financing — <span class="mark">weekly risk report</span></h1>
     <p class="sub">Prepared by Lending Analytics for <b>AI Engineering</b> · week ending {run_date.date()} ·
       distribution: head of credit, AI platform lead</p>
+    <p class="note">Generated historical snapshot. Live submissions and disputes do not update this report.
+      Appeal rate: disagreement among reviewed decisions.</p>
 
     <div class="memo">
       <b>Summary.</b> Decision appeals on EV loans are climbing and decision CSAT is breaking down,
