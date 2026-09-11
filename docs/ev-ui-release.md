@@ -133,8 +133,12 @@ temperature 0. Native and live settings are therefore not provider-identical.
 Current kit tests: 143 passed (one existing Starlette/AnyIO warning). The
 determinism/native-experiment subset also passed after the prompt edit, with no
 golden rewrite. Contract conformance passed all blocking checks; the existing
-health-path and companion-factory advisories remain. Final review and full-suite
-results must be recorded with the release commit before tagging.
+health-path and companion-factory advisories remain. The full 143-test suite and
+blocking conformance checks passed again with the complete release-preparation
+diff; the runbook generated from saved state without network calls. Parallel
+review of commit `270ec32` found Standards: 0 findings and Spec: 0 actionable
+defects, with release/admission and the delivered timed rehearsal explicitly
+remaining incomplete. Recheck the final release commit before tagging if it changes.
 
 The inspected local depot at `http://localhost:3009` has no
 `ADMISSION_SCRATCH_BASE_URL`, `ADMISSION_SCRATCH_HOST_KIND`, or
