@@ -1,7 +1,7 @@
 # EV UI refresh: release rehearsal — portal #238
 
 Status on 11 September 2026: **Cloud comparison and live policy checks passed;
-release/admission and the complete depot-delivered rehearsal remain pending.**
+signed release/registration and the complete depot-delivered rehearsal remain pending.**
 Version `0.7.0` is prepared in `pyproject.toml`; this is not evidence that its tag,
 image or signature exists. Keep the depot registered to `v0.6.2` until the gates
 below pass. Do not close portal #238 based on these component checks alone.
@@ -137,13 +137,18 @@ health-path and companion-factory advisories remain. The full 143-test suite and
 blocking conformance checks passed again with the complete release-preparation
 diff; the runbook generated from saved state without network calls. Parallel
 review of commit `270ec32` found Standards: 0 findings and Spec: 0 actionable
-defects, with release/admission and the delivered timed rehearsal explicitly
+defects, with release/registration and the delivered timed rehearsal explicitly
 remaining incomplete. Recheck the final release commit before tagging if it changes.
 
-The inspected local depot at `http://localhost:3009` has no
-`ADMISSION_SCRATCH_BASE_URL`, `ADMISSION_SCRATCH_HOST_KIND`, or
-`ADMISSION_SCRATCH_SECRET_PATH` configured. Its API intentionally refuses admission
-without a disposable target. Do not substitute the seeded rehearsal project.
+The operator selected `new-ev-demo` and the local depot at
+`http://localhost:3009`. This is an update to the already registered EV kit.
+The depot's [kit author guide](https://github.com/borismichel/langfuse-demo-depot/blob/cc31f3e/docs/user/kit-author-guide.md#1-register--sync)
+defines the existing-kit path as release → registry ref bump → sync; scratch
+admission gates a **new** kit. The `AdmissionVerdict.eligible_to_pin` contract
+likewise keeps routine re-sync on validate → resolve published image → upsert.
+No new scratch admission run is required for this existing-kit update.
+The local depot has no scratch target configured; do not point its seed ladder
+at the already seeded `new-ev-demo` project.
 
 The remaining sequence uses the existing kit/depot process:
 
@@ -151,22 +156,31 @@ The remaining sequence uses the existing kit/depot process:
    release commit. The existing Publish workflow builds, pushes to GHCR and
    cosign-signs the image using core v4.1.1. Record the workflow URL and immutable
    digest; verify the signature through normal admission/sync.
-2. Configure the intended depot's empty disposable admission project and its
-   Infisical reference through the established operator process. Run admission
-   for `v0.7.0` and retain the verdict with `eligible_to_pin: true`.
+2. Validate the released manifest, resolve its published digest and verify its
+   signature using the worker's `verify_image_signature` check directly, without
+   starting a seed job, before changing the registration.
+   Scratch admission is not applicable to this already registered kit update.
 3. Update only the EV `registry.yaml` reference after its gates pass. Respect the
    depot's CI/merge gate; a stalled private-repo CI needs the user's explicit
-   go-ahead. Sync, then launch through the normal deployment flow against a fresh
-   presentation project with ambient incident cohorts disabled.
-4. Open the delivered Presenter Runbook and Companion links from that deployment.
+   go-ahead. Sync the updated reference into the selected local depot and retain its validation
+   and image-resolution result. Preserve the existing seeded project and
+   its deployment: a registry sync does not upgrade existing deployments. A fresh
+   full seed requires an empty presentation project; it must not silently replay
+   history into the operator-selected `new-ev-demo` project.
+4. Candidate artifact validation remains blocked for the selected seeded project:
+   the depot has no supported in-place image/artifact upgrade operation. An empty
+   project and a normal candidate deployment are needed before opening its new
+   delivered Presenter Runbook and Companion links. The old deployment's artifacts
+   cannot certify delivery of the candidate. Once that deployment exists,
    Configure the Cloud model/evaluator and scoped rule; complete and time the
    12–15 minute native loop, including one reserved live addition, two native
    comparisons, one promotion and final scored browser submission. Record the
    deployment ID, artifact links, immutable image, full settings and elapsed time.
    Exercise the completed-run fallback within that delivered flow.
 
-Until these steps are recorded, artifact delivery, timing, admission, signature
-verification and final registration are **unverified**. Optional Assistant and
+Until these steps are recorded, artifact delivery, timing, signature
+verification and final registration are **unverified**. Scratch admission is not
+required for this existing-kit update. Optional Assistant and
 alert actions were not exercised. Generated history and cached Companion analytics
 remain historical, not measurements of the newly promoted policy.
 
