@@ -1,7 +1,10 @@
-# Policy evaluation verification — 10 September 2026
+# Policy evaluation verification — 11 September 2026
 
-Scope: portal issue #235, rebased onto EV kit `78b5e3d` after #234 PR #35. Local implementation is reviewed;
-Cloud acceptance is **pending**. Do not close the issue based on this report.
+Scope: portal issue #235. Implementation merged in EV kit PR #36 after #234
+PR #35. The hosted code-evaluation evidence is now complete: #236 supplied editor
+and native experiment verification, and the bounded historical UI batch below
+completed on 11 September. Candidate model failures remain visible; this is
+verification of the evaluator workflow, not an all-green candidate.
 
 ## Local evidence
 
@@ -30,7 +33,7 @@ Cloud acceptance is **pending**. Do not close the issue based on this report.
   (`evaluate(ctx)`, package generation, coverage reporting) await user agreement.
   The checks above combine the existing suite and manual artifact execution.
 
-## Remaining Cloud evidence
+## Initial experiment normalisation check (10 September)
 
 The #234 Cloud rehearsal is now merged in PR #35. This session left Chrome
 untouched and used the read-only experiment-items API to retrieve its 24 synthetic
@@ -55,16 +58,60 @@ not hosted `policy_correctness` scores or proof of the Cloud evaluator runtime.
 See [the native rehearsal record](native-prompt-experiments.md#cloud-verification-record)
 for experiment URLs, source provenance and pinned model/dataset settings.
 
-Still required:
+## Hosted evidence reconciliation
 
-1. Successful execution in Langfuse's evaluator runtime; the real exported
-   payloads are now checked locally but do not establish hosted execution.
-2. Contrasting editor tests, evaluator URL/version and explanations.
-3. A deliberately bounded historical UI batch, with one `credit_agent` per
-   application and reconciled expected/scored/missing/execution-error coverage.
-4. Explicit baseline and candidate evaluator selection, experiment URLs, matching
-   settings/cohort, scores beside outputs, and preserved rejection controls.
-5. Optional LLM judge calibration and explicit mappings if that method is shown.
+[The #236 verification record](live-policy-verification-results.md) records
+contrasting hosted editor tests, the exact evaluator version, and explicit manual
+evaluation of the 24 frozen native experiment outputs. Its baseline results are
+4 pass / 8 policy errors, and candidate results are 11 pass / 1 malformed output,
+matching the earlier local check. It also retains two fresh BEV rejection-control
+failures. No model output was repaired or replaced for this verification.
 
-The reusable setup guide records the steps and evidence to collect. The Companion
-fallback is labelled decision agreement and is never reported as a native score.
+[Hosted evaluator](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/evals/6c9c5ded-401f-4f18-83aa-d9323e7f796f):
+`policy_correctness`, version 1 (`cmtvs2pz701o5ad0f2ywor1n9`). Constants are
+EUR 6,000, BEV price cap EUR 50,000, effective 2026-09-03.
+
+### Bounded historical UI batch — 11 September
+
+In the designated project's Tracing table, the search `name:credit_agent` uses
+**contains**, so it also displays `credit_agent.assess_application` siblings.
+Exactly four rows whose name is `credit_agent` were manually selected, one per
+application, each with `execution=generated_history`. No select-all action was
+used. The confirmation read **Evaluate 4 observations**. The existing
+`policy_correctness` evaluator was attached explicitly, its panel confirmed that
+code evaluators read observation data directly, and **Run Evaluation with 1
+evaluator(s)** started the batch. The saved evaluator and incoming rule were not
+edited; no model call or historical decision rewrite was made.
+
+The four expected observation IDs were recorded before submission. Execution
+spans and Boolean scores were then read through the API. Each execution's input
+and output exactly match its selected observation's own application and Decision.
+All four spans ended normally with level DEFAULT and an empty status message;
+each has one matching score and execution ID. Scores arrived at
+**14:38:51 UTC** (16:38:51 Europe/Berlin).
+
+| Application | Observation | Vehicle | Price / line (EUR) | Hosted result |
+|---|---|---|---|---|
+| anon_0051 | `5aab02bcd2f345c0` | PHEV | 38,500 / 34,110 | true: correct rejection, grant 0 |
+| anon_0031 | `579fbd4ca4428514` | BEV | 38,500 / 34,000 | false: grant 6,000 and principal 32,500 should produce approval |
+| anon_0050 | `8aba670ee0ea87c1` | PHEV | 43,500 / 39,718 | true: correct rejection, grant 0 |
+| anon_0030 | `1f9949aa8f6d07ba` | BEV | 45,500 / 42,500 | false: grant 6,000 and principal 39,500 should produce approval |
+
+Coverage reporter: **4 expected, 4 scored, 2 pass, 2 policy failures; 0 malformed,
+missing, pending, execution errors, invalid records, duplicates or unexpected
+IDs.** This reports complete evaluation coverage, not four passing decisions.
+Full selected inputs/outputs, scores, explanations and execution references are
+in [the curated historical evidence](evidence/235-historical-policy.json). The
+[anon_0031 trace](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp/traces/1ec00b2367152952125d508ace99ffe5)
+was also inspected in the UI: its `credit_agent` shows `policy_correctness: False`
+beside its own input and unchanged rejection output (grant 0, principal 38,500).
+
+These manually requested scores carry job-configuration ID
+`cmtvsbobx022iad0dtzdyubx5`, also used by #236's incoming rule. As with the manual
+experiment batch, that ID alone does not establish an incoming-rule execution.
+The UI selection and execution timeline establish historical batch provenance.
+
+The optional LLM judge remains a documented alternative in the reusable
+[setup guide](policy-evaluation.md); it was not run or presented as verified here.
+The Companion fallback remains labelled decision agreement, separate from native
+`policy_correctness` scores.

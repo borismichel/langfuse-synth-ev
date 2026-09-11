@@ -1,0 +1,545 @@
+{
+  "verified_at": "2026-09-11T14:39:10Z",
+  "project_id": "cmtvq2l5x00u8ad0d7rpc0uvp",
+  "method": "Tracing UI: explicitly select four credit_agent observations, Evaluate, attach policy_correctness, Run Evaluation. Read-only API reconciliation afterward.",
+  "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+  "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+  "expected_observation_ids": [
+    "5aab02bcd2f345c0",
+    "579fbd4ca4428514",
+    "8aba670ee0ea87c1",
+    "1f9949aa8f6d07ba"
+  ],
+  "coverage": {
+    "expected_count": 4,
+    "scored_count": 4,
+    "passed_count": 2,
+    "policy_failure_count": 2,
+    "malformed_output_ids": [],
+    "missing_score_ids": [],
+    "execution_error_ids": [],
+    "pending_ids": [],
+    "invalid_record_ids": [],
+    "duplicate_ids": [],
+    "unexpected_ids": [],
+    "complete": true
+  },
+  "cases": [
+    {
+      "observation": {
+        "id": "5aab02bcd2f345c0",
+        "traceId": "c1c2abd00394c8dfa0a6bf05a3dd33c1",
+        "startTime": "2026-09-10T11:47:06.660Z",
+        "name": "credit_agent",
+        "type": "AGENT",
+        "input": "{\"applicant_id\":\"anon_0051\",\"approved_line_eur\":34110,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":38500},\"application_date\":\"2026-09-10\"}",
+        "output": "{\"decision\":\"reject\",\"list_price_eur\":38500,\"applied_grant_eur\":0,\"financed_principal_eur\":38500,\"approved_line_eur\":34110,\"reason\":\"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,110.\"}"
+      },
+      "score": {
+        "id": "2c9cdb75-1bcf-5578-a575-c8e21b688163",
+        "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+        "name": "policy_correctness",
+        "source": "EVAL",
+        "timestamp": "2026-09-11T14:38:51.495Z",
+        "environment": "production",
+        "createdAt": "2026-09-11T14:38:52.000Z",
+        "updatedAt": "2026-09-11T14:38:52.076Z",
+        "comment": "Policy correct: grant EUR 0; 38500 - 0 = 38500; principal > line 34110: reject.",
+        "configId": null,
+        "metadata": {
+          "status": "pass",
+          "expected": {
+            "applied_grant_eur": 0,
+            "financed_principal_eur": 38500,
+            "decision": "reject"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "2fea2a96c7fd475f79ea074d4b75f9d3",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "c1c2abd00394c8dfa0a6bf05a3dd33c1",
+          "target_observation_id": "5aab02bcd2f345c0",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "5aab02bcd2f345c0",
+          "traceId": "c1c2abd00394c8dfa0a6bf05a3dd33c1"
+        },
+        "dataType": "BOOLEAN",
+        "value": true
+      },
+      "execution": {
+        "id": "5a86508c7f2482f4",
+        "traceId": "6ad818625067d2a012e02e8d8796cab8",
+        "startTime": "2026-09-11T14:38:51.164Z",
+        "endTime": "2026-09-11T14:38:51.470Z",
+        "name": "Execute evaluator: policy_correctness",
+        "level": "DEFAULT",
+        "statusMessage": "",
+        "environment": "langfuse-code-eval"
+      },
+      "execution_input": {
+        "input": {
+          "applicant_id": "anon_0051",
+          "approved_line_eur": 34110,
+          "vehicle": {
+            "type": "PHEV",
+            "list_price_eur": 38500
+          },
+          "application_date": "2026-09-10"
+        },
+        "output": {
+          "decision": "reject",
+          "list_price_eur": 38500,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 38500,
+          "approved_line_eur": 34110,
+          "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 34,110."
+        },
+        "metadata": {
+          "vehicle_type": "PHEV",
+          "kind": "control_phev",
+          "execution": "generated_history",
+          "stale_grant_window": true,
+          "tool_calls": [
+            {
+              "id": "8a1d31b83540d836",
+              "name": "check_subsidy_eligibility"
+            },
+            {
+              "id": "1ca052d3782bbac0",
+              "name": "compute_affordability"
+            }
+          ],
+          "attributes.langfuse.environment": "production",
+          "attributes.langfuse.observation.type": "agent",
+          "attributes.langfuse.trace.tags": [
+            "ev-grant",
+            "control"
+          ],
+          "attributes.langfuse.session.id": "4f790ca66a7d470f9c490f66b5c28c6a",
+          "attributes.langfuse.user.id": "officer_000",
+          "attributes.langfuse.trace.name": "credit_agent.assess_application"
+        },
+        "toolCalls": []
+      },
+      "execution_output": {
+        "scores": [
+          {
+            "name": "policy_correctness",
+            "comment": "Policy correct: grant EUR 0; 38500 - 0 = 38500; principal > line 34110: reject.",
+            "metadata": {
+              "status": "pass",
+              "expected": {
+                "applied_grant_eur": 0,
+                "financed_principal_eur": 38500,
+                "decision": "reject"
+              },
+              "policy": {
+                "amount_eur": 6000,
+                "price_cap_eur": 50000,
+                "effective_date": "2026-09-03"
+              }
+            },
+            "value": 1,
+            "dataType": "BOOLEAN"
+          }
+        ]
+      }
+    },
+    {
+      "observation": {
+        "id": "579fbd4ca4428514",
+        "traceId": "1ec00b2367152952125d508ace99ffe5",
+        "startTime": "2026-09-10T10:35:10.777Z",
+        "name": "credit_agent",
+        "type": "AGENT",
+        "input": "{\"applicant_id\":\"anon_0031\",\"approved_line_eur\":34000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":38500},\"application_date\":\"2026-09-10\"}",
+        "output": "{\"decision\":\"reject\",\"list_price_eur\":38500,\"applied_grant_eur\":0,\"financed_principal_eur\":38500,\"approved_line_eur\":34000,\"reason\":\"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,000.\"}"
+      },
+      "score": {
+        "id": "074999b0-b6a3-5591-9c08-343b95caec34",
+        "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+        "name": "policy_correctness",
+        "source": "EVAL",
+        "timestamp": "2026-09-11T14:38:51.537Z",
+        "environment": "production",
+        "createdAt": "2026-09-11T14:38:52.000Z",
+        "updatedAt": "2026-09-11T14:38:51.799Z",
+        "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 32500, got 38500; decision: expected approve, got reject",
+        "configId": null,
+        "metadata": {
+          "status": "policy_error",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 32500,
+            "decision": "approve"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "cce9b69ab185996d2e2b6c427084a114",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "1ec00b2367152952125d508ace99ffe5",
+          "target_observation_id": "579fbd4ca4428514",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "579fbd4ca4428514",
+          "traceId": "1ec00b2367152952125d508ace99ffe5"
+        },
+        "dataType": "BOOLEAN",
+        "value": false
+      },
+      "execution": {
+        "id": "725c15cedeb628b0",
+        "traceId": "a55b425ffece0b9599f5f0b386bd5918",
+        "startTime": "2026-09-11T14:38:51.172Z",
+        "endTime": "2026-09-11T14:38:51.508Z",
+        "name": "Execute evaluator: policy_correctness",
+        "level": "DEFAULT",
+        "statusMessage": "",
+        "environment": "langfuse-code-eval"
+      },
+      "execution_input": {
+        "input": {
+          "applicant_id": "anon_0031",
+          "approved_line_eur": 34000,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 38500
+          },
+          "application_date": "2026-09-10"
+        },
+        "output": {
+          "decision": "reject",
+          "list_price_eur": 38500,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 38500,
+          "approved_line_eur": 34000,
+          "reason": "Financed amount of EUR 38,500 exceeds the approved line of EUR 34,000."
+        },
+        "metadata": {
+          "vehicle_type": "BEV",
+          "kind": "golden_eligible",
+          "execution": "generated_history",
+          "stale_grant_window": true,
+          "tool_calls": [
+            {
+              "id": "595b99fd0d47f818",
+              "name": "check_subsidy_eligibility"
+            },
+            {
+              "id": "710c38ac4c3cd2af",
+              "name": "compute_affordability"
+            }
+          ],
+          "attributes.langfuse.environment": "production",
+          "attributes.langfuse.observation.type": "agent",
+          "attributes.langfuse.trace.tags": [
+            "ev-grant",
+            "disputed"
+          ],
+          "attributes.langfuse.session.id": "ef057cebaa7f187e8f2a759fe62bc4b5",
+          "attributes.langfuse.user.id": "officer_006",
+          "attributes.langfuse.trace.name": "credit_agent.assess_application"
+        },
+        "toolCalls": []
+      },
+      "execution_output": {
+        "scores": [
+          {
+            "name": "policy_correctness",
+            "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 32500, got 38500; decision: expected approve, got reject",
+            "metadata": {
+              "status": "policy_error",
+              "expected": {
+                "applied_grant_eur": 6000,
+                "financed_principal_eur": 32500,
+                "decision": "approve"
+              },
+              "policy": {
+                "amount_eur": 6000,
+                "price_cap_eur": 50000,
+                "effective_date": "2026-09-03"
+              }
+            },
+            "value": 0,
+            "dataType": "BOOLEAN"
+          }
+        ]
+      }
+    },
+    {
+      "observation": {
+        "id": "8aba670ee0ea87c1",
+        "traceId": "cf4bd87e3a3a3ae0da1569de81f11ce7",
+        "startTime": "2026-09-10T10:24:32.587Z",
+        "name": "credit_agent",
+        "type": "AGENT",
+        "input": "{\"applicant_id\":\"anon_0050\",\"approved_line_eur\":39718,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":43500},\"application_date\":\"2026-09-10\"}",
+        "output": "{\"decision\":\"reject\",\"list_price_eur\":43500,\"applied_grant_eur\":0,\"financed_principal_eur\":43500,\"approved_line_eur\":39718,\"reason\":\"Financed amount of EUR 43,500 exceeds the approved line of EUR 39,718.\"}"
+      },
+      "score": {
+        "id": "4f023778-8b8f-516f-a05a-32628af1b797",
+        "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+        "name": "policy_correctness",
+        "source": "EVAL",
+        "timestamp": "2026-09-11T14:38:51.534Z",
+        "environment": "production",
+        "createdAt": "2026-09-11T14:38:52.000Z",
+        "updatedAt": "2026-09-11T14:38:52.058Z",
+        "comment": "Policy correct: grant EUR 0; 43500 - 0 = 43500; principal > line 39718: reject.",
+        "configId": null,
+        "metadata": {
+          "status": "pass",
+          "expected": {
+            "applied_grant_eur": 0,
+            "financed_principal_eur": 43500,
+            "decision": "reject"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "f7262754d81d5079d7bf7c93d602aadd",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "cf4bd87e3a3a3ae0da1569de81f11ce7",
+          "target_observation_id": "8aba670ee0ea87c1",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "8aba670ee0ea87c1",
+          "traceId": "cf4bd87e3a3a3ae0da1569de81f11ce7"
+        },
+        "dataType": "BOOLEAN",
+        "value": true
+      },
+      "execution": {
+        "id": "ebddcdb8179a2225",
+        "traceId": "74380da5dfda280b9a8bea858960fe17",
+        "startTime": "2026-09-11T14:38:51.167Z",
+        "endTime": "2026-09-11T14:38:51.508Z",
+        "name": "Execute evaluator: policy_correctness",
+        "level": "DEFAULT",
+        "statusMessage": "",
+        "environment": "langfuse-code-eval"
+      },
+      "execution_input": {
+        "input": {
+          "applicant_id": "anon_0050",
+          "approved_line_eur": 39718,
+          "vehicle": {
+            "type": "PHEV",
+            "list_price_eur": 43500
+          },
+          "application_date": "2026-09-10"
+        },
+        "output": {
+          "decision": "reject",
+          "list_price_eur": 43500,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 43500,
+          "approved_line_eur": 39718,
+          "reason": "Financed amount of EUR 43,500 exceeds the approved line of EUR 39,718."
+        },
+        "metadata": {
+          "vehicle_type": "PHEV",
+          "kind": "control_phev",
+          "execution": "generated_history",
+          "stale_grant_window": true,
+          "tool_calls": [
+            {
+              "id": "cbcbb485ccff8a99",
+              "name": "check_subsidy_eligibility"
+            },
+            {
+              "id": "3e29b0e7d0cf904c",
+              "name": "compute_affordability"
+            }
+          ],
+          "attributes.langfuse.environment": "production",
+          "attributes.langfuse.observation.type": "agent",
+          "attributes.langfuse.trace.tags": [
+            "ev-grant",
+            "control"
+          ],
+          "attributes.langfuse.session.id": "e9fa23cd2b6cb0d56991367a7e644e09",
+          "attributes.langfuse.user.id": "officer_005",
+          "attributes.langfuse.trace.name": "credit_agent.assess_application"
+        },
+        "toolCalls": []
+      },
+      "execution_output": {
+        "scores": [
+          {
+            "name": "policy_correctness",
+            "comment": "Policy correct: grant EUR 0; 43500 - 0 = 43500; principal > line 39718: reject.",
+            "metadata": {
+              "status": "pass",
+              "expected": {
+                "applied_grant_eur": 0,
+                "financed_principal_eur": 43500,
+                "decision": "reject"
+              },
+              "policy": {
+                "amount_eur": 6000,
+                "price_cap_eur": 50000,
+                "effective_date": "2026-09-03"
+              }
+            },
+            "value": 1,
+            "dataType": "BOOLEAN"
+          }
+        ]
+      }
+    },
+    {
+      "observation": {
+        "id": "1f9949aa8f6d07ba",
+        "traceId": "684405be61ec7f99ebef919a39379b5b",
+        "startTime": "2026-09-10T10:06:50.977Z",
+        "name": "credit_agent",
+        "type": "AGENT",
+        "input": "{\"applicant_id\":\"anon_0030\",\"approved_line_eur\":42500,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":45500},\"application_date\":\"2026-09-10\"}",
+        "output": "{\"decision\":\"reject\",\"list_price_eur\":45500,\"applied_grant_eur\":0,\"financed_principal_eur\":45500,\"approved_line_eur\":42500,\"reason\":\"Financed amount of EUR 45,500 exceeds the approved line of EUR 42,500.\"}"
+      },
+      "score": {
+        "id": "9ccfa704-2e0b-5e9d-b732-108022a9971c",
+        "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+        "name": "policy_correctness",
+        "source": "EVAL",
+        "timestamp": "2026-09-11T14:38:51.587Z",
+        "environment": "production",
+        "createdAt": "2026-09-11T14:38:52.000Z",
+        "updatedAt": "2026-09-11T14:38:52.062Z",
+        "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 39500, got 45500; decision: expected approve, got reject",
+        "configId": null,
+        "metadata": {
+          "status": "policy_error",
+          "expected": {
+            "applied_grant_eur": 6000,
+            "financed_principal_eur": 39500,
+            "decision": "approve"
+          },
+          "policy": {
+            "amount_eur": 6000,
+            "price_cap_eur": 50000,
+            "effective_date": "2026-09-03"
+          },
+          "job_execution_id": "aeff5c934576704e88260ce69f20be56",
+          "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+          "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+          "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+          "target_trace_id": "684405be61ec7f99ebef919a39379b5b",
+          "target_observation_id": "1f9949aa8f6d07ba",
+          "dispatcher_name": "aws-lambda",
+          "code_eval_runtime": "PYTHON"
+        },
+        "subject": {
+          "kind": "observation",
+          "id": "1f9949aa8f6d07ba",
+          "traceId": "684405be61ec7f99ebef919a39379b5b"
+        },
+        "dataType": "BOOLEAN",
+        "value": false
+      },
+      "execution": {
+        "id": "2827771bda457f95",
+        "traceId": "8c0f34eba96a87bfd95a3a7cf07ff9a4",
+        "startTime": "2026-09-11T14:38:51.175Z",
+        "endTime": "2026-09-11T14:38:51.561Z",
+        "name": "Execute evaluator: policy_correctness",
+        "level": "DEFAULT",
+        "statusMessage": "",
+        "environment": "langfuse-code-eval"
+      },
+      "execution_input": {
+        "input": {
+          "applicant_id": "anon_0030",
+          "approved_line_eur": 42500,
+          "vehicle": {
+            "type": "BEV",
+            "list_price_eur": 45500
+          },
+          "application_date": "2026-09-10"
+        },
+        "output": {
+          "decision": "reject",
+          "list_price_eur": 45500,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45500,
+          "approved_line_eur": 42500,
+          "reason": "Financed amount of EUR 45,500 exceeds the approved line of EUR 42,500."
+        },
+        "metadata": {
+          "vehicle_type": "BEV",
+          "kind": "golden_eligible",
+          "execution": "generated_history",
+          "stale_grant_window": true,
+          "tool_calls": [
+            {
+              "id": "da626fad2f3c6fc8",
+              "name": "check_subsidy_eligibility"
+            },
+            {
+              "id": "6962f6232113098c",
+              "name": "compute_affordability"
+            }
+          ],
+          "attributes.langfuse.environment": "production",
+          "attributes.langfuse.observation.type": "agent",
+          "attributes.langfuse.trace.tags": [
+            "ev-grant",
+            "disputed"
+          ],
+          "attributes.langfuse.session.id": "b3f9ebb1c45bf6d99398446e13042ddb",
+          "attributes.langfuse.user.id": "officer_005",
+          "attributes.langfuse.trace.name": "credit_agent.assess_application"
+        },
+        "toolCalls": []
+      },
+      "execution_output": {
+        "scores": [
+          {
+            "name": "policy_correctness",
+            "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 39500, got 45500; decision: expected approve, got reject",
+            "metadata": {
+              "status": "policy_error",
+              "expected": {
+                "applied_grant_eur": 6000,
+                "financed_principal_eur": 39500,
+                "decision": "approve"
+              },
+              "policy": {
+                "amount_eur": 6000,
+                "price_cap_eur": 50000,
+                "effective_date": "2026-09-03"
+              }
+            },
+            "value": 0,
+            "dataType": "BOOLEAN"
+          }
+        ]
+      }
+    }
+  ]
+}
