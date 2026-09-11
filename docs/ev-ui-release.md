@@ -155,7 +155,7 @@ The remaining sequence uses the existing kit/depot process:
 1. Complete review and merge the candidate; cut `v0.7.0` only at its reviewed
    release commit. The existing Publish workflow builds, pushes to GHCR and
    cosign-signs the image using core v4.1.1. Record the workflow URL and immutable
-   digest; verify the signature through normal admission/sync.
+   digest; verify the signature as described below.
 2. Validate the released manifest, resolve its published digest and verify its
    signature using the worker's `verify_image_signature` check directly, without
    starting a seed job, before changing the registration.
