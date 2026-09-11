@@ -141,7 +141,11 @@ defects, with release/registration and the delivered timed rehearsal explicitly
 remaining incomplete. Recheck the final release commit before tagging if it changes.
 
 The operator selected `new-ev-demo` and the local depot at
-`http://localhost:3009`. This is an update to the already registered EV kit.
+`http://localhost:3009`, then confirmed that the project is throwaway. A reset
+for a fresh candidate deployment is authorized; it has not been performed.
+Before reset, 1,189 observations across 237 trace IDs and both dataset identities
+were exported locally, in addition to the curated evidence in this release.
+This is an update to the already registered EV kit.
 The depot's [kit author guide](https://github.com/borismichel/langfuse-demo-depot/blob/cc31f3e/docs/user/kit-author-guide.md#1-register--sync)
 defines the existing-kit path as release → registry ref bump → sync; scratch
 admission gates a **new** kit. The `AdmissionVerdict.eligible_to_pin` contract
@@ -165,13 +169,13 @@ The remaining sequence uses the existing kit/depot process:
    go-ahead. Sync the updated reference into the selected local depot and retain its validation
    and image-resolution result. Preserve the existing seeded project and
    its deployment: a registry sync does not upgrade existing deployments. A fresh
-   full seed requires an empty presentation project; it must not silently replay
-   history into the operator-selected `new-ev-demo` project.
-4. Candidate artifact validation remains blocked for the selected seeded project:
-   the depot has no supported in-place image/artifact upgrade operation. An empty
-   project and a normal candidate deployment are needed before opening its new
-   delivered Presenter Runbook and Companion links. The old deployment's artifacts
-   cannot certify delivery of the candidate. Once that deployment exists,
+   full seed requires an empty presentation project. After the signed release
+   gates pass, carry out the authorized cleanup of the throwaway `new-ev-demo`
+   target and verify it is empty before deploying; do not replay its old spool.
+4. Deploy the candidate normally into the cleared target. The depot has no
+   supported in-place image/artifact upgrade operation, so the old deployment's
+   artifacts cannot certify the candidate. Open the new deployment's delivered
+   Presenter Runbook and Companion links. Once that deployment exists,
    Configure the Cloud model/evaluator and scoped rule; complete and time the
    12–15 minute native loop, including one reserved live addition, two native
    comparisons, one promotion and final scored browser submission. Record the
