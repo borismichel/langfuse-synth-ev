@@ -6,7 +6,7 @@ and native experiment verification, and the bounded historical UI batch below
 completed on 11 September. Candidate model failures remain visible; this is
 verification of the evaluator workflow, not an all-green candidate.
 
-## Local evidence
+## Local evidence (10 September)
 
 - Existing full suite: **140 passed** (one existing Starlette/AnyIO deprecation warning).
 - Changed evaluator/package/coverage/script/Companion modules: pyright **0 errors**.
@@ -28,15 +28,16 @@ verification of the evaluator workflow, not an all-green candidate.
   separately identifies the execution-error ID. Missing-score and error/pending
   lists overlap when the failed/pending item has no score; do not sum them.
 - Standards review: no findings. Spec review: the numeric Boolean coverage bug was
-  fixed and re-reviewed; no remaining code findings. Cloud acceptance remains open.
+  fixed and re-reviewed; no remaining code findings. Cloud acceptance was still
+  open at that review; the hosted evidence below now completes the code workflow.
 - New automated regression tests were not added: the proposed TDD seams
   (`evaluate(ctx)`, package generation, coverage reporting) await user agreement.
   The checks above combine the existing suite and manual artifact execution.
 
 ## Initial experiment normalisation check (10 September)
 
-The #234 Cloud rehearsal is now merged in PR #35. This session left Chrome
-untouched and used the read-only experiment-items API to retrieve its 24 synthetic
+After #234 Cloud rehearsal PR #35 merged, the initial local check used the
+read-only experiment-items API to retrieve its 24 synthetic
 items (12 per run; no further cursor). All inputs were JSON-encoded chat arrays.
 The evaluator now decodes that envelope before selecting the sole user message,
 then parses the application JSON. This also supports already-decoded runtime arrays.
