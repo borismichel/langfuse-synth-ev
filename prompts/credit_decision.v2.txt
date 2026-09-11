@@ -19,10 +19,10 @@ POLICY:
 
 OUTPUT - respond with ONLY this JSON object and nothing else:
 {
-  "decision": "approve" | "reject",
   "list_price_eur": <int>,
   "applied_grant_eur": <int>,
   "financed_principal_eur": <int>,
   "approved_line_eur": <int>,
-  "reason": "<one sentence>"
+  "reason": "<one sentence>",
+  "decision": "approve" | "reject"
 }

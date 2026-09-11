@@ -1,0 +1,2936 @@
+{
+  "project": {
+    "name": "new-ev-demo",
+    "id": "cmtvq2l5x00u8ad0d7rpc0uvp",
+    "base_url": "https://cloud.langfuse.com",
+    "region": "EU"
+  },
+  "kit_base_revision": "ca1b4458160652322c2c0f333a27158023dddbca",
+  "change": "Move decision after amounts and reason in candidate prompt output; no policy arithmetic or response-parser change.",
+  "native_runs": {
+    "v1": {
+      "settings": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "34601b26-9c75-47be-b6d2-8083dbbfa7b6",
+        "model_params": {
+          "max_tokens": 512,
+          "temperature": 0
+        },
+        "dataset_version": "2026-09-10T16:26:15.856Z",
+        "experiment_name": "ev-238-v1-structured-20260911",
+        "experiment_run_name": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+        "structured_output_schema": {
+          "type": "object",
+          "required": [
+            "decision",
+            "list_price_eur",
+            "applied_grant_eur",
+            "financed_principal_eur",
+            "approved_line_eur",
+            "reason"
+          ],
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "decision": {
+              "enum": [
+                "approve",
+                "reject"
+              ],
+              "type": "string"
+            },
+            "list_price_eur": {
+              "type": "integer"
+            },
+            "applied_grant_eur": {
+              "type": "integer"
+            },
+            "approved_line_eur": {
+              "type": "integer"
+            },
+            "financed_principal_eur": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "items": [
+        {
+          "id": "8268653d60249f0b",
+          "traceId": "25e3cc2188732434cc9423f53a840be5",
+          "startTime": "2026-09-11T15:05:50.911Z",
+          "endTime": "2026-09-11T15:05:53.034Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+          "experimentItemVersion": "2026-09-10T16:23:14.614Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac40,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 40000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "65341b9f-244c-5b64-b568-4c2e25c36b98",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:53.461Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:54.000Z",
+              "updatedAt": "2026-09-11T15:05:53.544Z",
+              "subject": {
+                "kind": "observation",
+                "id": "8268653d60249f0b",
+                "traceId": "25e3cc2188732434cc9423f53a840be5"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_false_negative",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_false_negative\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "c7c55bf2b3d03d60",
+          "traceId": "45d3ff8945b7cb4c980efe0c55d6629a",
+          "startTime": "2026-09-11T15:05:48.560Z",
+          "endTime": "2026-09-11T15:05:50.849Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+          "experimentItemVersion": "2026-09-10T16:23:14.793Z",
+          "output": {
+            "reason": "The financed principal of \u20ac48,000 exceeds the approved credit line of \u20ac40,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 48000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 48000 - EUR 6000 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "d7a6b9c9-86fc-5615-89e2-aba85efd6ace",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:51.111Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:52.000Z",
+              "updatedAt": "2026-09-11T15:05:51.183Z",
+              "subject": {
+                "kind": "observation",
+                "id": "c7c55bf2b3d03d60",
+                "traceId": "45d3ff8945b7cb4c980efe0c55d6629a"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_grant_still_above_line",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 48000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_grant_still_above_line\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":48000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "2a7461cafd6a5486",
+          "traceId": "77f51b00e6290b5e41be03f2b19bd319",
+          "startTime": "2026-09-11T15:05:45.586Z",
+          "endTime": "2026-09-11T15:05:48.491Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "10b4dacb-f8bf-5ce2-86b2-52ea7fa61fdf",
+          "experimentItemVersion": "2026-09-10T16:23:14.966Z",
+          "output": {
+            "reason": "The financed principal of \u20ac50,000 exceeds the approved credit line of \u20ac44,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 50000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 44000
+          },
+          "scores": [
+            {
+              "id": "9b9981a0-8b3f-541a-b57a-e9416a33095f",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:48.722Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:49.000Z",
+              "updatedAt": "2026-09-11T15:05:48.791Z",
+              "subject": {
+                "kind": "observation",
+                "id": "2a7461cafd6a5486",
+                "traceId": "77f51b00e6290b5e41be03f2b19bd319"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_equal",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_equal\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "3109e5f1bdbba8a3",
+          "traceId": "0e142c2b4ec9fbc04cf90d3ea733d015",
+          "startTime": "2026-09-11T15:05:42.357Z",
+          "endTime": "2026-09-11T15:05:45.520Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+          "experimentItemVersion": "2026-09-10T16:23:15.134Z",
+          "output": {
+            "reason": "The financed principal of \u20ac50,001 exceeds the approved credit line of \u20ac49,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 49000.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "scores": [
+            {
+              "id": "9667d27a-b486-51e7-84b8-d52157f681d3",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:45.758Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:46.000Z",
+              "updatedAt": "2026-09-11T15:05:45.835Z",
+              "subject": {
+                "kind": "observation",
+                "id": "3109e5f1bdbba8a3",
+                "traceId": "0e142c2b4ec9fbc04cf90d3ea733d015"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_above",
+            "approved_line_eur": 49000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50001
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_above\",\"approved_line_eur\":49000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50001},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "7557f979cf164b91",
+          "traceId": "565d2f53f1be116199fd990c069adb8b",
+          "startTime": "2026-09-11T15:05:40.122Z",
+          "endTime": "2026-09-11T15:05:42.298Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+          "experimentItemVersion": "2026-09-10T16:23:15.314Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac40,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "bf71b249-6beb-5775-a10a-d56d9133cfe4",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:42.504Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:43.000Z",
+              "updatedAt": "2026-09-11T15:05:42.574Z",
+              "subject": {
+                "kind": "observation",
+                "id": "7557f979cf164b91",
+                "traceId": "565d2f53f1be116199fd990c069adb8b"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_phev",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "PHEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_phev\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "9471b9206872c155",
+          "traceId": "7831ba15ba65563511ba30c9add98ec4",
+          "startTime": "2026-09-11T15:05:36.140Z",
+          "endTime": "2026-09-11T15:05:40.062Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+          "experimentItemVersion": "2026-09-10T16:23:15.887Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 equals the approved credit line of \u20ac42,000, so the application is approved.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; <= EUR 42000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "7009cc8f-c84b-5dec-bb0d-b5906c59b8b1",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:40.301Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:41.000Z",
+              "updatedAt": "2026-09-11T15:05:40.385Z",
+              "subject": {
+                "kind": "observation",
+                "id": "9471b9206872c155",
+                "traceId": "7831ba15ba65563511ba30c9add98ec4"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_ice",
+            "approved_line_eur": 42000,
+            "vehicle": {
+              "type": "ICE",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_ice\",\"approved_line_eur\":42000,\"vehicle\":{\"type\":\"ICE\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "10df3c8095c24058",
+          "traceId": "5bb0ca8eb7d26064c409eb425fdd59fd",
+          "startTime": "2026-09-11T15:05:33.548Z",
+          "endTime": "2026-09-11T15:05:36.060Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+          "experimentItemVersion": "2026-09-10T16:23:16.130Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac40,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "5ce6807e-2605-5ca6-b6eb-040e128b7372",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:36.292Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:37.000Z",
+              "updatedAt": "2026-09-11T15:05:36.366Z",
+              "subject": {
+                "kind": "observation",
+                "id": "10df3c8095c24058",
+                "traceId": "5bb0ca8eb7d26064c409eb425fdd59fd"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_before",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-02"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_before\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-02\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "9d808adfde4b996d",
+          "traceId": "fb8557fec1f496c901124a8cb7c30938",
+          "startTime": "2026-09-11T15:05:30.816Z",
+          "endTime": "2026-09-11T15:05:33.486Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "b1938128-6225-5c92-bc87-0b02aa8877b6",
+          "experimentItemVersion": "2026-09-10T16:23:16.362Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac36,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "ea2fe05a-375b-58ef-bbec-9fc92cd653f9",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:33.791Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:34.000Z",
+              "updatedAt": "2026-09-11T15:05:33.894Z",
+              "subject": {
+                "kind": "observation",
+                "id": "9d808adfde4b996d",
+                "traceId": "fb8557fec1f496c901124a8cb7c30938"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_on_line_equal",
+            "approved_line_eur": 36000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_on_line_equal\",\"approved_line_eur\":36000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "f3fad2d9f354294d",
+          "traceId": "f490c7185da2320e14e4e089541510fb",
+          "startTime": "2026-09-11T15:05:26.966Z",
+          "endTime": "2026-09-11T15:05:30.762Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "bc564606-4899-5301-92cd-4c2d3b95f0f2",
+          "experimentItemVersion": "2026-09-10T16:23:16.536Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac35,999, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; > EUR 35999.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "015f1943-1872-51d4-9f6f-4f8034b00567",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:30.966Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:31.000Z",
+              "updatedAt": "2026-09-11T15:05:31.066Z",
+              "subject": {
+                "kind": "observation",
+                "id": "f3fad2d9f354294d",
+                "traceId": "f490c7185da2320e14e4e089541510fb"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_after_line_below",
+            "approved_line_eur": 35999,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-04"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_after_line_below\",\"approved_line_eur\":35999,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-04\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "d2c309e14668d04e",
+          "traceId": "689d26914c36e329baebfec1517084e2",
+          "startTime": "2026-09-11T15:05:24.260Z",
+          "endTime": "2026-09-11T15:05:26.897Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "c3e369af-f863-5fa7-9d0e-811f9ea90421",
+          "experimentItemVersion": "2026-09-10T16:23:16.727Z",
+          "output": {
+            "reason": "The financed principal of \u20ac49,999 exceeds the approved credit line of \u20ac44,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 49999
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49999 - EUR 6000 = EUR 43999; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 43999
+          },
+          "scores": [
+            {
+              "id": "d22c9123-2727-5c22-bb15-ff3a4407947d",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:27.166Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:28.000Z",
+              "updatedAt": "2026-09-11T15:05:27.235Z",
+              "subject": {
+                "kind": "observation",
+                "id": "d2c309e14668d04e",
+                "traceId": "689d26914c36e329baebfec1517084e2"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_below",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 49999
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_below\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":49999},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "9b42c2c190f1ab63",
+          "traceId": "e4afcff8501fa44f6267eb6fbaaf49ee",
+          "startTime": "2026-09-11T15:05:22.077Z",
+          "endTime": "2026-09-11T15:05:24.200Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "cf577a00-8669-5934-8f0e-3ad164959f4d",
+          "experimentItemVersion": "2026-09-10T16:23:16.904Z",
+          "output": {
+            "reason": "The financed principal of \u20ac42,000 exceeds the approved credit line of \u20ac36,001, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36001.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "a2fbc1c5-74a1-58c8-98e3-8c1f255d30de",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:24.437Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:25.000Z",
+              "updatedAt": "2026-09-11T15:05:24.506Z",
+              "subject": {
+                "kind": "observation",
+                "id": "9b42c2c190f1ab63",
+                "traceId": "e4afcff8501fa44f6267eb6fbaaf49ee"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_line_above",
+            "approved_line_eur": 36001,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_line_above\",\"approved_line_eur\":36001,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        },
+        {
+          "id": "8e726faca48cbc20",
+          "traceId": "9fa772a70afbae89eedf52a5b917ee88",
+          "startTime": "2026-09-11T15:05:19.686Z",
+          "endTime": "2026-09-11T15:05:22.014Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx38jwh000lad0dcq3hgm4s",
+          "experimentName": "ev-238-v1-structured-20260911 - 2026-09-11T15:05:16.752Z",
+          "experimentItemId": "483c6fdf-dc3e-45f8-b2b3-1f1a3d7633ff",
+          "experimentItemVersion": "2026-09-10T16:26:15.856Z",
+          "output": {
+            "reason": "The financed principal of \u20ac40,000 exceeds the approved credit line of \u20ac38,500, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 40000
+          },
+          "expectedOutput": {
+            "reason": "BEV at EUR 40000 <= cap EUR 50000, dated 2026-09-10 >= 2026-09-03; subtract EUR 6000 to finance EUR 34000 <= line EUR 38500.",
+            "decision": "approve",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 34000
+          },
+          "scores": [
+            {
+              "id": "439d7338-288f-55a2-a7d3-90b669cdd265",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": false,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:05:22.309Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:05:23.000Z",
+              "updatedAt": "2026-09-11T15:05:22.388Z",
+              "subject": {
+                "kind": "observation",
+                "id": "8e726faca48cbc20",
+                "traceId": "9fa772a70afbae89eedf52a5b917ee88"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "anon_0029",
+            "approved_line_eur": 38500,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 40000
+            },
+            "application_date": "2026-09-10"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"anon_0029\",\"approved_line_eur\":38500,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":40000},\"application_date\":\"2026-09-10\"}",
+          "compiled_system_sha256": "9a81581508c04934cec23a2ddc13facb1af24c45828e42b8434da356a206a846"
+        }
+      ]
+    },
+    "v2": {
+      "settings": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+        "model_params": {
+          "max_tokens": 512,
+          "temperature": 0
+        },
+        "dataset_version": "2026-09-10T16:26:15.856Z",
+        "experiment_name": "ev-238-v2-structured-20260911",
+        "experiment_run_name": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+        "structured_output_schema": {
+          "type": "object",
+          "required": [
+            "decision",
+            "list_price_eur",
+            "applied_grant_eur",
+            "financed_principal_eur",
+            "approved_line_eur",
+            "reason"
+          ],
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "decision": {
+              "enum": [
+                "approve",
+                "reject"
+              ],
+              "type": "string"
+            },
+            "list_price_eur": {
+              "type": "integer"
+            },
+            "applied_grant_eur": {
+              "type": "integer"
+            },
+            "approved_line_eur": {
+              "type": "integer"
+            },
+            "financed_principal_eur": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "items": [
+        {
+          "id": "c3a78a6a4a2bafd7",
+          "traceId": "c3f787da61660e067afd537520c99df5",
+          "startTime": "2026-09-11T15:03:58.007Z",
+          "endTime": "2026-09-11T15:04:03.353Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+          "experimentItemVersion": "2026-09-10T16:23:14.614Z",
+          "output": {
+            "reason": "The BEV with list price \u20ac42,000 qualifies for the \u20ac6,000 EV grant (application date 2026-09-03 meets the effective date and price is \u2264 \u20ac50,000), resulting in a financed principal of \u20ac36,000 which is within the approved line of \u20ac40,000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 40000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "b0cb4f6a-e2eb-5709-afae-74643b09d6ab",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:04:03.564Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:04:04.000Z",
+              "updatedAt": "2026-09-11T15:04:03.643Z",
+              "subject": {
+                "kind": "observation",
+                "id": "c3a78a6a4a2bafd7",
+                "traceId": "c3f787da61660e067afd537520c99df5"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_false_negative",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_false_negative\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "366cb9e7bbe5cf37",
+          "traceId": "576dca995108a7eb0bdf09151ab45dbd",
+          "startTime": "2026-09-11T15:03:52.615Z",
+          "endTime": "2026-09-11T15:03:57.947Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+          "experimentItemVersion": "2026-09-10T16:23:14.793Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 48000 - EUR 6000 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "534d458d-141e-5fe4-b8fa-1358f14b59cd",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:58.331Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:59.000Z",
+              "updatedAt": "2026-09-11T15:03:58.406Z",
+              "subject": {
+                "kind": "observation",
+                "id": "366cb9e7bbe5cf37",
+                "traceId": "576dca995108a7eb0bdf09151ab45dbd"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_grant_still_above_line",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 48000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_grant_still_above_line\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":48000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "2cac0cbdb8409cb6",
+          "traceId": "3c1a3ed0f4dda48b17ade09b5091cc94",
+          "startTime": "2026-09-11T15:03:50.100Z",
+          "endTime": "2026-09-11T15:03:52.555Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "10b4dacb-f8bf-5ce2-86b2-52ea7fa61fdf",
+          "experimentItemVersion": "2026-09-10T16:23:14.966Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 44,000, which exactly equals the approved line of EUR 44,000.",
+            "decision": "approve",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 44000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 44000
+          },
+          "scores": [
+            {
+              "id": "f3f8c150-eede-5b50-a127-f12283051d8c",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:52.812Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:53.000Z",
+              "updatedAt": "2026-09-11T15:03:52.907Z",
+              "subject": {
+                "kind": "observation",
+                "id": "2cac0cbdb8409cb6",
+                "traceId": "3c1a3ed0f4dda48b17ade09b5091cc94"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_equal",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_equal\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "74339d2ff9a44c9c",
+          "traceId": "79c56f7de624be07877f16e4bdd71439",
+          "startTime": "2026-09-11T15:03:44.590Z",
+          "endTime": "2026-09-11T15:03:50.029Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+          "experimentItemVersion": "2026-09-10T16:23:15.134Z",
+          "output": {
+            "reason": "The BEV list price of EUR 50,001 exceeds the EUR 50,000 cap for the EV Purchase Grant, so no grant applies, leaving a financed principal of EUR 50,001 which exceeds the approved line of EUR 49,000.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 49000.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "scores": [
+            {
+              "id": "38b924ca-d2c9-50cc-b923-eb009340d828",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:50.300Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:51.000Z",
+              "updatedAt": "2026-09-11T15:03:50.390Z",
+              "subject": {
+                "kind": "observation",
+                "id": "74339d2ff9a44c9c",
+                "traceId": "79c56f7de624be07877f16e4bdd71439"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_above",
+            "approved_line_eur": 49000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50001
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_above\",\"approved_line_eur\":49000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50001},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "725f134227d45b26",
+          "traceId": "b7368b0279ae918f438b2c37362ac1ae",
+          "startTime": "2026-09-11T15:03:41.386Z",
+          "endTime": "2026-09-11T15:03:44.531Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+          "experimentItemVersion": "2026-09-10T16:23:15.314Z",
+          "output": {
+            "reason": "PHEV vehicles do not qualify for the EV Purchase Grant, so the financed principal of EUR 42,000 exceeds the approved line of EUR 40,000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "e92c20b1-cdea-5310-bf57-4df96a3e2633",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:44.796Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:45.000Z",
+              "updatedAt": "2026-09-11T15:03:44.867Z",
+              "subject": {
+                "kind": "observation",
+                "id": "725f134227d45b26",
+                "traceId": "b7368b0279ae918f438b2c37362ac1ae"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_phev",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "PHEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_phev\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "52cc30526aed1719",
+          "traceId": "ecbcbcd5294f9fb45996fd18312d4963",
+          "startTime": "2026-09-11T15:03:35.458Z",
+          "endTime": "2026-09-11T15:03:41.327Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+          "experimentItemVersion": "2026-09-10T16:23:15.887Z",
+          "output": {
+            "reason": "The ICE vehicle does not qualify for any grant, so the financed principal equals the list price of EUR 42,000, which matches the approved line of EUR 42,000 and is therefore approved.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; <= EUR 42000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "35e44255-c964-5355-94d4-682e70363c4f",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:41.563Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:42.000Z",
+              "updatedAt": "2026-09-11T15:03:41.637Z",
+              "subject": {
+                "kind": "observation",
+                "id": "52cc30526aed1719",
+                "traceId": "ecbcbcd5294f9fb45996fd18312d4963"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_ice",
+            "approved_line_eur": 42000,
+            "vehicle": {
+              "type": "ICE",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_ice\",\"approved_line_eur\":42000,\"vehicle\":{\"type\":\"ICE\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "4307007b0e01725b",
+          "traceId": "bac9745c7321def04de9a98d09ef0b35",
+          "startTime": "2026-09-11T15:03:29.541Z",
+          "endTime": "2026-09-11T15:03:35.395Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+          "experimentItemVersion": "2026-09-10T16:23:16.130Z",
+          "output": {
+            "reason": "Application date 2026-09-02 is before the 2026-09-03 grant effective date, so no grant applies; financed principal of EUR 42,000 exceeds the approved line of EUR 40,000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "93902020-bd00-56cc-ac24-6256aada9566",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:35.660Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:36.000Z",
+              "updatedAt": "2026-09-11T15:03:35.729Z",
+              "subject": {
+                "kind": "observation",
+                "id": "4307007b0e01725b",
+                "traceId": "bac9745c7321def04de9a98d09ef0b35"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_before",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-02"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_before\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-02\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "66dc620185e8dc7a",
+          "traceId": "d0cce7219e0fba1aa18175666ecb7cc2",
+          "startTime": "2026-09-11T15:03:25.143Z",
+          "endTime": "2026-09-11T15:03:29.477Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "b1938128-6225-5c92-bc87-0b02aa8877b6",
+          "experimentItemVersion": "2026-09-10T16:23:16.362Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant (application date 2026-09-03 is on/after the effective date and list price EUR 42,000 is within the EUR 50,000 cap), reducing the financed principal to EUR 36,000, which exactly equals the approved line of EUR 36,000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "b28d9b05-2403-5486-ad47-cb587bb9d761",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:29.726Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:30.000Z",
+              "updatedAt": "2026-09-11T15:03:29.798Z",
+              "subject": {
+                "kind": "observation",
+                "id": "66dc620185e8dc7a",
+                "traceId": "d0cce7219e0fba1aa18175666ecb7cc2"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_on_line_equal",
+            "approved_line_eur": 36000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_on_line_equal\",\"approved_line_eur\":36000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "0d64efd9bec71830",
+          "traceId": "eafe36e6978b8cde7b51465b852810c1",
+          "startTime": "2026-09-11T15:03:18.717Z",
+          "endTime": "2026-09-11T15:03:25.071Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "bc564606-4899-5301-92cd-4c2d3b95f0f2",
+          "experimentItemVersion": "2026-09-10T16:23:16.536Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 36,000, which exceeds the approved line of EUR 35,999, so the application is rejected.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; > EUR 35999.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "d5d1a99a-efe0-560a-b8cf-70fe9a733233",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:25.305Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:26.000Z",
+              "updatedAt": "2026-09-11T15:03:25.372Z",
+              "subject": {
+                "kind": "observation",
+                "id": "0d64efd9bec71830",
+                "traceId": "eafe36e6978b8cde7b51465b852810c1"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_after_line_below",
+            "approved_line_eur": 35999,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-04"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_after_line_below\",\"approved_line_eur\":35999,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-04\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "d6f5bdbe452a5ff6",
+          "traceId": "660febfbe68974107de4f136c29e76d7",
+          "startTime": "2026-09-11T15:03:12.002Z",
+          "endTime": "2026-09-11T15:03:18.618Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "c3e369af-f863-5fa7-9d0e-811f9ea90421",
+          "experimentItemVersion": "2026-09-10T16:23:16.727Z",
+          "output": {
+            "reason": "BEV listed at EUR 49,999 qualifies for the EUR 6,000 grant (application date 2026-09-03, price \u2264 EUR 50,000), reducing the financed principal to EUR 43,999, which is within the approved line of EUR 44,000.",
+            "decision": "approve",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 43999
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49999 - EUR 6000 = EUR 43999; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 43999
+          },
+          "scores": [
+            {
+              "id": "22827a3d-5277-5469-926c-5398c6396912",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:18.887Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:19.000Z",
+              "updatedAt": "2026-09-11T15:03:18.957Z",
+              "subject": {
+                "kind": "observation",
+                "id": "d6f5bdbe452a5ff6",
+                "traceId": "660febfbe68974107de4f136c29e76d7"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_below",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 49999
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_below\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":49999},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "8aebedd550b99334",
+          "traceId": "ec38e03ebbadb41032fbd0006dbeaa4b",
+          "startTime": "2026-09-11T15:03:08.497Z",
+          "endTime": "2026-09-11T15:03:11.919Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "cf577a00-8669-5934-8f0e-3ad164959f4d",
+          "experimentItemVersion": "2026-09-10T16:23:16.904Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 36,000, which is within the approved line of EUR 36,001.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36001.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "35231a33-759d-519b-be8f-253864d89d9c",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:12.154Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:13.000Z",
+              "updatedAt": "2026-09-11T15:03:12.226Z",
+              "subject": {
+                "kind": "observation",
+                "id": "8aebedd550b99334",
+                "traceId": "ec38e03ebbadb41032fbd0006dbeaa4b"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_line_above",
+            "approved_line_eur": 36001,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_line_above\",\"approved_line_eur\":36001,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        },
+        {
+          "id": "bf69818ef890ff8b",
+          "traceId": "e083058aa5b700ab2dfe71e62bac7903",
+          "startTime": "2026-09-11T15:03:03.359Z",
+          "endTime": "2026-09-11T15:03:08.420Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx35mp302uzad0lz76asphm",
+          "experimentName": "ev-238-v2-structured-20260911 - 2026-09-11T15:03:00.457Z",
+          "experimentItemId": "483c6fdf-dc3e-45f8-b2b3-1f1a3d7633ff",
+          "experimentItemVersion": "2026-09-10T16:26:15.856Z",
+          "output": {
+            "reason": "The BEV qualifies for the EUR 6,000 grant (applied on/after 2026-09-03, list price EUR 40,000 \u2264 EUR 50,000), reducing the financed principal to EUR 34,000, which is within the approved line of EUR 38,500.",
+            "decision": "approve",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 34000
+          },
+          "expectedOutput": {
+            "reason": "BEV at EUR 40000 <= cap EUR 50000, dated 2026-09-10 >= 2026-09-03; subtract EUR 6000 to finance EUR 34000 <= line EUR 38500.",
+            "decision": "approve",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 34000
+          },
+          "scores": [
+            {
+              "id": "599b8562-2c94-5394-b27f-e0ab5cfbc2a0",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:03:08.973Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:03:09.000Z",
+              "updatedAt": "2026-09-11T15:03:09.082Z",
+              "subject": {
+                "kind": "observation",
+                "id": "bf69818ef890ff8b",
+                "traceId": "e083058aa5b700ab2dfe71e62bac7903"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "anon_0029",
+            "approved_line_eur": 38500,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 40000
+            },
+            "application_date": "2026-09-10"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"anon_0029\",\"approved_line_eur\":38500,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":40000},\"application_date\":\"2026-09-10\"}",
+          "compiled_system_sha256": "c1cfb652fb69862b75629ccc3ed1d1ce2a4d878a2d5909572790f63a02d21102"
+        }
+      ]
+    },
+    "v3": {
+      "settings": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "21fdad8c-1b73-49c0-a892-66d7ab1e58cd",
+        "model_params": {
+          "max_tokens": 512,
+          "temperature": 0
+        },
+        "dataset_version": "2026-09-10T16:26:15.856Z",
+        "experiment_name": "ev-238-v3-candidate-20260911",
+        "experiment_run_name": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+        "structured_output_schema": {
+          "type": "object",
+          "required": [
+            "decision",
+            "list_price_eur",
+            "applied_grant_eur",
+            "financed_principal_eur",
+            "approved_line_eur",
+            "reason"
+          ],
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "decision": {
+              "enum": [
+                "approve",
+                "reject"
+              ],
+              "type": "string"
+            },
+            "list_price_eur": {
+              "type": "integer"
+            },
+            "applied_grant_eur": {
+              "type": "integer"
+            },
+            "approved_line_eur": {
+              "type": "integer"
+            },
+            "financed_principal_eur": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "items": [
+        {
+          "id": "558943f00e3ece20",
+          "traceId": "0605d5c353afa78a03e39e8bf2a6adfb",
+          "startTime": "2026-09-11T15:09:13.315Z",
+          "endTime": "2026-09-11T15:09:16.061Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+          "experimentItemVersion": "2026-09-10T16:23:14.614Z",
+          "output": {
+            "reason": "The BEV list price of EUR 42,000 qualifies for the EUR 6,000 grant (application date 2026-09-03, price <= EUR 50,000), reducing the financed principal to EUR 36,000, which is within the approved line of EUR 40,000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 40000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "43e52638-bb5f-56ae-b274-f3f43e95cbd1",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:16.280Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:17.000Z",
+              "updatedAt": "2026-09-11T15:09:16.350Z",
+              "subject": {
+                "kind": "observation",
+                "id": "558943f00e3ece20",
+                "traceId": "0605d5c353afa78a03e39e8bf2a6adfb"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_false_negative",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_false_negative\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "f51b0eaaf1ebca69",
+          "traceId": "34aa9c2745c73f8f7086548ca305c215",
+          "startTime": "2026-09-11T15:09:10.170Z",
+          "endTime": "2026-09-11T15:09:13.261Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+          "experimentItemVersion": "2026-09-10T16:23:14.793Z",
+          "output": {
+            "reason": "BEV listed at EUR 48,000 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 48000 - EUR 6000 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 48000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "c01a483d-e8c0-54e2-aa4e-f2dadbe8351d",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:13.609Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:14.000Z",
+              "updatedAt": "2026-09-11T15:09:13.680Z",
+              "subject": {
+                "kind": "observation",
+                "id": "f51b0eaaf1ebca69",
+                "traceId": "34aa9c2745c73f8f7086548ca305c215"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_grant_still_above_line",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 48000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_grant_still_above_line\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":48000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "96729aac8693c9ab",
+          "traceId": "2f17e2132b9d12d940bda24afff2525c",
+          "startTime": "2026-09-11T15:09:07.642Z",
+          "endTime": "2026-09-11T15:09:10.108Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "10b4dacb-f8bf-5ce2-86b2-52ea7fa61fdf",
+          "experimentItemVersion": "2026-09-10T16:23:14.966Z",
+          "output": {
+            "reason": "BEV listed at EUR 50,000 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 44,000, which exactly equals the approved line of EUR 44,000.",
+            "decision": "approve",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 44000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 50000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 44000
+          },
+          "scores": [
+            {
+              "id": "fe72f56b-987b-56b5-8ef1-46385500853f",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:10.802Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:11.000Z",
+              "updatedAt": "2026-09-11T15:09:10.979Z",
+              "subject": {
+                "kind": "observation",
+                "id": "96729aac8693c9ab",
+                "traceId": "2f17e2132b9d12d940bda24afff2525c"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_equal",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_equal\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "3cc58c0bfdaf4d5b",
+          "traceId": "f47e4da4076b3098563a1f84339ffc22",
+          "startTime": "2026-09-11T15:09:05.040Z",
+          "endTime": "2026-09-11T15:09:07.583Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+          "experimentItemVersion": "2026-09-10T16:23:15.134Z",
+          "output": {
+            "reason": "The BEV list price of EUR 50,001 exceeds the EUR 50,000 grant threshold, so no grant applies and the financed principal of EUR 50,001 exceeds the approved line of EUR 49,000.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 49000.",
+            "decision": "reject",
+            "list_price_eur": 50001,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 49000,
+            "financed_principal_eur": 50001
+          },
+          "scores": [
+            {
+              "id": "2908b759-3132-56b4-a5f9-57595a1effee",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:07.858Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:08.000Z",
+              "updatedAt": "2026-09-11T15:09:07.938Z",
+              "subject": {
+                "kind": "observation",
+                "id": "3cc58c0bfdaf4d5b",
+                "traceId": "f47e4da4076b3098563a1f84339ffc22"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_above",
+            "approved_line_eur": 49000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 50001
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_above\",\"approved_line_eur\":49000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50001},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "8c741986c2b7fa45",
+          "traceId": "c513569334a1ceb00a5d67b563ab0902",
+          "startTime": "2026-09-11T15:09:02.394Z",
+          "endTime": "2026-09-11T15:09:04.973Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+          "experimentItemVersion": "2026-09-10T16:23:15.314Z",
+          "output": {
+            "reason": "The vehicle is a PHEV and does not qualify for the BEV grant, so the financed principal of EUR 42,000 exceeds the approved line of EUR 40,000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "ed649711-5f7d-5d55-ad4d-15cada598770",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:05.208Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:06.000Z",
+              "updatedAt": "2026-09-11T15:09:05.282Z",
+              "subject": {
+                "kind": "observation",
+                "id": "8c741986c2b7fa45",
+                "traceId": "c513569334a1ceb00a5d67b563ab0902"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_phev",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "PHEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_phev\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "6cf5e4d47d665536",
+          "traceId": "3745916ae7814c9f886822e02de968d6",
+          "startTime": "2026-09-11T15:08:59.947Z",
+          "endTime": "2026-09-11T15:09:02.337Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+          "experimentItemVersion": "2026-09-10T16:23:15.887Z",
+          "output": {
+            "reason": "ICE vehicle does not qualify for the EV purchase grant, so the financed principal of EUR 42,000 equals the approved line of EUR 42,000, meeting the approval threshold.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; <= EUR 42000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 42000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "e704a6d8-ac74-5306-8fc6-4991cc35878c",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:02.571Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:03.000Z",
+              "updatedAt": "2026-09-11T15:09:02.641Z",
+              "subject": {
+                "kind": "observation",
+                "id": "6cf5e4d47d665536",
+                "traceId": "3745916ae7814c9f886822e02de968d6"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_control_ice",
+            "approved_line_eur": 42000,
+            "vehicle": {
+              "type": "ICE",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_control_ice\",\"approved_line_eur\":42000,\"vehicle\":{\"type\":\"ICE\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "c5f847b6572473ab",
+          "traceId": "bb3ba82fc4b9ebec6ede6be5db81b54e",
+          "startTime": "2026-09-11T15:08:57.194Z",
+          "endTime": "2026-09-11T15:08:59.885Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+          "experimentItemVersion": "2026-09-10T16:23:16.130Z",
+          "output": {
+            "reason": "Application date 2026-09-02 is before the 2026-09-03 grant effective date, so no grant applies; financed principal of EUR 42,000 exceeds the approved line of EUR 40,000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 0 = EUR 42000; > EUR 40000.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 0,
+            "approved_line_eur": 40000,
+            "financed_principal_eur": 42000
+          },
+          "scores": [
+            {
+              "id": "ab59bc93-f7cf-55c4-bce7-000208777843",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:09:00.120Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:09:01.000Z",
+              "updatedAt": "2026-09-11T15:09:00.200Z",
+              "subject": {
+                "kind": "observation",
+                "id": "c5f847b6572473ab",
+                "traceId": "bb3ba82fc4b9ebec6ede6be5db81b54e"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_before",
+            "approved_line_eur": 40000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-02"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_before\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-02\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "5838904a4e0f8676",
+          "traceId": "4d034278500856cbfc46ebcbd3180674",
+          "startTime": "2026-09-11T15:08:54.191Z",
+          "endTime": "2026-09-11T15:08:57.120Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "b1938128-6225-5c92-bc87-0b02aa8877b6",
+          "experimentItemVersion": "2026-09-10T16:23:16.362Z",
+          "output": {
+            "reason": "BEV listed at EUR 42,000 qualifies for the EUR 6,000 grant (application date 2026-09-03 meets the effective date and price is within EUR 50,000 limit), giving a financed principal of EUR 36,000 which exactly equals the approved line of EUR 36,000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36000.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36000,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "b1b48b7e-c134-51e5-8748-d928120814bf",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:08:57.333Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:08:58.000Z",
+              "updatedAt": "2026-09-11T15:08:57.401Z",
+              "subject": {
+                "kind": "observation",
+                "id": "5838904a4e0f8676",
+                "traceId": "4d034278500856cbfc46ebcbd3180674"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_on_line_equal",
+            "approved_line_eur": 36000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_on_line_equal\",\"approved_line_eur\":36000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "175e68ea76db2076",
+          "traceId": "bce2de001abe36ca2c1006e78329f157",
+          "startTime": "2026-09-11T15:08:50.966Z",
+          "endTime": "2026-09-11T15:08:54.136Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "bc564606-4899-5301-92cd-4c2d3b95f0f2",
+          "experimentItemVersion": "2026-09-10T16:23:16.536Z",
+          "output": {
+            "reason": "BEV listed at EUR 42,000 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 36,000, which exceeds the approved line of EUR 35,999.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; > EUR 35999.",
+            "decision": "reject",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 35999,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "2f3594ad-33f8-57ea-b091-181765f2b0af",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:08:54.385Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:08:55.000Z",
+              "updatedAt": "2026-09-11T15:08:54.470Z",
+              "subject": {
+                "kind": "observation",
+                "id": "175e68ea76db2076",
+                "traceId": "bce2de001abe36ca2c1006e78329f157"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_date_after_line_below",
+            "approved_line_eur": 35999,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-04"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_date_after_line_below\",\"approved_line_eur\":35999,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-04\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "a2a14652e657f949",
+          "traceId": "0751b7f5b22459cc7391a3571e53979a",
+          "startTime": "2026-09-11T15:08:48.090Z",
+          "endTime": "2026-09-11T15:08:50.907Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "c3e369af-f863-5fa7-9d0e-811f9ea90421",
+          "experimentItemVersion": "2026-09-10T16:23:16.727Z",
+          "output": {
+            "reason": "BEV listed at EUR 49,999 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 43,999, which is within the approved line of EUR 44,000.",
+            "decision": "approve",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 43999
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49999 - EUR 6000 = EUR 43999; <= EUR 44000.",
+            "decision": "approve",
+            "list_price_eur": 49999,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 44000,
+            "financed_principal_eur": 43999
+          },
+          "scores": [
+            {
+              "id": "6f41f468-7033-50ed-89c2-746282514501",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:08:51.144Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:08:52.000Z",
+              "updatedAt": "2026-09-11T15:08:51.240Z",
+              "subject": {
+                "kind": "observation",
+                "id": "a2a14652e657f949",
+                "traceId": "0751b7f5b22459cc7391a3571e53979a"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_cap_below",
+            "approved_line_eur": 44000,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 49999
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_cap_below\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":49999},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "56eba1f1cb63dee5",
+          "traceId": "ba335f075de806de3954fbc8491be9e8",
+          "startTime": "2026-09-11T15:08:45.696Z",
+          "endTime": "2026-09-11T15:08:48.029Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "cf577a00-8669-5934-8f0e-3ad164959f4d",
+          "experimentItemVersion": "2026-09-10T16:23:16.904Z",
+          "output": {
+            "reason": "BEV listed at EUR 42,000 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 36,000, which is within the approved line of EUR 36,001.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 36000
+          },
+          "expectedOutput": {
+            "reason": "Fictional policy effective 2026-09-03: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 42000 - EUR 6000 = EUR 36000; <= EUR 36001.",
+            "decision": "approve",
+            "list_price_eur": 42000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 36001,
+            "financed_principal_eur": 36000
+          },
+          "scores": [
+            {
+              "id": "e2e2bb93-ca47-5ece-8c9a-d88b7865e09f",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:08:48.244Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:08:49.000Z",
+              "updatedAt": "2026-09-11T15:08:48.310Z",
+              "subject": {
+                "kind": "observation",
+                "id": "56eba1f1cb63dee5",
+                "traceId": "ba335f075de806de3954fbc8491be9e8"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "demo_line_above",
+            "approved_line_eur": 36001,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 42000
+            },
+            "application_date": "2026-09-03"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"demo_line_above\",\"approved_line_eur\":36001,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":42000},\"application_date\":\"2026-09-03\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        },
+        {
+          "id": "5d206a1e1001d46e",
+          "traceId": "3b453e9556b252b3d0d0ed7fdd2c697e",
+          "startTime": "2026-09-11T15:08:39.737Z",
+          "endTime": "2026-09-11T15:08:45.638Z",
+          "level": "DEFAULT",
+          "environment": "langfuse-prompt-experiment",
+          "experimentId": "cmtx3cuah002dad0ditu06doy",
+          "experimentName": "ev-238-v3-candidate-20260911 - 2026-09-11T15:08:34.147Z",
+          "experimentItemId": "483c6fdf-dc3e-45f8-b2b3-1f1a3d7633ff",
+          "experimentItemVersion": "2026-09-10T16:26:15.856Z",
+          "output": {
+            "reason": "BEV priced at EUR 40,000 qualifies for the EUR 6,000 grant, reducing the financed principal to EUR 34,000, which is within the approved line of EUR 38,500.",
+            "decision": "approve",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 34000
+          },
+          "expectedOutput": {
+            "reason": "BEV at EUR 40000 <= cap EUR 50000, dated 2026-09-10 >= 2026-09-03; subtract EUR 6000 to finance EUR 34000 <= line EUR 38500.",
+            "decision": "approve",
+            "list_price_eur": 40000,
+            "applied_grant_eur": 6000,
+            "approved_line_eur": 38500,
+            "financed_principal_eur": 34000
+          },
+          "scores": [
+            {
+              "id": "5e77c9cb-b010-53af-a9fc-7be66983a949",
+              "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+              "name": "policy_correctness",
+              "dataType": "BOOLEAN",
+              "value": true,
+              "source": "EVAL",
+              "timestamp": "2026-09-11T15:08:46.149Z",
+              "environment": "langfuse-prompt-experiment",
+              "createdAt": "2026-09-11T15:08:47.000Z",
+              "updatedAt": "2026-09-11T15:08:46.268Z",
+              "subject": {
+                "kind": "observation",
+                "id": "5d206a1e1001d46e",
+                "traceId": "3b453e9556b252b3d0d0ed7fdd2c697e"
+              }
+            }
+          ],
+          "application": {
+            "applicant_id": "anon_0029",
+            "approved_line_eur": 38500,
+            "vehicle": {
+              "type": "BEV",
+              "list_price_eur": 40000
+            },
+            "application_date": "2026-09-10"
+          },
+          "compiled_user_content": "{\"applicant_id\":\"anon_0029\",\"approved_line_eur\":38500,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":40000},\"application_date\":\"2026-09-10\"}",
+          "compiled_system_sha256": "c3e2648e8ce0a1738f075c4ad885186a90d77fb04d99c59b25c8914d0ea540ad"
+        }
+      ]
+    }
+  },
+  "live_route_checks": {
+    "reproduced_v2_failure": {
+      "observations": [
+        {
+          "id": "507a4c84a54c2749",
+          "traceId": "b016c9dda07ce9a35477eec02d373a06",
+          "startTime": "2026-09-11T15:05:08.304Z",
+          "endTime": "2026-09-11T15:05:08.304Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "ee327868dd5e5bd9",
+          "type": "GENERATION",
+          "name": "decision",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "[{\"role\": \"system\", \"content\": \"You are the credit-decision agent for an auto-loan provider. For each application\\nyou receive structured data and must return a single approve/reject decision.\\n\\nINPUT (provided in the user message as JSON):\\n- approved_line_eur : the applicant's pre-approved credit line\\n- vehicle           : { type, list_price_eur }     # type is BEV | PHEV | ICE\\n- application_date\\n\\nPOLICY:\\n- Determine any point-of-sale purchase grant the vehicle qualifies for, record it\\n  in applied_grant_eur, and set financed_principal_eur = list price - applied grant.\\n    EV Purchase Grant: applications on/after 2026-09-03 for battery-electric\\n    vehicles (BEV) with list_price_eur <= 50000 qualify for a EUR 6,000\\n    grant deducted at point of sale. Applications before the effective date, non-BEV\\n    vehicles, or BEVs priced above EUR 50,000, qualify for no grant\\n    (applied_grant_eur = 0).\\n- Approve if financed_principal_eur <= approved_line_eur. Otherwise reject.\\n- In `reason`, state the figures that drove the decision, in one sentence.\\n\\nOUTPUT - respond with ONLY this JSON object and nothing else:\\n{\\n  \\\"decision\\\": \\\"approve\\\" | \\\"reject\\\",\\n  \\\"list_price_eur\\\": <int>,\\n  \\\"applied_grant_eur\\\": <int>,\\n  \\\"financed_principal_eur\\\": <int>,\\n  \\\"approved_line_eur\\\": <int>,\\n  \\\"reason\\\": \\\"<one sentence>\\\"\\n}\\n\"}, {\"role\": \"user\", \"content\": \"{\\\"applicant_id\\\":\\\"playground_applicant\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":48000},\\\"application_date\\\":\\\"2026-09-11\\\"}\"}]",
+          "output": "{\"decision\": \"approve\", \"list_price_eur\": 48000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 42000, \"approved_line_eur\": 40000, \"reason\": \"The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 48,000 <= EUR 50,000), reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000, resulting in rejection.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "tool_calls": [
+              {
+                "id": "46d2ae51a24b038c",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "859e9418250f1cda",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "7b83d6ab-1f9b-4903-ad10-12b3809455d1",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "claude-sonnet-4-6",
+          "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "modelParameters": {
+            "temperature": 0
+          },
+          "promptId": "2e1ad8e3-6353-4bcc-b479-0469ac446a5d",
+          "promptName": "credit_decision",
+          "promptVersion": 2,
+          "latency": 0,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "inputPrice": "0.000003",
+          "outputPrice": "0.000015",
+          "totalPrice": null
+        },
+        {
+          "id": "ee327868dd5e5bd9",
+          "traceId": "b016c9dda07ce9a35477eec02d373a06",
+          "startTime": "2026-09-11T15:05:08.303Z",
+          "endTime": "2026-09-11T15:05:08.305Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "038b24a81e3f234c",
+          "type": "AGENT",
+          "name": "credit_agent",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "{\"application\": {\"applicant_id\": \"playground_applicant\", \"approved_line_eur\": 40000, \"vehicle\": {\"type\": \"BEV\", \"list_price_eur\": 48000}, \"application_date\": \"2026-09-11\"}, \"policy\": {\"amount_eur\": 6000, \"price_cap_eur\": 50000, \"effective_date\": \"2026-09-03\"}}",
+          "output": "{\"decision\": \"approve\", \"list_price_eur\": 48000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 42000, \"approved_line_eur\": 40000, \"reason\": \"The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 48,000 <= EUR 50,000), reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000, resulting in rejection.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "prompt_version": 2,
+            "prompt_name": "credit_decision",
+            "evaluation_scope": "ev_live_decision_5f1f890e74cc436b",
+            "ignored_grant": false,
+            "tool_calls": [
+              {
+                "id": "46d2ae51a24b038c",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "859e9418250f1cda",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "7b83d6ab-1f9b-4903-ad10-12b3809455d1",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "",
+          "internalModelId": "",
+          "modelParameters": {},
+          "promptId": "",
+          "promptName": "",
+          "promptVersion": null,
+          "latency": 0.002,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": null,
+          "inputPrice": null,
+          "outputPrice": null,
+          "totalPrice": null
+        }
+      ],
+      "scores": [
+        {
+          "id": "2163fa46-4ba7-5b54-8e6a-e6a13d5bd3bc",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "name": "policy_correctness",
+          "source": "EVAL",
+          "timestamp": "2026-09-11T15:05:08.706Z",
+          "environment": "production",
+          "createdAt": "2026-09-11T15:05:09.000Z",
+          "updatedAt": "2026-09-11T15:05:08.778Z",
+          "comment": "decision: expected reject, got approve",
+          "configId": null,
+          "metadata": {
+            "status": "policy_error",
+            "expected": {
+              "applied_grant_eur": 6000,
+              "financed_principal_eur": 42000,
+              "decision": "reject"
+            },
+            "policy": {
+              "amount_eur": 6000,
+              "price_cap_eur": 50000,
+              "effective_date": "2026-09-03"
+            },
+            "job_execution_id": "4f5168edcb322fd55d12858868c00c98",
+            "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+            "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+            "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+            "target_trace_id": "b016c9dda07ce9a35477eec02d373a06",
+            "target_observation_id": "ee327868dd5e5bd9",
+            "dispatcher_name": "aws-lambda",
+            "code_eval_runtime": "PYTHON"
+          },
+          "subject": {
+            "kind": "observation",
+            "id": "ee327868dd5e5bd9",
+            "traceId": "b016c9dda07ce9a35477eec02d373a06"
+          },
+          "dataType": "BOOLEAN",
+          "value": false
+        }
+      ]
+    },
+    "promoted_v3_eligible": {
+      "observations": [
+        {
+          "id": "5512e39c89028942",
+          "traceId": "9e940598d73625937e39284071af13ef",
+          "startTime": "2026-09-11T15:10:55.940Z",
+          "endTime": "2026-09-11T15:10:55.940Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "14a8f35f3d3f0f55",
+          "type": "GENERATION",
+          "name": "decision",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "[{\"role\": \"system\", \"content\": \"You are the credit-decision agent for an auto-loan provider. For each application\\nyou receive structured data and must return a single approve/reject decision.\\n\\nINPUT (provided in the user message as JSON):\\n- approved_line_eur : the applicant's pre-approved credit line\\n- vehicle           : { type, list_price_eur }     # type is BEV | PHEV | ICE\\n- application_date\\n\\nPOLICY:\\n- Determine any point-of-sale purchase grant the vehicle qualifies for, record it\\n  in applied_grant_eur, and set financed_principal_eur = list price - applied grant.\\n    EV Purchase Grant: applications on/after 2026-09-03 for battery-electric\\n    vehicles (BEV) with list_price_eur <= 50000 qualify for a EUR 6,000\\n    grant deducted at point of sale. Applications before the effective date, non-BEV\\n    vehicles, or BEVs priced above EUR 50,000, qualify for no grant\\n    (applied_grant_eur = 0).\\n- Approve if financed_principal_eur <= approved_line_eur. Otherwise reject.\\n- In `reason`, state the figures that drove the decision, in one sentence.\\n\\nOUTPUT - respond with ONLY this JSON object and nothing else:\\n{\\n  \\\"list_price_eur\\\": <int>,\\n  \\\"applied_grant_eur\\\": <int>,\\n  \\\"financed_principal_eur\\\": <int>,\\n  \\\"approved_line_eur\\\": <int>,\\n  \\\"reason\\\": \\\"<one sentence>\\\",\\n  \\\"decision\\\": \\\"approve\\\" | \\\"reject\\\"\\n}\\n\"}, {\"role\": \"user\", \"content\": \"{\\\"applicant_id\\\":\\\"playground_applicant\\\",\\\"approved_line_eur\\\":32000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":38000},\\\"application_date\\\":\\\"2026-09-11\\\"}\"}]",
+          "output": "{\"decision\": \"approve\", \"list_price_eur\": 38000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 32000, \"approved_line_eur\": 32000, \"reason\": \"The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exactly meets the approved line of EUR 32,000.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "tool_calls": [
+              {
+                "id": "3937d72fd09f5c3e",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "3b49dd56799a5be2",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "81cc8893-3b63-40c1-9623-1d07312a8556",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "claude-sonnet-4-6",
+          "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "modelParameters": {
+            "temperature": 0
+          },
+          "promptId": "21fdad8c-1b73-49c0-a892-66d7ab1e58cd",
+          "promptName": "credit_decision",
+          "promptVersion": 3,
+          "latency": 0,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "inputPrice": "0.000003",
+          "outputPrice": "0.000015",
+          "totalPrice": null
+        },
+        {
+          "id": "14a8f35f3d3f0f55",
+          "traceId": "9e940598d73625937e39284071af13ef",
+          "startTime": "2026-09-11T15:10:55.938Z",
+          "endTime": "2026-09-11T15:10:55.942Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "1fda9a6d202835c6",
+          "type": "AGENT",
+          "name": "credit_agent",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "{\"application\": {\"applicant_id\": \"playground_applicant\", \"approved_line_eur\": 32000, \"vehicle\": {\"type\": \"BEV\", \"list_price_eur\": 38000}, \"application_date\": \"2026-09-11\"}, \"policy\": {\"amount_eur\": 6000, \"price_cap_eur\": 50000, \"effective_date\": \"2026-09-03\"}}",
+          "output": "{\"decision\": \"approve\", \"list_price_eur\": 38000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 32000, \"approved_line_eur\": 32000, \"reason\": \"The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exactly meets the approved line of EUR 32,000.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "prompt_version": 3,
+            "prompt_name": "credit_decision",
+            "evaluation_scope": "ev_live_decision_5f1f890e74cc436b",
+            "ignored_grant": false,
+            "tool_calls": [
+              {
+                "id": "3937d72fd09f5c3e",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "3b49dd56799a5be2",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "81cc8893-3b63-40c1-9623-1d07312a8556",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "",
+          "internalModelId": "",
+          "modelParameters": {},
+          "promptId": "",
+          "promptName": "",
+          "promptVersion": null,
+          "latency": 0.004,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": null,
+          "inputPrice": null,
+          "outputPrice": null,
+          "totalPrice": null
+        }
+      ],
+      "scores": [
+        {
+          "id": "d54ca243-0306-5975-9e59-b6021b4155a9",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "name": "policy_correctness",
+          "source": "EVAL",
+          "timestamp": "2026-09-11T15:10:56.360Z",
+          "environment": "production",
+          "createdAt": "2026-09-11T15:10:57.000Z",
+          "updatedAt": "2026-09-11T15:10:56.442Z",
+          "comment": "Policy correct: grant EUR 6000; 38000 - 6000 = 32000; principal <= line 32000: approve.",
+          "configId": null,
+          "metadata": {
+            "status": "pass",
+            "expected": {
+              "applied_grant_eur": 6000,
+              "financed_principal_eur": 32000,
+              "decision": "approve"
+            },
+            "policy": {
+              "amount_eur": 6000,
+              "price_cap_eur": 50000,
+              "effective_date": "2026-09-03"
+            },
+            "job_execution_id": "aa2bd6454f1a2768d6bfa2b6b706aaba",
+            "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+            "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+            "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+            "target_trace_id": "9e940598d73625937e39284071af13ef",
+            "target_observation_id": "14a8f35f3d3f0f55",
+            "dispatcher_name": "aws-lambda",
+            "code_eval_runtime": "PYTHON"
+          },
+          "subject": {
+            "kind": "observation",
+            "id": "14a8f35f3d3f0f55",
+            "traceId": "9e940598d73625937e39284071af13ef"
+          },
+          "dataType": "BOOLEAN",
+          "value": true
+        }
+      ]
+    },
+    "promoted_v3_rejection": {
+      "observations": [
+        {
+          "id": "dc1aaa32a6d79138",
+          "traceId": "033fd54ad0c212fab212b2ae33a2c10d",
+          "startTime": "2026-09-11T15:11:00.090Z",
+          "endTime": "2026-09-11T15:11:00.090Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "6084783aea0fba08",
+          "type": "GENERATION",
+          "name": "decision",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "[{\"role\": \"system\", \"content\": \"You are the credit-decision agent for an auto-loan provider. For each application\\nyou receive structured data and must return a single approve/reject decision.\\n\\nINPUT (provided in the user message as JSON):\\n- approved_line_eur : the applicant's pre-approved credit line\\n- vehicle           : { type, list_price_eur }     # type is BEV | PHEV | ICE\\n- application_date\\n\\nPOLICY:\\n- Determine any point-of-sale purchase grant the vehicle qualifies for, record it\\n  in applied_grant_eur, and set financed_principal_eur = list price - applied grant.\\n    EV Purchase Grant: applications on/after 2026-09-03 for battery-electric\\n    vehicles (BEV) with list_price_eur <= 50000 qualify for a EUR 6,000\\n    grant deducted at point of sale. Applications before the effective date, non-BEV\\n    vehicles, or BEVs priced above EUR 50,000, qualify for no grant\\n    (applied_grant_eur = 0).\\n- Approve if financed_principal_eur <= approved_line_eur. Otherwise reject.\\n- In `reason`, state the figures that drove the decision, in one sentence.\\n\\nOUTPUT - respond with ONLY this JSON object and nothing else:\\n{\\n  \\\"list_price_eur\\\": <int>,\\n  \\\"applied_grant_eur\\\": <int>,\\n  \\\"financed_principal_eur\\\": <int>,\\n  \\\"approved_line_eur\\\": <int>,\\n  \\\"reason\\\": \\\"<one sentence>\\\",\\n  \\\"decision\\\": \\\"approve\\\" | \\\"reject\\\"\\n}\\n\"}, {\"role\": \"user\", \"content\": \"{\\\"applicant_id\\\":\\\"playground_applicant\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":48000},\\\"application_date\\\":\\\"2026-09-11\\\"}\"}]",
+          "output": "{\"decision\": \"reject\", \"list_price_eur\": 48000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 42000, \"approved_line_eur\": 40000, \"reason\": \"The BEV qualifies for the EUR 6,000 grant (application date 2026-09-11 >= 2026-09-03, list price EUR 48,000 <= EUR 50,000), reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "tool_calls": [
+              {
+                "id": "b682391521c94024",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "db97009b2639914a",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "a2d629ca-3045-4c3c-b713-64af3c50b5b6",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "claude-sonnet-4-6",
+          "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "modelParameters": {
+            "temperature": 0
+          },
+          "promptId": "21fdad8c-1b73-49c0-a892-66d7ab1e58cd",
+          "promptName": "credit_decision",
+          "promptVersion": 3,
+          "latency": 0,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+          "inputPrice": "0.000003",
+          "outputPrice": "0.000015",
+          "totalPrice": null
+        },
+        {
+          "id": "6084783aea0fba08",
+          "traceId": "033fd54ad0c212fab212b2ae33a2c10d",
+          "startTime": "2026-09-11T15:11:00.088Z",
+          "endTime": "2026-09-11T15:11:00.091Z",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "parentObservationId": "d0821c25e99770b0",
+          "type": "AGENT",
+          "name": "credit_agent",
+          "level": "DEFAULT",
+          "statusMessage": "",
+          "version": "",
+          "environment": "production",
+          "input": "{\"application\": {\"applicant_id\": \"playground_applicant\", \"approved_line_eur\": 40000, \"vehicle\": {\"type\": \"BEV\", \"list_price_eur\": 48000}, \"application_date\": \"2026-09-11\"}, \"policy\": {\"amount_eur\": 6000, \"price_cap_eur\": 50000, \"effective_date\": \"2026-09-03\"}}",
+          "output": "{\"decision\": \"reject\", \"list_price_eur\": 48000, \"applied_grant_eur\": 6000, \"financed_principal_eur\": 42000, \"approved_line_eur\": 40000, \"reason\": \"The BEV qualifies for the EUR 6,000 grant (application date 2026-09-11 >= 2026-09-03, list price EUR 48,000 <= EUR 50,000), reducing the financed principal to EUR 42,000, which exceeds the approved line of EUR 40,000.\"}",
+          "metadata": {
+            "vehicle_type": "BEV",
+            "kind": "live",
+            "execution": "live_decision_with_simulated_steps",
+            "prompt_version": 3,
+            "prompt_name": "credit_decision",
+            "evaluation_scope": "ev_live_decision_5f1f890e74cc436b",
+            "ignored_grant": false,
+            "tool_calls": [
+              {
+                "id": "b682391521c94024",
+                "name": "check_subsidy_eligibility"
+              },
+              {
+                "id": "db97009b2639914a",
+                "name": "compute_affordability"
+              }
+            ],
+            "scope.attributes.public_key": "[redacted]",
+            "scope.version": "4.14.4",
+            "scope.name": "langfuse-sdk",
+            "resourceAttributes.service.name": "unknown_service",
+            "resourceAttributes.service.instance.id": "a2d629ca-3045-4c3c-b713-64af3c50b5b6",
+            "resourceAttributes.telemetry.sdk.version": "1.44.0",
+            "resourceAttributes.telemetry.sdk.name": "opentelemetry",
+            "resourceAttributes.telemetry.sdk.language": "python"
+          },
+          "model": "",
+          "internalModelId": "",
+          "modelParameters": {},
+          "promptId": "",
+          "promptName": "",
+          "promptVersion": null,
+          "latency": 0.003,
+          "timeToFirstToken": null,
+          "userId": "playground_user",
+          "sessionId": "",
+          "isRootObservation": false,
+          "bookmarked": false,
+          "public": false,
+          "modelId": null,
+          "inputPrice": null,
+          "outputPrice": null,
+          "totalPrice": null
+        }
+      ],
+      "scores": [
+        {
+          "id": "f8c32d7d-53f2-5147-ad6c-7598f116b724",
+          "projectId": "cmtvq2l5x00u8ad0d7rpc0uvp",
+          "name": "policy_correctness",
+          "source": "EVAL",
+          "timestamp": "2026-09-11T15:11:00.460Z",
+          "environment": "production",
+          "createdAt": "2026-09-11T15:11:01.000Z",
+          "updatedAt": "2026-09-11T15:11:00.540Z",
+          "comment": "Policy correct: grant EUR 6000; 48000 - 6000 = 42000; principal > line 40000: reject.",
+          "configId": null,
+          "metadata": {
+            "status": "pass",
+            "expected": {
+              "applied_grant_eur": 6000,
+              "financed_principal_eur": 42000,
+              "decision": "reject"
+            },
+            "policy": {
+              "amount_eur": 6000,
+              "price_cap_eur": 50000,
+              "effective_date": "2026-09-03"
+            },
+            "job_execution_id": "9f3eeb229b7b0cf9a1f6a5cbe36c099d",
+            "job_configuration_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_id": "cmtvsbobx022iad0dtzdyubx5",
+            "evaluation_rule_assignment_id": "cmtvsbobx022kad0drjbrhyua",
+            "evaluator_version_id": "cmtvs2pz701o5ad0f2ywor1n9",
+            "evaluator_id": "6c9c5ded-401f-4f18-83aa-d9323e7f796f",
+            "target_trace_id": "033fd54ad0c212fab212b2ae33a2c10d",
+            "target_observation_id": "6084783aea0fba08",
+            "dispatcher_name": "aws-lambda",
+            "code_eval_runtime": "PYTHON"
+          },
+          "subject": {
+            "kind": "observation",
+            "id": "6084783aea0fba08",
+            "traceId": "033fd54ad0c212fab212b2ae33a2c10d"
+          },
+          "dataType": "BOOLEAN",
+          "value": true
+        }
+      ]
+    }
+  },
+  "candidate_live_path_probe": [
+    {
+      "case": "repaired_eligible",
+      "input": {
+        "applicant_id": "ev238_repaired_eligible",
+        "approved_line_eur": 32000,
+        "vehicle": {
+          "type": "BEV",
+          "list_price_eur": 38000
+        },
+        "application_date": "2026-09-11"
+      },
+      "raw_output": "```json\n{\n  \"list_price_eur\": 38000,\n  \"applied_grant_eur\": 6000,\n  \"financed_principal_eur\": 32000,\n  \"approved_line_eur\": 32000,\n  \"reason\": \"The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exactly meets the approved line of EUR 32,000.\",\n  \"decision\": \"approve\"\n}\n```",
+      "output": {
+        "decision": "approve",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 32000,
+        "reason": "The BEV qualifies for the EUR 6,000 EV Purchase Grant (application date 2026-09-11 >= 2026-09-03, list price EUR 38,000 <= EUR 50,000), reducing the financed principal to EUR 32,000, which exactly meets the approved line of EUR 32,000."
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 32000,
+        "reason": "BEV qualifies for the EUR 6,000 purchase grant, reducing the financed amount to EUR 32,000, within the approved line of EUR 32,000."
+      },
+      "version": 3,
+      "latency_ms": 3308,
+      "matches": true
+    },
+    {
+      "case": "nearby_rejection",
+      "input": {
+        "applicant_id": "ev238_nearby_rejection",
+        "approved_line_eur": 31000,
+        "vehicle": {
+          "type": "BEV",
+          "list_price_eur": 38000
+        },
+        "application_date": "2026-09-11"
+      },
+      "raw_output": "```json\n{\n  \"list_price_eur\": 38000,\n  \"applied_grant_eur\": 6000,\n  \"financed_principal_eur\": 32000,\n  \"approved_line_eur\": 31000,\n  \"reason\": \"The BEV qualifies for the EUR 6,000 grant reducing the financed principal to EUR 32,000, which exceeds the approved credit line of EUR 31,000.\",\n  \"decision\": \"reject\"\n}\n```",
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 31000,
+        "reason": "The BEV qualifies for the EUR 6,000 grant reducing the financed principal to EUR 32,000, which exceeds the approved credit line of EUR 31,000."
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 38000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 32000,
+        "approved_line_eur": 31000,
+        "reason": "Financed amount of EUR 32,000 exceeds the approved line of EUR 31,000."
+      },
+      "version": 3,
+      "latency_ms": 3942,
+      "matches": true
+    },
+    {
+      "case": "package_rejection",
+      "input": {
+        "applicant_id": "ev238_package_rejection",
+        "approved_line_eur": 40000,
+        "vehicle": {
+          "type": "BEV",
+          "list_price_eur": 48000
+        },
+        "application_date": "2026-09-11"
+      },
+      "raw_output": "```json\n{\n  \"list_price_eur\": 48000,\n  \"applied_grant_eur\": 6000,\n  \"financed_principal_eur\": 42000,\n  \"approved_line_eur\": 40000,\n  \"reason\": \"After applying the EUR 6,000 EV purchase grant, the financed principal of EUR 42,000 exceeds the approved credit line of EUR 40,000.\",\n  \"decision\": \"reject\"\n}\n```",
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 48000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "After applying the EUR 6,000 EV purchase grant, the financed principal of EUR 42,000 exceeds the approved credit line of EUR 40,000."
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 48000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "Financed amount of EUR 42,000 exceeds the approved line of EUR 40,000."
+      },
+      "version": 3,
+      "latency_ms": 2395,
+      "matches": true
+    },
+    {
+      "case": "one_euro_boundary",
+      "input": {
+        "applicant_id": "ev238_one_euro_boundary",
+        "approved_line_eur": 35999,
+        "vehicle": {
+          "type": "BEV",
+          "list_price_eur": 42000
+        },
+        "application_date": "2026-09-11"
+      },
+      "raw_output": "```json\n{\n  \"list_price_eur\": 42000,\n  \"applied_grant_eur\": 6000,\n  \"financed_principal_eur\": 36000,\n  \"approved_line_eur\": 35999,\n  \"reason\": \"The financed principal of EUR 36,000 (EUR 42,000 list price minus EUR 6,000 EV grant) exceeds the approved credit line of EUR 35,999 by EUR 1.\",\n  \"decision\": \"reject\"\n}\n```",
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 42000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 36000,
+        "approved_line_eur": 35999,
+        "reason": "The financed principal of EUR 36,000 (EUR 42,000 list price minus EUR 6,000 EV grant) exceeds the approved credit line of EUR 35,999 by EUR 1."
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 42000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 36000,
+        "approved_line_eur": 35999,
+        "reason": "Financed amount of EUR 36,000 exceeds the approved line of EUR 35,999."
+      },
+      "version": 3,
+      "latency_ms": 2757,
+      "matches": true
+    },
+    {
+      "case": "phev_control",
+      "input": {
+        "applicant_id": "ev238_phev_control",
+        "approved_line_eur": 40000,
+        "vehicle": {
+          "type": "PHEV",
+          "list_price_eur": 42000
+        },
+        "application_date": "2026-09-11"
+      },
+      "raw_output": "```json\n{\n  \"list_price_eur\": 42000,\n  \"applied_grant_eur\": 0,\n  \"financed_principal_eur\": 42000,\n  \"approved_line_eur\": 40000,\n  \"reason\": \"The vehicle is a PHEV and does not qualify for the BEV purchase grant, leaving a financed principal of EUR 42,000 which exceeds the approved line of EUR 40,000.\",\n  \"decision\": \"reject\"\n}\n```",
+      "output": {
+        "decision": "reject",
+        "list_price_eur": 42000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "The vehicle is a PHEV and does not qualify for the BEV purchase grant, leaving a financed principal of EUR 42,000 which exceeds the approved line of EUR 40,000."
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 42000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 42000,
+        "approved_line_eur": 40000,
+        "reason": "Financed amount of EUR 42,000 exceeds the approved line of EUR 40,000."
+      },
+      "version": 3,
+      "latency_ms": 3242,
+      "matches": true
+    }
+  ],
+  "promotion": {
+    "id": "21fdad8c-1b73-49c0-a892-66d7ab1e58cd",
+    "updatedAt": "2026-09-11T15:10:30.598Z",
+    "name": "credit_decision",
+    "version": 3,
+    "labels": [
+      "ev-238-candidate",
+      "latest",
+      "production"
+    ]
+  },
+  "dataset_snapshot_sha256": "1fa2d91f46eff4274e14f580a5c87930a240d089b55f489375cf0f514459968a",
+  "scope_limits": [
+    "Live HTTP checks use FastAPI TestClient inside isolated source, not a deployed browser form.",
+    "No complete timed 12\u201315-minute depot-delivered rehearsal.",
+    "No signed release or admission performed.",
+    "No Assistant or alert action verified."
+  ]
+}
