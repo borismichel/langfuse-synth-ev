@@ -158,7 +158,11 @@ The 12-item snapshot (IDs, status, input, expectation, metadata and source links
 was identical before and after both runs. Canonical JSON SHA-256:
 `1fa2d91f46eff4274e14f580a5c87930a240d089b55f489375cf0f514459968a`.
 
-Schema-enforced reruns are pending approval to save the prepared shared
-`ev_credit_decision` schema. The initial native workflow, mapping, pinned version,
-source-linked curation and actual outputs are verified; strict candidate output
-acceptance is not yet complete.
+The initial unstructured failures remain part of the evidence. On 11 September,
+the `ev_credit_decision` schema was saved and native reruns scored all 12 outputs:
+baseline v1 had 4 passes / 8 policy failures, and v2 had 12 passes. The live
+Companion still reproduced an over-limit approval, so the release candidate moves
+the output's `decision` after the amounts and explanation. That revised prompt
+(numeric v3 in the rehearsal project) also passed all 12 native checks and the
+fresh live approval/rejection checks. See the [release rehearsal record](ev-ui-release.md)
+for exact versions, settings, links, remaining delivery gates and reset guidance.
