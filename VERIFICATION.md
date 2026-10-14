@@ -196,3 +196,30 @@ at this volume because those assets are config-sized, not ambient-scaled.
 synth-authoring freeze golden_seed:seed \
     --golden tests/golden/ev_spool.ndjson --target-traces 300 --search-path tests
 ```
+
+## Inclusive demo schedule — Depot #326
+
+The optional Manifest setup schedule declares UTC calendar days including Data as of.
+A 14-day run for 2026-10-16 starts on 2026-10-03. Core's legacy exclusive sampler is
+unchanged; this kit opts into its inclusive sampler. Generation still uses the selected
+calendar date at noon UTC for policy/incident anchors, and preserves seeded RNG streams.
+
+`SCHEDULE.json` records version1, requested as_of_date/history_days/timezone/end, and the
+actual minimum observation start and maximum observation end (`generated_range`). It is
+written with the other seed artifacts and retained in RunState.summary. Actual bounds
+are measured after materialization, not inferred from nominal dates.
+
+Offline candidate verification: 148 tests passed against the coordinated core source
+candidate. Date tests inspect emitted OTLP roots and child endpoints at14/30days,
+year/leap-day boundaries, and seed60/6000traces whose final graph previously crossed
+midnight. The overflowing graph shifts earlier by its exact overshoot plus1microsecond;
+its3.688-second duration is preserved. Other graphs are unchanged by this bound.
+
+Intentional chronology changes were frozen with synth-authoring freeze at the existing
+300-trace fixture scale.300traces/483scores remain; observations change2862→2861 because
+ambient incident membership follows the newly sampled dates. Dataset and reserved cohorts
+remain24/3. Analytics goldens change calculated daily distributions/percentages only;
+Companion markup, narrative, comparisons and controls are unchanged. All scenario tests pass.
+
+This is source-candidate evidence. Released core pins, signed kit publication and registry
+consumption remain pending the coordinating release review; no live seed was performed.

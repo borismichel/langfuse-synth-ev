@@ -128,6 +128,8 @@ artifacts:
   - path: DEMO_SCRIPT.md
     render: markdown
     title: "Presenter Runbook"
+  - path: SCHEDULE.json
+    title: "Generated schedule"
   - path: NATIVE_EXPERIMENT_ITEMS.json
     title: "Native experiment and reserved curation inputs"
   - path: NATIVE_EXPERIMENTS.md
@@ -170,3 +172,29 @@ teardown:
     torn down and stops any live instances. Re-seeding the SAME project is not safe: OTLP
     appends rather than upserting, so the demo would be told twice. Import-spool refuses a
     second run rather than doubling the volume.
+
+# Operator setup metadata. Presentation preserves the released Cloud operator
+# defaults on every host; base-file volume is an internal generation value. The smaller rehearsal
+# preserves the 24-item policy dataset, three curation examples and verifier.
+setup:
+  version: 1
+  schedule:
+    timezone: UTC
+    end: inclusive
+    history:
+      field: generation.window_days
+  fields:
+    generation.target_traces: {group: volume}
+    ambient_incidents.cost_spike.enabled: {group: scenario}
+    ambient_incidents.error_burst.enabled: {group: scenario}
+    ambient_incidents.latency_degrade.enabled: {group: scenario}
+    generation.seed: {group: advanced}
+  host_defaults:
+    cloud_eu: {generation.target_traces: 800}
+    cloud_us: {generation.target_traces: 800}
+    self_hosted: {generation.target_traces: 800}
+  presets:
+    quick_rehearsal:
+      label: Quick rehearsal
+      values:
+        generation.target_traces: 300
