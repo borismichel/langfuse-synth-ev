@@ -155,7 +155,7 @@ def test_malformed_inputs_have_actionable_errors(payload, message):
         Application.from_input(payload)
 
 
-def _experiment_adapter(items):
+def _experiment_adapter(items, *, experiment_url="https://example.test/experiment"):
     prompt = ChatPromptClient(ChatPrompt.model_validate({"name": "credit_decision", "version": 2,
         "prompt": [{"role": "user", "content": "{{application}}"}],
         "config": {}, "labels": [], "tags": []}))
@@ -169,7 +169,8 @@ def _experiment_adapter(items):
     def run(**kwargs):
         results = [SimpleNamespace(item=item, output=kwargs["task"](item=item)) for item in items]
         return SimpleNamespace(item_results=results, format=lambda: "complete",
-                               dataset_run_url="https://example.test/experiment")
+                               experiment_url=experiment_url,
+                               dataset_run_url="https://example.test/deprecated-alias")
 
     dataset = SimpleNamespace(items=items, run_experiment=run)
     lf = SimpleNamespace(get_prompt=lambda *a, **k: prompt, get_dataset=lambda *a: dataset,
@@ -248,3 +249,18 @@ def test_hosted_schema_rejects_malformed_serialised_application(application):
         with pytest.raises(ValidationError):
             hosted.create_dataset_item(dataset_name=name, input={"application": application},
                                        expected_output=plan.golden.dataset_plan[0].expected.model_dump())
+
+
+@pytest.mark.parametrize("experiment_url,expected", [
+    ("https://example.test/experiment", "https://example.test/experiment"),
+    (None, "http://localhost:3000/project/project-test/datasets/dataset-test/experiments"),
+])
+def test_experiment_link_prefers_supported_url_or_dataset_comparison(monkeypatch, experiment_url, expected):
+    from synth.experiment.run import run_experiment
+    import langfuse_synth_core.seed.ingest as ingest
+
+    adapter, _ = _experiment_adapter([], experiment_url=experiment_url)
+    adapter.langfuse().get_dataset("unused").id = "dataset-test"
+    monkeypatch.setattr(ingest, "assert_demo_project", lambda *args: ("project-test", "demo-test"))
+    result = run_experiment(load_config("config/demo.yaml"), adapter=adapter, log=lambda _: None)
+    assert result["run_url"] == expected
