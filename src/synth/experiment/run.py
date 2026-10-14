@@ -1,7 +1,7 @@
 """The experiment runner behind the demo's central beat (spec §7).
 
 Loads the hosted ``ev-grant-disputed-rejections`` dataset and runs **whatever prompt
-carries the requested label** (default ``production``) as the task via the v4
+carries the requested label** (default ``production``) as the task via the SDK
 ``run_experiment`` API. The task is the SAME agent function used at seed time, pulling the
 live labelled prompt — so the demo is: run ``production`` (== v1) → red; run
 ``development`` (== v2) → green to validate the fix **without touching production**; then
@@ -100,7 +100,7 @@ def run_experiment(cfg: Config, *, label: str = "production", run_name: str = "e
     # view. The SDK hands back a direct run URL when it can; otherwise fall back to the
     # dataset's runs page. The SDK appends a " - <timestamp>" suffix to the run name, so the
     # run shown in the UI starts with `name`; the managed judge scores it there. Best-effort.
-    run_url = getattr(res, "dataset_run_url", None) or _dataset_run_url(cfg, lf)
+    run_url = getattr(res, "experiment_url", None) or _dataset_run_url(cfg, lf)
     if run_url:
         log(f"· dataset runs: {run_url}")
     outcome = summarize(getattr(res, "item_results", []) or [])
