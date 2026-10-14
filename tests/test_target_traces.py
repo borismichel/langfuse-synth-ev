@@ -30,9 +30,7 @@ MANIFEST = REPO_ROOT / "usecase.yaml"
 EV_MIN, EV_MAX, EV_DEFAULT = 100, 6000, 800
 EV_TITLE = "Target traces"
 EV_DESCRIPTION = (
-    "Total number of backdated traces to generate — the single, uniform volume knob for "
-    "this demo. 800 is Cloud-free-tier safe; 4000 is the full self-hosted story. The kit "
-    "deterministically derives its internal generation params from it (EV: direct count)."
+    "Sets the target number of backdated traces. This value is not a cost estimate."
 )
 
 _authoring = importlib.util.find_spec("jsonschema") is not None
