@@ -12,13 +12,13 @@ Writes ``.synth_state.json`` and committed v1 fixtures on the way out.
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
 from ..config import Config
 from ..state import REPO_ROOT, RunState
-from langfuse_synth_core.timegen import iso_date, resolve_run_date
+from langfuse_synth_core.timegen import iso, iso_date, resolve_run_date
 from .generator import Plan, build_plan
 from langfuse_synth_core.seed.ingest import Ingestor, assert_demo_project, ensure_score_config
 from .scores import (
@@ -128,6 +128,13 @@ def run_seed(cfg: Config, *, dry_run: bool = False, persist: bool = True,
     state.project_id = project_id
     state.history_imported = not dry_run and do_import
     if persist:
+        from ..script import output_dir
+
+        output_dir().mkdir(parents=True, exist_ok=True)
+        (output_dir() / "SCHEDULE.json").write_text(json.dumps({
+            "version": 1, "requested": plan.summary["schedule"],
+            "generated_range": plan.summary["generated_range"],
+        }, indent=2) + "\n")
         _write_fixtures(plan)
         state.save()
         log("✓ wrote run state and v1 fixtures")
@@ -144,6 +151,9 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
     sc = cfg.scoring
     rng = plan.rng
     total = 0
+    earliest = None
+    latest = None
+    end_before = (plan.run_date + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
     ing.open_spool()
     try:
@@ -165,7 +175,13 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
                 spec.tags = [*spec.tags, "disputed"]
 
             # 2. build the trace (now carries `disputed` iff the judge fired true)
-            events = build_trace_events(rng, cfg, spec, v1_version)
+            events = build_trace_events(rng, cfg, spec, v1_version, end_before=end_before)
+            for event in events:
+                if "spanId" in event:
+                    start = int(event["startTimeUnixNano"])
+                    end = int(event["endTimeUnixNano"])
+                    earliest = start if earliest is None else min(earliest, start)
+                    latest = end if latest is None else max(latest, end)
             ing.extend(events)
             total += len(events)
 
@@ -181,6 +197,11 @@ def _spool_traces_and_scores(cfg: Config, plan: Plan, v1_version, ing: Ingestor,
             ing.add(ev)
     finally:
         ing.close_spool()
+    plan.summary["generated_range"] = {
+        "start": iso(datetime.fromtimestamp(earliest / 1e9, timezone.utc)),
+        "end": iso(datetime.fromtimestamp(latest / 1e9, timezone.utc)),
+        "timezone": "UTC",
+    } if earliest is not None else None
     return total
 
 

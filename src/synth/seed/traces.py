@@ -80,7 +80,8 @@ def _subsidy_eligibility(spec: TraceSpec) -> tuple[dict, bool]:
 def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version: int | None,
                        decision_usage: tuple[int, int] | None = None,
                        decision_latency_ms: int | None = None,
-                       decision_input: list[dict] | None = None) -> list[dict]:
+                       decision_input: list[dict] | None = None,
+                       end_before: datetime | None = None) -> list[dict]:
     """Build the agent-graph event tree. Seed path leaves the overrides None (tokens + latency
     are sampled; the decision input is the v1 chat turn compiled from the prompt file); the
     live playground passes the *real* model ``(input, output)`` token counts, the measured
@@ -235,6 +236,19 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
 
     # (The customer's pushback for disputed false-negatives is surfaced as the comment on
     # the `user_disagreement` score — see run.py / scores.py — not as a trace observation.)
+
+    if end_before is not None and cur.t >= end_before:
+        # A last-second historical root must not move its children into tomorrow.
+        # Rebuild the same RNG substream a few seconds earlier: sampled durations,
+        # IDs, parent relationships and scenario outcomes are all preserved.
+        latest_start = end_before - (cur.t - spec.timestamp) - timedelta(microseconds=1)
+        if latest_start.date() != spec.timestamp.date():
+            raise ValueError("A historical trace duration exceeds its calendar day")
+        spec.timestamp = latest_start
+        return build_trace_events(
+            rng, cfg, spec, prompt_v1_version, decision_usage,
+            decision_latency_ms, decision_input, end_before,
+        )
 
     # -- root AGENT observation (spans the whole orchestration) -----------
     events.insert(0, observation_event(

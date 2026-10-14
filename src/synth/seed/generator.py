@@ -13,7 +13,7 @@ from ..agent import decide
 from ..config import Config
 from ..content import ambient_application, user_population
 from langfuse_synth_core.rng import Rng
-from langfuse_synth_core.timegen import day_anchor, iso_date, sample_timestamps, window_start
+from langfuse_synth_core.timegen import day_anchor, iso_date, sample_inclusive_timestamps, inclusive_window_start
 from . import golden_path as gp_mod
 from .golden_path import GoldenPath
 from .traces import TraceSpec
@@ -61,7 +61,7 @@ def build_plan(cfg: Config, run_date: datetime) -> Plan:
 def _build_ambient(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
                    golden: GoldenPath, n: int) -> list[TraceSpec]:
     r = rng.sub("ambient")
-    times = sample_timestamps(r, run_date, cfg.generation.window_days, n)
+    times = sample_inclusive_timestamps(r, run_date, cfg.generation.window_days, n)
     weights = [u["weight"] for u in users]
     prod_share = cfg.generation.environments.production_share
     rule = golden.rule
@@ -153,7 +153,8 @@ def _summarise(cfg: Config, run_date: datetime, plan: Plan) -> dict:
         errored += 1 if s.error_step else 0
     return {
         "run_date": run_date.isoformat(),
-        "window_start": window_start(run_date, cfg.generation.window_days).isoformat(),
+        "window_start": inclusive_window_start(run_date, cfg.generation.window_days).isoformat(),
+        "schedule": {"as_of_date": iso_date(run_date), "history_days": cfg.generation.window_days, "timezone": "UTC", "end": "inclusive"},
         "total_traces": len(plan.specs),
         "ambient_traces": len(plan.ambient_specs),
         "golden_disputed_traces": len(g.disputed_specs),
