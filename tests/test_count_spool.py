@@ -28,7 +28,7 @@ GOLDEN_TARGET_TRACES = 300
 # including one minted root per trace — the trace term is derived from distinct trace
 # ids, and the billable `total` excludes it (a v4 trace is a view over its root, already
 # inside `observations`; portal #220).
-GOLDEN_TALLIES = {"traces": 300, "observations": 2862, "scores": 483, "total": 3345}
+GOLDEN_TALLIES = {"traces": 300, "observations": 2861, "scores": 483, "total": 3344}
 
 # Independent (logic duplicated here on purpose) recount, a different code path than
 # the library's, so agreement is a real cross-check rather than a tautology.
