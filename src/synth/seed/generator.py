@@ -62,6 +62,14 @@ def _build_ambient(cfg: Config, run_date: datetime, rng: Rng, users: list[dict],
                    golden: GoldenPath, n: int) -> list[TraceSpec]:
     r = rng.sub("ambient")
     times = sample_inclusive_timestamps(r, run_date, cfg.generation.window_days, n)
+    # Sparse weekend sampling can leave the selected day empty. Keep the fixed
+    # golden cohort intact and move only the latest ambient request to that day,
+    # retaining its sampled time of day and the total requested volume.
+    if times and not any(ts.date() == run_date.date() for ts in times) and not any(
+        spec.timestamp.date() == run_date.date() for spec in golden.disputed_specs
+    ):
+        latest = max(range(len(times)), key=times.__getitem__)
+        times[latest] += timedelta(days=(run_date.date() - times[latest].date()).days)
     weights = [u["weight"] for u in users]
     prod_share = cfg.generation.environments.production_share
     rule = golden.rule

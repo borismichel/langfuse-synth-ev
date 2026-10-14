@@ -105,3 +105,31 @@ def test_latest_day_observations_cannot_spill_into_tomorrow(tmp_path):
     last = max(spans, key=lambda event: int(event['endTimeUnixNano']))
     graph = [event for event in spans if event['traceId'] == last['traceId']]
     assert max(int(event['endTimeUnixNano']) for event in graph) - min(int(event['startTimeUnixNano']) for event in graph) == 3_688_000_000
+
+
+@pytest.mark.parametrize('as_of', ['2026-10-16', '2026-10-17', '2026-10-18'])
+@pytest.mark.parametrize('window', [14, 30])
+@pytest.mark.parametrize('seed', [0, 10, 42])
+def test_sparse_history_contains_selected_day_activity(tmp_path, as_of, window, seed):
+    # Sunday / 30 days / seed 10 previously ended on October 17 despite selecting 18.
+    cfg = load_config(CONFIG, overrides=[
+        'generation.target_traces=100', f'generation.seed={seed}',
+        f'generation.window_days={window}', f'generation.as_of_date={as_of}',
+    ])
+    state = run_seed(cfg, dry_run=True, persist=False, do_import=False,
+                     spool_path=tmp_path / 'events.ndjson', log=lambda _m: None)
+    events = [json.loads(line) for line in (tmp_path / 'events.ndjson').read_text().splitlines()]
+    spans = [event for event in events if 'spanId' in event]
+    roots = [event for event in spans if not event.get('parentSpanId')]
+    selected_day = date.fromisoformat(as_of)
+    assert len(roots) == 100
+    assert max(datetime.fromtimestamp(int(event['startTimeUnixNano']) / 1e9, timezone.utc).date()
+               for event in roots) == selected_day
+    assert min(datetime.fromtimestamp(int(event['startTimeUnixNano']) / 1e9, timezone.utc).date()
+               for event in spans) >= selected_day - timedelta(days=window - 1)
+    assert max(datetime.fromtimestamp(int(event['endTimeUnixNano']) / 1e9, timezone.utc).date()
+               for event in spans) == selected_day
+    assert all(int(event['startTimeUnixNano']) <= int(event['endTimeUnixNano']) for event in spans)
+    assert state.summary['generated_range']['end'].startswith(f'{as_of}T')
+    assert state.dataset_items == 24
+    assert len(state.reserved_trace_ids) == 3

@@ -25,3 +25,41 @@ All three dependency pins and the publish-workflow pin were updated with `synth-
 The full suite passes: **154 passed**, including byte-identical deterministic Spool, date-window boundaries, actual generated-range artifact, authored rehearsal readback, and Companion UI goldens. The first release run identified an existing exact-description assertion still containing the removed promotional copy; its expected wording now matches the approved factual Manifest description. Numeric bounds/default assertions are unchanged.
 
 Manifest validation passes. The repository's `conformance --advisory` CI gate passes with its two existing migration advisories: Companion health path `/` and legacy app-factory location. The aggregate `synth-authoring check` reports `local_ready: false` because it runs strict conformance; its validation and test stages pass. Those unchanged migration items are not reported as resolved by this schedule/preset release. The two existing runbook developer-mode advisories also remain. No new Companion migration or live verification is included.
+
+## Review correction: sparse selected-day activity
+
+The Spec review found a valid Custom configuration whose weighted traffic missed
+the selected day: target 100, seed 10, history 30, Data as of 2026-10-18 (Sunday).
+The regression was reproduced through `run_seed(dry_run=True, persist=False,
+do_import=False)` and actual emitted Spool timestamps before changing generation.
+Its latest observation ended at 2026-10-17T19:38:32.125087Z.
+
+When both ambient sampling and the fixed golden cohort miss the selected date,
+generation now moves the latest ambient request to that date, keeping its sampled
+time of day. The normal trace builder materializes its whole graph and the existing
+end-boundary policy still applies. No trace is added, no cohort is resized, and no
+verifier threshold or score policy changes. Application dates follow the moved
+request; sessions are assigned after the timestamp is selected.
+
+The corrected reproduction's reported range is 2026-09-20T13:42:40.039Z through
+2026-10-18T16:19:05.847Z. Before and after contain 100 traces and 1159 Spool records.
+Only trace `7868aae3ad34d1144dc88e0d8bb395c6` changes: its 10 observations and one
+score timestamp move exactly one day. Graph IDs, parent relationships, durations,
+decisions, score values and fixed golden records are unchanged. Propagated
+application dates and completion timestamps move with the graph.
+
+The public seed/Spool regression covers 18 sparse configurations: seeds 0/10/42,
+14/30-day histories, and Friday/Saturday/Sunday end dates. It verifies the selected
+day has a root observation, all observation endpoints stay in the inclusive window,
+the actual generated range ends on that date, volume remains 100, and the 24-item
+dataset and three reserved examples remain present. Existing presentation boundary,
+midnight-overflow, authored-preset verifier and byte-for-byte golden tests pass.
+Full result: **172 passed**, using published core v4.3.0 and Langfuse 4.18.0.
+Manifest validation and advisory conformance pass with the unchanged advisories above.
+No golden refresh, remote import, provider request or new live-verification claim
+was needed for this calendar-policy correction.
+
+Authoring guidance was re-read from the same linked Langfuse skill noted above;
+the current [observability data model](https://langfuse.com/docs/observability/data-model)
+was checked on 2026-10-14. This change preserves the existing trace/observation
+relationships and transport rather than choosing a new native surface.
