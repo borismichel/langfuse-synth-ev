@@ -91,18 +91,18 @@ config_schema:
     ambient_incidents.cost_spike.enabled:
       type: boolean
       default: true
-      title: "Cost-spike ambience"
-      description: "Adds a backdated cost-spike incident for a richer dashboard."
+      title: "Cost spike"
+      description: "Samples a backdated cost-spike incident. Low trace counts may produce no incident."
     ambient_incidents.error_burst.enabled:
       type: boolean
       default: true
-      title: "Error-burst ambience"
-      description: "Turn off with the other incident cohorts for the short policy demo."
+      title: "Error burst"
+      description: "Samples a backdated error burst. Low trace counts may produce no incident."
     ambient_incidents.latency_degrade.enabled:
       type: boolean
       default: false
-      title: "Latency-degrade ambience"
-      description: "Keep off for the short policy demo; enable for an operational detour."
+      title: "Latency degradation"
+      description: "Samples a backdated latency incident. Low trace counts may produce no incident."
   required: []
 
 pipeline:
