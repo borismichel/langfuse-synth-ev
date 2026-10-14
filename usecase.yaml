@@ -70,7 +70,7 @@ config_schema:
       default: 42
       minimum: 0
       title: "Generation seed"
-      description: "Deterministic RNG seed for the whole dataset. Vary it to mint a distinct trace/id set per deployment; the same seed always builds the same Spool, but re-seeding a project that already holds it tells the story twice — OTLP appends rather than upserting. The throwaway probe trace is separately nonce-salted, so it never collides regardless of this value."
+      description: "Controls deterministic sampling and generated IDs. Reproducing a dataset also requires the same configuration and Data as of date. Re-seeding an existing project can add duplicate data; use a separate demo project."
     generation.target_traces:
       # The CANONICAL, cross-kit operator volume knob (Ring 2, #33). Replaces EV's bespoke
       # generation.total_traces operator knob (now internal only). Shape is exactly what
@@ -82,27 +82,28 @@ config_schema:
       maximum: 6000
       default: 800
       title: "Target traces"
-      description: "Total number of backdated traces to generate — the single, uniform volume knob for this demo. 800 is Cloud-free-tier safe; 4000 is the full self-hosted story. The kit deterministically derives its internal generation params from it (EV: direct count)."
+      description: "Sets the target number of backdated traces. This value is not a cost estimate."
     generation.window_days:
       type: integer
       default: 30
       enum: [14, 30]
-      title: "Backfill window (days)"
+      title: "History window"
+      description: "Number of calendar days ending on and including the Data as of date (UTC)."
     ambient_incidents.cost_spike.enabled:
       type: boolean
       default: true
-      title: "Cost-spike ambience"
-      description: "Adds a backdated cost-spike incident for a richer dashboard."
+      title: "Cost spike"
+      description: "Adds planner generations to sampled traces during the configured cost-spike window. Low trace counts may produce no incident."
     ambient_incidents.error_burst.enabled:
       type: boolean
       default: true
-      title: "Error-burst ambience"
-      description: "Turn off with the other incident cohorts for the short policy demo."
+      title: "Error burst"
+      description: "Marks sampled subsidy-eligibility or affordability tool calls as errors during the configured error window. Low trace counts may produce no incident."
     ambient_incidents.latency_degrade.enabled:
       type: boolean
       default: false
-      title: "Latency-degrade ambience"
-      description: "Keep off for the short policy demo; enable for an operational detour."
+      title: "Latency degradation"
+      description: "Increases generated observation durations for traces during the configured latency window. Low trace counts may produce no matching traces."
   required: []
 
 pipeline:

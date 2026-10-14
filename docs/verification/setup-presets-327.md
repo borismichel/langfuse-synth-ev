@@ -10,7 +10,7 @@ An exploratory 4000-trace, 14-day run failed the existing `disagreement_drift` v
 
 ## Authored rehearsal
 
-Quick rehearsal declares only `generation.target_traces: 300`. This is the kit's existing documented golden-gate walkthrough volume, not a percentage or schema minimum. It retains the fixed24-item policy dataset, three reserved curation examples, disputed decisions, prompt linkage, chat inputs and score contrasts. History, generation seed and incident choices are retained when switching into rehearsal. All three incident controls remain visible. Enabled ambient incidents are sampled; the existing golden documentation explicitly does not guarantee a rare error burst at this volume.
+Quick rehearsal declares only `generation.target_traces: 300`. This is the kit's existing documented golden-gate walkthrough volume, not a percentage or schema minimum. It retains the fixed24-item policy dataset, three reserved curation examples, disputed decisions, prompt linkage, chat inputs and score contrasts. History, generation seed and incident choices are retained when switching into rehearsal. All three incident controls remain visible. Enabled ambient incidents are sampled; the existing golden documentation (`tests/test_determinism.py`, golden-gate boundary, and `VERIFICATION.md`) explicitly does not guarantee a rare error burst at this volume. Scenario control descriptions state that they enable sampling and low trace counts may produce no incident.
 
 ## Executed checks
 
