@@ -107,7 +107,7 @@ def test_trace_events_well_formed():
     # ... and its input is the actual LLM turn: system prompt + application user message
     dec_input = json.loads(decision_attrs[otlp.OBS_INPUT])
     assert dec_input[0]["role"] == "system"
-    assert "credit-decision agent" in dec_input[0]["content"]
+    assert "vehicle-loan applications" in dec_input[0]["content"]
     assert dec_input[1]["role"] == "user"
     assert str(spec.application.vehicle.list_price_eur) in dec_input[1]["content"]
 
@@ -160,7 +160,7 @@ def test_grant_effective_date_is_recent_relative_to_run():
     assert plan.golden.effective_date < RUN_DATE
 
 
-def test_seeded_rejection_ignores_an_available_deployment_grant():
+def test_seeded_rejection_omits_retrieved_deployment_grant_context():
     cfg = load_config("config/demo.yaml")
     cfg.generation.total_traces = 120
     cfg.golden_path.grant_amount_eur = 4000
@@ -172,7 +172,11 @@ def test_seeded_rejection_ignores_an_available_deployment_grant():
     assert evidence["applicable_subsidies"] == [{"name": "EV Purchase Grant", "amount_eur": 4000}]
     assert evidence["policy"] == {"amount_eur": 4000, "price_cap_eur": 45000,
                                   "effective_date": "2026-06-02"}
-    assert json.loads(spans["check_subsidy_eligibility"]["langfuse.observation.metadata.ignored_by_agent"]) is True
+    retrieval = json.loads(spans["retrieve_policy"][otlp.OBS_OUTPUT])
+    assert retrieval["policy_updates"][0]["effective_date"] == "2026-06-02"
+    assert "4,000" in retrieval["policy_updates"][0]["content"]
+    assert "BULLETIN-EV-1" not in spans["decision"][otlp.OBS_INPUT]
+    assert "ignored_by_agent" not in str(spans)
     affordability = json.loads(spans["compute_affordability"][otlp.OBS_INPUT])
     assert affordability["financed_principal_eur"] == spec.application.vehicle.list_price_eur
     assert json.loads(spans["compute_affordability"][otlp.OBS_OUTPUT]) == {"within_line": False}

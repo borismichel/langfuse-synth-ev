@@ -1,18 +1,6 @@
-"""Run a live submission: pull the current ``production`` prompt, get a real decision,
-and emit it as a native agent-graph trace at *now*.
-
-Only the ``decision`` generation is a real model call (its tokens are the real usage); the
-surrounding spans are templated from the same scenario content the seeder renders, so the
-trace is shape-identical to the seeded data and lands at the top of the timeline.
-
-The emission itself goes through the **live-emission seam** (``langfuse_synth_core.live``,
-via :func:`synth.live.trace.emit_live_trace`) rather than the Spool's ``Ingestor``: a
-submission has no timestamp to supply and is outside the golden gate, which is exactly the
-line CONTRACT.md draws between the two writers (portal #211).
-"""
+"""Run a live policy lookup and decision using the current production prompt."""
 from __future__ import annotations
 
-import time
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Callable
 
@@ -21,7 +9,7 @@ from langfuse_synth_core.seed.ingest import assert_demo_project
 from langfuse_synth_core.timegen import iso_date
 
 from .. import clients
-from ..agent import decide, parse_decision
+from ..agent import decide
 from ..config import Config
 from ..models import Application
 from ..state import deployment_rule
@@ -42,24 +30,6 @@ def _clients(cfg: Config, adapter: "CompanionAdapter | None"):
             clients.emitter(cfg, adapter, environment="production"))
 
 
-def _live_decision(cfg: Config, lf, llm, app: Application) -> tuple:
-    """Pull the current ``production`` prompt (cache_ttl=0 → a promotion is caught) and run it.
-    Returns ``(decision, input_tokens, output_tokens, prompt, latency_ms, messages)`` where
-    ``messages`` is the compiled chat turn the model actually saw and ``prompt`` is the
-    managed prompt object — the SDK links a generation to its version by that object."""
-    name = cfg.golden_path.prompt_name
-    prompt = lf.get_prompt(name, label=PRODUCTION_LABEL, type="chat", cache_ttl_seconds=0)
-    application_json = app.model_dump_json()
-    messages = prompt.compile(application=application_json)
-    system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
-    turns = [m for m in messages if m.get("role") != "system"] or \
-        [{"role": "user", "content": application_json}]
-    t0 = time.monotonic()
-    result = llm.complete(system=system, messages=turns, temperature=0, max_tokens=512)
-    latency_ms = int((time.monotonic() - t0) * 1000)
-    chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
-    return (parse_decision(result.text, app), result.input_tokens, result.output_tokens,
-            prompt, latency_ms, chat)
 
 
 def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter | None" = None,
@@ -81,17 +51,14 @@ def submit(cfg: Config, application: Application, *, adapter: "CompanionAdapter 
 
     rule = deployment_rule(cfg)
     lf, llm, emitter = _clients(cfg, adapter)
-    decision, in_tok, out_tok, prompt, latency_ms, messages = _live_decision(cfg, lf, llm, application)
+    prompt = lf.get_prompt(cfg.golden_path.prompt_name, label=PRODUCTION_LABEL,
+                           type="chat", cache_ttl_seconds=0)
     version = getattr(prompt, "version", None)
+    decision, trace_id = emit_live_trace(
+        emitter, cfg, application=application, rule=rule, llm=llm, prompt=prompt,
+        tags=["ev-grant", "playground"])
     log(f"· production prompt v{version} decided: {decision.decision} "
-        f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,}; {latency_ms}ms)")
-
-    # Emit the native-looking agent-graph trace at *now*, with the real decision + usage.
-    # The seam stamps wall clock and flushes when the block ends, so the deep link below
-    # points at a trace already on its way.
-    trace_id = emit_live_trace(emitter, cfg, application=application, decision=decision, rule=rule,
-                               decision_input=messages, decision_usage=(in_tok, out_tok),
-                               prompt=prompt, tags=["ev-grant", "playground"])
+        f"(grant €{decision.applied_grant_eur:,}, financed €{decision.financed_principal_eur:,})")
 
     # The deterministic "correct under v2" answer, for side-by-side contrast.
     expected = decide(application, "v2", rule=rule)

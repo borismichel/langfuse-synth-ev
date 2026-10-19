@@ -28,7 +28,7 @@ DRIFT_START = "2026-06-02"
 BEFORE_TS = "2026-05-30T12:00:00.000Z"  # < drift_start
 DURING_TS = "2026-06-04T12:00:00.000Z"  # >= drift_start
 
-SYSTEM_TURN = [{"role": "system", "content": "You are a credit-decision agent."}]
+SYSTEM_TURN = [{"role": "system", "content": "You assess vehicle-loan applications."}]
 
 
 def _state() -> RunState:

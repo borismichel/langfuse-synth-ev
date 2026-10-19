@@ -12,6 +12,7 @@ from langfuse.model import ChatPromptClient
 from synth.agent import decide
 from synth.config import load_config
 from synth.models import Application
+from synth.policy import policy_variables
 from synth.seed.datasets import create_dataset
 from synth.seed.generator import build_plan
 from synth.seed.prompts import register_prompts
@@ -55,15 +56,16 @@ def test_hosted_inputs_compile_both_prompts_as_the_live_caller():
     rows = hosted.datasets[cfg.golden_path.dataset.name]
     assert len(rows) == 24
     for row, source in zip(rows, plan.golden.dataset_plan):
-        assert row["input"] == {"application": source.application.model_dump_json()}
+        assert row["input"] == policy_variables(source.application, plan.golden.rule)
         assert row["expected_output"] == source.expected.model_dump()
         assert row["source_trace_id"] == source.source_trace_id
         assert row["metadata"]["scenario"] == source.scenario
         for version in (1, 2):
             prompt = hosted.get_prompt(cfg.golden_path.prompt_name, label=f"v{version}")
-            assert prompt.variables == ["application"]
+            assert set(prompt.variables) == ({"application", "handbook"} if version == 1 else {"application", "handbook", "policy_updates"})
             compiled = prompt.compile(**row["input"])
-            assert compiled[-1] == {"role": "user", "content": source.application.model_dump_json()}
+            assert source.application.model_dump_json() in compiled[-1]["content"]
+            assert ("BULLETIN-EV-1" in compiled[-1]["content"]) == (version == 2)
             assert "{{" not in compiled[0]["content"]
 
 
@@ -77,7 +79,7 @@ def test_wrapped_dataset_input_reaches_live_model_unchanged():
 
     def complete(**kwargs):
         calls.append(kwargs)
-        return SimpleNamespace(text='{"decision":"approve","applied_grant_eur":6000,"reason":"36000 <= 40000"}',
+        return SimpleNamespace(text='{"decision":"approve","list_price_eur":42000,"applied_grant_eur":6000,"financed_principal_eur":36000,"approved_line_eur":40000,"reason":"36000 <= 40000"}',
                                input_tokens=10, output_tokens=10)
 
     lf = SimpleNamespace(get_prompt=lambda *a, **k: prompt,
@@ -163,7 +165,7 @@ def _experiment_adapter(items, *, experiment_url="https://example.test/experimen
 
     def complete(**kwargs):
         calls.append(kwargs)
-        return SimpleNamespace(text='{"decision":"approve","applied_grant_eur":6000,"reason":"36000 <= 40000"}',
+        return SimpleNamespace(text='{"decision":"approve","list_price_eur":42000,"applied_grant_eur":6000,"financed_principal_eur":36000,"approved_line_eur":40000,"reason":"36000 <= 40000"}',
                                input_tokens=10, output_tokens=10)
 
     def run(**kwargs):

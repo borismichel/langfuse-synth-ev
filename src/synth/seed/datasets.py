@@ -15,6 +15,7 @@ from __future__ import annotations
 import pydantic
 
 from ..models import Decision
+from ..policy import policy_variables
 from .golden_path import GoldenPath
 from .demo_cohort import demonstration_items
 
@@ -40,9 +41,10 @@ INPUT_SCHEMA = {
     "type": "object",
     "properties": {"application": {"type": "string", "pattern": _APPLICATION_PATTERN,
         "description": "Canonical Application JSON: applicant_id, approved_line_eur, vehicle (type, list_price_eur), application_date, in that order"}},
-    "required": ["application"],
+    "required": ["application", "handbook", "policy_updates"],
     "additionalProperties": False,
 }
+INPUT_SCHEMA["properties"].update({name: {"type": "string"} for name in ("handbook", "policy_updates")})
 
 
 def _tolerate_v2_response(call, what: str):
@@ -79,7 +81,7 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
         _tolerate_v2_response(lambda it=it: lf.create_dataset_item(
             dataset_name=ds.name,
             id=it.item_id,
-            input={"application": it.application.model_dump_json()},
+            input=policy_variables(it.application, golden.rule),
             expected_output=it.expected.model_dump(),
             metadata={"eligible": it.eligible, "borderline": it.borderline,
                       "scenario": it.scenario},
@@ -134,7 +136,7 @@ def reserved_items(golden: GoldenPath) -> list[dict]:
             applied_grant_eur=rule.amount_eur, financed_principal_eur=principal,
             approved_line_eur=app.approved_line_eur, reason=basis)
         row = {
-            "input": {"application": app.model_dump_json()}, "expected_output": expected.model_dump(),
+            "input": policy_variables(app, rule), "expected_output": expected.model_dump(),
             "source_trace_id": spec.trace_id,
             "metadata": {"scenario": "false_negative", "eligible": True, "borderline": True,
                          "source": "reserved seeded observation", "expectation_basis": basis},

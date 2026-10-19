@@ -10,6 +10,7 @@ from datetime import date, timedelta
 from uuid import NAMESPACE_URL, uuid5
 
 from ..agent import GrantRule
+from ..policy import policy_variables
 from ..models import Application, Decision, Vehicle, VehicleType
 
 
@@ -49,7 +50,7 @@ def demonstration_items(rule: GrantRule, dataset_name: str) -> list[dict]:
             "financed_principal_eur": principal, "approved_line_eur": line, "reason": basis})
         rows.append({
             "id": str(uuid5(NAMESPACE_URL, f"{dataset_name}/{scenario}")),
-            "input": {"application": application.model_dump_json()},
+            "input": policy_variables(application, rule),
             "expected_output": expected.model_dump(),
             "metadata": {"scenario": scenario, "source": "hand-worked fictional policy cases",
                          "expectation_basis": basis, "grant_effective_date": str(day)},

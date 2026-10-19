@@ -5,7 +5,7 @@
          ├─ generation: plan             (Opus  — ~25% of traces, the ambiguous ones)
          ├─ span: load_application
          │    └─ generation: extract_fields  (Haiku)
-         ├─ RETRIEVER: retrieve_policy   (vector_search — no model)
+         ├─ RETRIEVER: retrieve_policy   (bundled_policy_lookup — no model)
          ├─ TOOL: check_subsidy_eligibility  (load-bearing for §7)
          ├─ TOOL: compute_affordability
          ├─ generation: decision         (Sonnet — decide(), links to prompt v1; tool_calls)
@@ -13,8 +13,8 @@
 
 Timestamps walk a cursor forward from the trace timestamp; trace latency is the
 critical-path sum (latency = endTime - startTime). In the stale-grant window the
-agent skips/ignores ``check_subsidy_eligibility`` so ``compute_affordability`` runs on
-the gross price — the mechanism of the silent regression (§7).
+the template omits the retrieved policy_updates binding, so the decision sees only
+the handbook. All historical operations below are synthetic fixtures.
 """
 from __future__ import annotations
 
@@ -23,13 +23,16 @@ from datetime import datetime, timedelta
 
 from ..agent import GrantRule
 from ..config import Config
-from ..content import decision_messages, explain_io, extract_io, model_label, plan_io, retrieve_io
+from ..content import explain_io, extract_io, model_label, plan_io
 from langfuse_synth_core.distributions import cache_split, sample_latency_ms, sample_tokens, text_tokens, tool_latency_ms
 from ..models import Application, Decision
 from langfuse_synth_core.pricing import cost_details, usage_details
 from langfuse_synth_core.rng import Rng
 from langfuse_synth_core.seed.events import event_event, generation_event, observation_event, span_event, trace_event
-from .prompts import prompt_text
+from .prompts import chat_prompt, decision_schema
+from ..policy import lookup_policy, policy_variables
+from langfuse.api import ChatPrompt
+from langfuse.model import ChatPromptClient
 
 TRACE_NAME = "credit_agent.assess_application"
 HISTORY_TOKENS_PER_TURN = 750  # accumulated Q+A added to input per prior turn (multi-turn)
@@ -46,7 +49,7 @@ class TraceSpec:
     environment: str
     kind: str  # ambient | golden_eligible | control_overcap | control_phev
     grant_rule: GrantRule | None = None  # absent when the grant scenario is disabled
-    stale_grant_window: bool = False  # agent ignores the (now-active) subsidy
+    stale_grant_window: bool = False  # template omits the policy update
     turn_index: int = 0  # position within a multi-turn session (0 = first/only turn)
     plan_step: bool = False
     slow_factor: float = 1.0
@@ -158,16 +161,18 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
 
     # -- retrieve_policy (RETRIEVER — vector search, no model) ------------
     s, e = cur.advance(tool_latency_ms(r, 180, 0.5, spec.slow_factor))
-    rq, rdocs = retrieve_io()
+    documents = lookup_policy(app, spec.grant_rule)
+    variables = policy_variables(app, spec.grant_rule, documents=documents)
     events.append(observation_event(
         obs_id=r.obs_id("retrieve", tid), trace_id=tid, name="retrieve_policy",
         obs_type="RETRIEVER", start=s, end=e, parent_id=agent_id, environment=env,
-        input=rq, output={"documents": rdocs}, metadata={"retriever": "vector_search"}))
+        input={"application_date": app.application_date}, output=documents,
+        metadata={"retriever": "bundled_policy_lookup", "execution": "generated_history"}))
 
     # -- check_subsidy_eligibility (TOOL, load-bearing) ------------------
     fail_here = spec.error_step == "check_subsidy_eligibility"
     s, e = cur.advance(tool_latency_ms(r, 90, 0.4, spec.slow_factor))
-    elig_out, ignored_by_agent = _subsidy_eligibility(spec)
+    elig_out, _ = _subsidy_eligibility(spec)
     events.append(observation_event(
         obs_id=r.obs_id("eligib", tid), trace_id=tid, name="check_subsidy_eligibility",
         obs_type="TOOL", start=s, end=e, parent_id=agent_id, environment=env,
@@ -175,7 +180,7 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         output=elig_out, level="ERROR" if fail_here else None,
         status_message="subsidy service timeout" if fail_here else None,
         metadata={"tool": "subsidy_lookup", "toolCallId": elig_call_id,
-                  "ignored_by_agent": ignored_by_agent}))
+                  "execution": "generated_history"}))
 
     # -- compute_affordability (TOOL) ------------------------------------
     fail_aff = spec.error_step == "compute_affordability"
@@ -196,7 +201,9 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
     s, e = cur.advance(decision_latency_ms if decision_latency_ms is not None
                        else sample_latency_ms(r, "work", spec.slow_factor))
     if decision_input is None:                   # seed: every backdated decision mirrors v1
-        decision_input = decision_messages(prompt_text("v1"), app)
+        prompt = ChatPromptClient(ChatPrompt(name=cfg.golden_path.prompt_name,
+            version=prompt_v1_version or 1, prompt=chat_prompt("v1"), config={}, labels=[], tags=[]))
+        decision_input = prompt.compile(**variables)
     if decision_usage is not None:               # live: real token counts, no cache split
         ti, ot, cr, cc = decision_usage[0], decision_usage[1], 0, 0
     else:                                        # seed: sampled tokens + prompt-cache split
@@ -212,7 +219,9 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         model=sonnet.name,
         usage_details=usage_details(ti, ot, cr, cc), cost_details=cost_details(sonnet, ti, ot, cr, cc),
         environment=env, input=decision_input, output=spec.decision.model_dump(),
-        model_parameters={"temperature": 0}, metadata={"tool_calls": tool_calls},
+        model_parameters={"max_tokens": 512},
+        metadata={"execution": "generated_history", "prompt_variables": variables,
+                  "response_schema": decision_schema()},
         prompt_name=cfg.golden_path.prompt_name if prompt_v1_version else None,
         prompt_version=prompt_v1_version))
 

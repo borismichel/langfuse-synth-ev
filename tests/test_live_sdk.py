@@ -61,14 +61,20 @@ def test_exported_decision_preserves_policy_evidence_and_prompt(
         name="credit_decision", version=1 if label == "v1" else 2,
         prompt=[{"role": "user", "content": "{{application}}"}], config={}, labels=[], tags=[],
     ))
-    messages = prompt.compile(application=application.model_dump_json())
-    trace_id = emit_live_trace(
-        emitter, cfg, application=application, decision=decision, rule=rule,
-        decision_input=messages, decision_usage=(1200, 180), prompt=prompt,
-        tags=["ev-grant", "playground"], user_id="presenter", environment="production",
-    )
+    from types import SimpleNamespace
+    from synth.seed.prompts import chat_prompt
+    from synth.policy import policy_variables
+    prompt = ChatPromptClient(ChatPrompt(name="credit_decision", version=1 if label == "v1" else 2,
+        prompt=chat_prompt(label), config={}, labels=[], tags=[]))
+    messages = prompt.compile(**policy_variables(application, rule))
+    llm = SimpleNamespace(model="claude-sonnet-4-6", provider="anthropic",
+        complete=lambda **kwargs: SimpleNamespace(text=decision.model_dump_json(), input_tokens=1200, output_tokens=180))
+    actual, trace_id = emit_live_trace(
+        emitter, cfg, application=application, rule=rule, llm=llm, prompt=prompt,
+        tags=["ev-grant", "playground"], user_id="presenter", environment="production")
+    assert actual == decision
     spans = {span.name: span for span in exported.get_finished_spans()}
-    assert len(spans) == 9
+    assert len(spans) == 4
     root = spans[TRACE_NAME]
     assert root.parent is None
     assert trace_id == format(root.context.trace_id, "032x")
@@ -80,29 +86,18 @@ def test_exported_decision_preserves_policy_evidence_and_prompt(
         assert span.attributes["langfuse.environment"] == "production"
         assert list(span.attributes["langfuse.trace.tags"]) == ["ev-grant", "playground"]
         assert json.loads(span.attributes["langfuse.trace.metadata.kind"]) == "live"
-    parents = {"credit_agent": TRACE_NAME, "load_application": "credit_agent",
-               "extract_fields": "load_application", "retrieve_policy": "credit_agent",
-               "check_subsidy_eligibility": "credit_agent", "compute_affordability": "credit_agent",
-               "decision": "credit_agent", "explain": "credit_agent"}
+    parents = {"credit_agent": TRACE_NAME, "retrieve_policy": "credit_agent", "decision": "credit_agent"}
     for name, parent in parents.items():
         assert spans[name].parent.span_id == spans[parent].context.span_id
-    agent = spans["credit_agent"].attributes
-    assert json.loads(agent["langfuse.observation.metadata.ignored_grant"]) is ignored
-    eligibility = spans["check_subsidy_eligibility"].attributes
-    assert json.loads(eligibility["langfuse.observation.metadata.ignored_by_agent"]) is ignored
-    assert json.loads(eligibility["langfuse.observation.output"])["policy"] == {
-        "amount_eur": 6000, "price_cap_eur": 50000, "effective_date": "2026-06-02"}
-    affordability = spans["compute_affordability"].attributes
-    assert json.loads(affordability["langfuse.observation.input"])["financed_principal_eur"] == principal
-    assert json.loads(affordability["langfuse.observation.output"]) == {"within_line": verdict == "approve"}
+    retrieval = json.loads(spans["retrieve_policy"].attributes["langfuse.observation.output"])
+    assert retrieval["policy_updates"][0]["effective_date"] == "2026-06-02"
+    assert "ignored_by_agent" not in str(spans)
     generation = spans["decision"].attributes
     assert generation["langfuse.observation.type"] == "generation"
     assert json.loads(generation["langfuse.observation.input"]) == messages
     assert json.loads(generation["langfuse.observation.output"]) == decision.model_dump()
     usage = json.loads(generation["langfuse.observation.usage_details"])
     assert usage["input"] == 1200 and usage["output"] == 180
-    costs = json.loads(generation["langfuse.observation.cost_details"])
-    assert costs["input"] > 0 and costs["output"] > 0 and costs["total"] > 0
     assert generation["langfuse.observation.model.name"] == cfg.model_by_role("work").name
     assert generation["langfuse.observation.prompt.name"] == "credit_decision"
     assert generation["langfuse.observation.prompt.version"] == prompt.version

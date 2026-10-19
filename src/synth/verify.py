@@ -152,7 +152,7 @@ def run_verify(cfg: Config, state: RunState, *, log=print) -> VerifyReport:
             for o in decisions:
                 if o.prompt_name == state.prompt_name and o.prompt_version == state.prompt_versions.get("v1"):
                     linked = True
-                if "credit-decision agent" in _system_prompt_of(o):
+                if "vehicle-loan applications" in _system_prompt_of(o):
                     chat_ok = True
             detail = (f"trace {tid[:12]}… decision generations linked to "
                       f"{state.prompt_name} v{state.prompt_versions.get('v1')}: {linked}")
