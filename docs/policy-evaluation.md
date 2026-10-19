@@ -1,5 +1,7 @@
 # EV policy correctness — portal #235
 
+Current release evidence: [19 October verification and delivery](ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 The main scoring beat is the native Boolean `policy_correctness` code evaluator.
 It checks list price, approved line, applied grant, financed principal and decision against the
 fictional deployment policy. A correct rejection with incorrect amounts fails.

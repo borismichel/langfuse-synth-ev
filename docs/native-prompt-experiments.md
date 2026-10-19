@@ -1,5 +1,7 @@
 # Native EV prompt experiments — portal #234
 
+Current release evidence: [19 October verification and delivery](ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 The hosted regression dataset keeps its configured name and all 24 default cases.
 Seeding additionally creates `<dataset-name>-demo` with eight authored policy cases.
 Fixture generation and dataset creation make no model calls. The deployment artifact
@@ -99,7 +101,7 @@ The offline `--gate` path accepts the wrapper as well.
 
 The record below describes the earlier instruction-based demo. It is retained as
 prior evidence only and does not verify the missing-binding repair, eight-case
-cohort, new evaluator or Halo workflow. Current missing-binding evidence is in the [19 October native record](evidence/359-native-ui/README.md): eight-case native baseline4/8 versus candidate8/8, followed by the nine-item Halo-curated cohort with baseline4/9 versus candidate9/9 and complete native scores. Corrected local live baseline/promotion/control checks are also recorded there; signed release, admission and ordinary Depot delivery remain separate pending gates.
+cohort, new evaluator or Halo workflow. Current released-image evidence is linked above. The [earlier 19 October native record](evidence/359-native-ui/README.md) remains the development rehearsal, with its own projects and retained failures.
 
 ### Prior record
 

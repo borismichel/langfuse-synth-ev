@@ -1,5 +1,7 @@
 # Verification checks
 
+Current release evidence: [19 October verification and delivery](docs/ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 Use the same configuration, target and saved run state as the initial deployment. Verify the project identity before reading results. Credentials stay in the configured environment; never copy them into evidence.
 
 ## Current-run verification

@@ -1,5 +1,7 @@
 # EV demo — implementation specification
 
+Current release evidence: [19 October verification and delivery](docs/ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 Current contract, 19 October 2026. This replaces the initial instruction-based design. The original specification remains in [the v0.7.2 source history](https://github.com/borismichel/langfuse-synth-ev/blob/2bb50460c584992bb42abbc91d383c18ae4f7dde/langfuse-demo-synth-spec.md); its prompt text and SDK-first presenter journey do not describe this repair.
 
 ## Purpose
@@ -90,7 +92,7 @@ The generated `DEMO_SCRIPT.md` is the single Presenter Runbook. It contains save
 4. Open the generation in Playground. Explicitly choose the intended connection/model, 512-token limit and shared schema in each window. Do not assume prompt configuration is inherited. Compare identical complete input; confirm the candidate's compiled message includes the amendment.
 5. Run fixed baseline/candidate versions on the same frozen cohort with identical settings and evaluator. Inspect all amounts, execution coverage and rejection controls. Rehearse five flagship attempts per version; retain all outcomes.
 6. Activate the scoped incoming rule. Make a new undisputed baseline call after activation and inspect its automatic score.
-7. Promote the tested numeric candidate once. Repeat the eligible application and a qualifying-but-unaffordable control; inspect the native prompt association and automatic agent score. Record failures and delays rather than retrying until green.
+7. Promote the tested numeric candidate once. Repeat the eligible application and the PHEV rejection control (the qualifying-but-unaffordable case is also covered in the native cohort); inspect the native prompt association and automatic agent score. Record failures and delays rather than retrying until green.
 
 ## Deployment, determinism and reset
 

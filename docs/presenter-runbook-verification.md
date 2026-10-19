@@ -1,5 +1,7 @@
 # Presenter Runbook delivery verification — 10 September 2026
 
+> Historical record. Current released-demo evidence and refreshed images are in [the 19 October verification](https://github.com/borismichel/langfuse-synth-ev/blob/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/README.md). The original dated results below are preserved.
+
 > Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](ev-context-verification.md).
 
 Scope: portal issue #237, kit base `2a9e40e`, portal base `f6f9e73`.

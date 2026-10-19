@@ -4,6 +4,26 @@
 > Rehearse the full path and measure its duration before presenting.
 > Counts below describe the seed snapshot; confirm the current dataset and prompt labels in rehearsal.
 
+## Talk track — the short presentation
+
+Use this sequence after setup. Allow about 12–15 minutes as a planning budget; model and evaluation latency varies. Open the completed comparison and final proof trace in advance. The detailed steps and complete setup inputs follow below.
+
+| Beat | Show and do | Say | Check before moving on |
+|---|---|---|---|
+| Customer complaint | Open the linked disputed decision and its customer comment. | “The answer looks normal, but this customer says the financing decision is wrong. Let’s follow the evidence.” | Price, credit line and complaint belong to this application. |
+| Investigation with Halo | Ask the neutral investigation question in step 2. Follow its retrieval and generation citations. | “The policy lookup found the amendment. Now compare that with the text the decision model actually received.” | The amendment is in retrieval; the compiled baseline input omits it. Keep generated history distinct from real calls. |
+| Policy check | Open the Python evaluator, run the disputed and rejection samples, and inspect their amounts. | “We need to check the calculation as well as the decision. A correct rejection should pass.” | Five policy fields checked; no score is not a passing result. |
+| Regression case | Ask Halo to prepare the reserved item, review its expectation, approve the single write and read it back. | “We keep the captured context and derive the expected result from the policy.” | Three string inputs, structured expectation, source links; {% if demo_dataset_items is not none %}{{ demo_dataset_items }} authored cases become {{ demo_dataset_items + 1 }} after this single addition.{% else %}Confirm the actual cohort count before and after this single addition.{% endif %} If already curated, inspect it once. |
+| Playground | Compare the same captured input with the two templates and identical model/schema/settings. | “The change adds the missing policy-updates binding. Everything else stays the same.” | Inspect grant and principal in both actual outputs. |
+| Native experiments | Run or open both completed experiments on the frozen cohort. Show controls and full score coverage. | “Now we check the boundary cases too. In our completed rehearsal, four of nine passed before the change and all nine passed after it.” | Quote this run's actual counts; the nine-case result is rehearsal evidence, not a guarantee. |
+| Promotion and monitoring | After the comparison, promote the tested version once, submit an eligible case and a PHEV control, then open their traces. | “The fresh decision records the version we tested. The policy check runs automatically on the agent, including correct rejections.” | Candidate version, actual amounts and automatic scores. If already promoted, use the recorded baseline and keep the current label. |
+
+**Opening:** “A policy update can be available to an application and still never reach its decision model. We’ll investigate a customer complaint with Langfuse’s assistant, turn it into a regression case, test the prompt and verify a new decision.”
+
+**Closing, after the checks pass:** “The complaint led us to the missing context. We preserved the case, tested the change against controls and verified the new version on fresh decisions.”
+
+**If a live step is slow or unavailable:** state what is pending, then open the labelled completed rehearsal at the end of this runbook. Keep its project and execution date visible. Do not present a screenshot or predicted assistant answer as a new execution.
+
 ## Before the audience arrives
 
 - **Target:** `{{ base_url }}` · **{{ project_name }}**. {{ project_link or 'No project link recorded. Open the target project manually and verify its identity before presenting.' }}
@@ -51,7 +71,7 @@ Open the deployment's Companion App, then its **Lending Analytics** route (local
 
 > “The application gives polite, well-formed answers. But some customers who qualify for financing are being rejected. A customer complaint gives us a concrete decision to investigate.”
 
-The Companion report is a **cached historical snapshot** of generated data. Its appeal percentage means disagreement among **reviewed decisions**, not all applications; review is sampled. Live submissions and Dispute do not rewrite that report.
+The Companion report is a **cached historical snapshot** of generated data. Its appeal percentage means disagreement among **reviewed decisions**, not all applications; review is sampled. Live submissions and Request a review do not rewrite that report.
 
 ## 2 · Discover the case in Observations
 
@@ -61,7 +81,7 @@ Open **Observations** (also called **Tracing** in some versions), choose a date 
 environment:production type:AGENT name:=credit_agent scores.user_disagreement:true
 ```
 
-This chooses one decision-bearing agent observation per application. Inspect the score's observation target; older synthetic feedback can be trace-linked. Open the `user_disagreement` score and read its customer comment. Live **Dispute writes a score, not a disputed tag**; do not rely on `tags:disputed`. If the target lacks the v4 search bar, use equivalent available sidebar filters and open the linked example directly.
+This chooses one decision-bearing agent observation per application. Inspect the score's observation target; older synthetic feedback can be trace-linked. Open the `user_disagreement` score and read its customer comment. Live **Request a review writes a score, not a disputed tag**; do not rely on `tags:disputed`. If the target lacks the v4 search bar, use equivalent available sidebar filters and open the linked example directly.
 
 {% if disputed_example %}
 {{ disputed_trace_link or 'Locate the seeded disputed example in the verified project.' }}: applicant **{{ disputed_example.applicant_id }}**, {{ disputed_example.vehicle_type }} **€{{ '{:,}'.format(disputed_example.list_price_eur) }}**, line **€{{ '{:,}'.format(disputed_example.approved_line_eur) }}**, application date **{{ disputed_example.application_date }}**. The recorded result is **{{ disputed_example.decision }}**, grant **€{{ '{:,}'.format(disputed_example.applied_grant_eur) }}**, principal **€{{ '{:,}'.format(disputed_example.financed_principal_eur) }}**.
@@ -144,13 +164,13 @@ Freeze this final cohort for both runs. Record its actual count and dataset vers
 
 Open the example's **decision** generation and choose **Open in Playground** (captured as **Playground → Fresh playground**). Keep the same complete input values in both comparison variants. Load the baseline numeric version and the prepared candidate from **{{ prompt_name }}**. Confirm all three input values match the captured retrieval evidence and that no referenced variable is unresolved. The baseline renders `application` and `handbook`; the candidate adds only the `policy_updates` binding. Inspect the compiled messages to verify the amendment appears only in the candidate.
 
-Explicitly select the same verified connection, `{{ task_model }}` model, 512-token limit and structured output schema from the Setup appendix in each variant. Opening a managed prompt in a fresh Playground can select the connection’s default model and leave the schema unset; inspect these fields rather than assuming the saved prompt configuration was applied. Use temperature 0 where supported; omit it for both variants where unsupported. Run the side-by-side comparison. In the short demo, keep the prepared candidate; if authoring live, save a new version and record that exact number for experiments and promotion. Keep `production` on the baseline for now.
+Explicitly select the same verified connection, `{{ task_model }}` model, 512-token limit and structured output schema from the Setup appendix in each variant. Opening a managed prompt in a fresh Playground can select the connection’s default model and leave the schema unset; inspect these fields rather than assuming the saved prompt configuration was applied. Use temperature 0 where supported; omit it for both variants where unsupported. Save the schema, reopen it and verify all six required fields in both windows before running. In the released-image rehearsal, the editor initially failed to persist the pasted definition and returned empty objects; those are setup failures, not valid comparisons. Replace the complete definition, save and reopen to verify it, and retain the failed attempts. Run the side-by-side comparison. In the short demo, keep the prepared candidate; if authoring live, save a new version and record that exact number for experiments and promotion. Keep `production` on the baseline for now.
 
 **Native experiments test context assembly and decisions over captured retrieval results.** They do not test retrieval-algorithm quality, execute the local lookup or use the Companion's output parser. A live Companion submission makes one real decision model call; generated history does not.
 
 > “We added the missing policy-updates binding. This one comparison gives us a hypothesis. The regression cases tell us whether it holds beyond this customer.”
 
-## Two native experiments, one frozen cohort
+## 6 · Two native experiments, one frozen cohort
 
 Halo could investigate and curate data in rehearsal, but could not start native Prompt Experiments. Start them in the UI yourself; its predicted results are not execution evidence. Explicitly select the policy evaluator for each run rather than assuming an existing rule covers a newly created dataset.
 
@@ -173,9 +193,9 @@ If execution is slow, open the completed comparison bookmarked in rehearsal and 
 
 Only after reviewing a complete scored candidate comparison, open the managed prompt and move **production** to that **tested numeric version once**. Confirm the label on that version. If a rehearsal comparison supplied the evidence, use its exact tested version and policy.
 
-Return to the Companion App (local fallback: http://127.0.0.1:8000). Submit the same eligible vehicle, price and approved line once; verify the live application date still qualifies. Open the **new trace**. Check the `decision` generation's prompt version against the version just promoted and inspect its grant, financed principal and decision. Then open `credit_agent` and wait for its **native policy_correctness** score. No Dispute click is required.
+Return to the Companion App (local fallback: http://127.0.0.1:8000). Submit the same eligible vehicle, price and approved line once; verify the live application date still qualifies. Open the **new trace**. Check the `decision` generation's prompt version against the version just promoted and inspect its grant, financed principal and decision. Then open `credit_agent` and wait for its **native policy_correctness** score. No Request a review click is required.
 
-Also submit the reviewed `grant_still_above_line` rejection control from the Setup appendix. Inspect the actual decision, amounts and native score. Retain any failure and explain it; do not retry until green or substitute a different control without recording both outcomes. Keep the promoted version in place. Promotion changes subsequent decisions; historical traces, appeal rates and the cached Companion analytics remain historical.
+Also submit the reviewed PHEV rejection control from the Setup appendix, using its exact saved-policy input and expected amounts. The native cohort additionally checks `grant_still_above_line`, where a qualifying grant applies but the financed amount still exceeds the line. Inspect the actual decision, amounts and native score. Retain any failure and explain it; do not retry until green or substitute a different control without recording both outcomes. Keep the promoted version in place. Promotion changes subsequent decisions; historical traces, appeal rates and the cached Companion analytics remain historical.
 
 The production rule must already select this deployment's **production / AGENT / credit_agent** plus **metadata.evaluation_scope** equal to the Setup appendix’s production-rule `match_all` value. Use all recipe conditions and full sampling; the scope marker excludes seeded history, staging, experiments, siblings and evaluator executions. Do not require disagreement or a disputed tag. Follow the Setup appendix and verify the observation's own Input is the application and its Output is the complete Decision. The evaluator embeds this deployment's policy constants; it cannot read sibling retrievals. If that guide or rule recipe is missing, this kit predates the live evaluation prerequisite; deploy the release containing it before claiming the ending works. If the rule is absent, set it up and verify it before presenting; do not substitute the Companion's decision-agreement card for a native score.
 
@@ -277,7 +297,7 @@ The following is a UI recipe, not an API request. Select the tested evaluator an
 {{ production_rule_json }}
 ```
 
-Create and activate the incoming-observation rule only after reviewing these matches. Sample-picker filters alone do not configure a rule. Replace any default root filter in rule creation with the four conditions above. Record the rule URL, evaluator version and activation time. Then make a new undisputed baseline submission: the pre-activation inspection sample does not prove automatic scoring. Verify exactly one `policy_correctness` score on its `credit_agent` observation, without manually scoring or clicking Dispute. Retain the baseline result before promotion.
+Create and activate the incoming-observation rule only after reviewing these matches. Sample-picker filters alone do not configure a rule. Replace any default root filter in rule creation with the four conditions above. Record the rule URL, evaluator version and activation time. Then make a new undisputed baseline submission: the pre-activation inspection sample does not prove automatic scoring. Verify exactly one `policy_correctness` score on its `credit_agent` observation, without manually scoring or clicking Request a review. Retain the baseline result before promotion.
 
 ### Recovery and evidence
 
@@ -287,20 +307,33 @@ Create and activate the incoming-observation rule only after reviewing these mat
 - If a score is pending, inspect execution state and allow ingestion to settle. An execution error, missing score and false policy score are separate outcomes.
 - Record every attempt in rehearsal, including five flagship comparisons per version and the genuine rejection controls. A retry does not replace an earlier failure. Record project/version, kit/core/SDK/model, dataset timestamp, prompt versions, settings, schema, rule/evaluator URLs and actual outputs. Link screenshots only after capturing those exact objects.
 
-## Rehearsal reference — 19 October 2026
+{% if not dry_run and history_imported is true %}
+## Released demo reference — 19 October 2026
 
-These are actual Cloud v4.63.0 rehearsal captures, pinned to an immutable evidence commit. They identify the two isolated rehearsal projects, not this deployment's objects. Use the deployment links and saved policy above for the live presentation. The first project's Halo-created nine-item comparison scored baseline **4/9** and candidate **9/9**, with all 18 native scores verified. The second fresh project supplied corrected-history diagnosis and the monitored live promotion: baseline false, candidate true, PHEV rejection true.
+The completed ordinary Depot deployment uses **v0.8.0** in Langfuse Cloud **v4.64.0**, project [ev-demo-delivery-20261019](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k). This reference project now has **production v2** and a nine-item comparison. These are recorded rehearsal results; use this deployment's links and saved policy for new actions. Do not reset the reference project's label or duplicate its curated item.
 
-![Halo's corrected diagnosis in the fresh verification project](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/halo-corrected-diagnosis.png)
+- **Halo:** a neutral investigation found the missing binding and cited retrieval, the correct affordability calculation and the incomplete generation input. Halo added one reviewed source item to the existing eight-item cohort and read back all fields. This proves curation into an existing dataset, not new-dataset creation in this project.
+- **Playground:** five valid pairs returned baseline grant €0 / principal €45,000 / reject and candidate grant €6,000 / principal €39,000 / approve. The screenshot shows editable copies of the templates. Two earlier empty-object outputs were schema-setup failures and are retained in the record.
+- **[Native experiment comparison](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/experiments/results?baseline=cmvfnu53u00dgad0elletj4pa&c=cmvfnvpen00qgad0e9zbn9txv):** fixed managed v1 **4/9** versus v2 **9/9**, all 18 automatic policy scores independently checked; dataset version **2026-10-19T19:39:47.535Z**. Both used Sonnet 4.6, 512 output tokens, temperature omitted and the same six-field schema. This targeted cohort is not a population accuracy estimate. The comparison's directional badge is from the baseline perspective; show the actual false→true rows and 44% versus 100% values.
+- **Live monitoring:** [baseline](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/6d8c422e2d7ddce0096749792540acd8) v1 false; [eligible candidate](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/746ebc299397a2baa46fbcf0159979c8?observation=c23d424c60f60cff) v2 true; [PHEV control](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/66f60d4cea7517a9bef519632a8859e6) v2 true. Each has four observations, one model generation/usage record and one automatic score on the agent, without review feedback.
 
-![Native comparison on the Halo-created nine-item dataset](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/halo-nine-comparison.png)
+![Halo diagnosis with cited observations](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/halo-diagnosis.png)
 
-![Fresh eligible approval after production promotion](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/live-candidate.png)
+![Halo confirms the ninth item and its source links](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/halo-curation.png)
 
-![Fresh PHEV rejection control after promotion](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/live-control.png)
+![The candidate adds the policy-updates binding](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/playground-binding.png)
 
-The [complete rehearsal record](https://github.com/borismichel/langfuse-synth-ev/blob/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/README.md) retains the failed multi-item Halo writes, corrected historical affordability defect, initial duplicate provider telemetry, exact settings and source-linked outputs. Screenshots alone do not replace per-item score checks. Release admission and ordinary Depot delivery have separate evidence.
+![Playground baseline and corrected decision amounts](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/playground-results.png)
 
+![Native policy scores: baseline 4/9 and candidate 9/9](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/native-comparison.png)
+
+![Promoted live decision and automatic policy score](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/live-policy-score.png)
+
+![PHEV rejection control after promotion](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/live-rejection-control.png)
+
+[Capture provenance](https://github.com/borismichel/langfuse-synth-ev/blob/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/README.md) identifies fresh capture times and exact URLs. The [complete released-image delivery record](https://github.com/borismichel/langfuse-demo-depot/blob/b294cbe418eb03b5a66fbbbc6e6a8abe9d892aac/docs/release-evidence/ev-context-359/delivery/README.md) retains settings, failures, per-item readbacks, the admission and the original image identity. These fresh screenshots view completed executions; no additional model executions were made for the documentation refresh.
+
+{% endif %}
 ## Reset
 
 Teardown is project-level. Create a fresh demo project and re-run the seed with the same configuration and date anchor; the seed is deterministic.
