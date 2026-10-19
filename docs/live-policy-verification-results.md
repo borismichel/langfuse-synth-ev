@@ -1,5 +1,7 @@
 # Live policy verification — portal #236
 
+> Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](ev-context-verification.md).
+
 Verified on 10 September 2026 in
 [new-ev-demo](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp), using
 EV kit revision `78b96c2`. The incoming rule automatically evaluated five fresh,

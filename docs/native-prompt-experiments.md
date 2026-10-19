@@ -15,7 +15,7 @@ with a single Playground request before the presentation. Record project URL,
 connection name, provider, model and result; never record the key.
 [LLM Connection documentation](https://langfuse.com/docs/administration/llm-connection)
 
-Keep provider, model, sampling settings and output schema identical across both runs.
+Keep provider, model, sampling settings and output schema identical across both runs. Opening a managed prompt in a fresh Playground can choose the connection’s default model and leave the schema unset. Explicitly select the intended task model, 512-token limit and shared schema in each window before running.
 Use the deployment task model when that model is available through the connection;
 otherwise record the deliberate alternative. Use temperature 0 when supported, and
 512 output tokens. If the provider/model does not support a sampling parameter, omit
@@ -28,8 +28,7 @@ Check the actual experiment form for a **Dataset Version** selector. If present,
 record and reuse the same timestamp. If absent, finish curation first and keep the
 cohort unchanged until both runs finish: no seeding, adding, editing, archiving or
 deleting items. Record item IDs, inputs and expected outputs before and after.
-The documentation currently differs on UI version selection, so an Items-tab version
-history alone is not evidence that experiment setup supports pinning.
+Current Prompt Experiment documentation supports version selection. Record the actual selected version in both runs; an Items-tab history alone does not prove which version a run used.
 [Dataset versioning](https://langfuse.com/docs/evaluation/experiments/datasets#versioning)
 
 ## Input contract and reserved observation curation

@@ -60,7 +60,8 @@ def test_presenter_uses_saved_policy_and_labels_execution_truthfully(monkeypatch
     assert 'id="line" type="number" value="34000"' in text
     assert 'data-p="53000"' in text
     assert "€50,000" not in text and "€6,000" not in text
-    assert "decision prompt" in text and "simulated" in text
+    assert "decision agreement" in text and "local policy lookup" in text
+    assert "simulated steps" not in text
     analytics = client.get("/analytics").text
     assert "historical snapshot" in analytics and "of reviewed decisions" in analytics
     assert "€45,000" in analytics and "€50,000" not in analytics

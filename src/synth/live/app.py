@@ -33,9 +33,8 @@ TITLE = "Langfuse Bank — EV Auto Loans"
 _VNAME = {"BEV": "Battery-electric", "PHEV": "Plug-in hybrid", "ICE": "Petrol / diesel"}
 
 _HEADER = ("<div class='eyebrow'>Langfuse Bank · EV financing</div>"
-           "<h1>Finance your <span class='mark'>electric vehicle</span></h1>"
-           "<p class='sub'>Tell us about the vehicle and your pre-approved credit line, and we'll give "
-           "you an instant lending decision.</p>")
+           "<h1>Loan application</h1>"
+           "<p class='sub'>Enter the vehicle price and your pre-approved credit line to request a decision.</p>")
 
 
 def _form(prefabs_js: str, rule: GrantRule = DEFAULT_RULE) -> str:
@@ -47,8 +46,8 @@ def _form(prefabs_js: str, rule: GrantRule = DEFAULT_RULE) -> str:
                     for k, v in _VNAME.items())
     return f"""
     <form method="post" action="{local('/submit')}">
-      <label>Try an example</label>
-      <select id="prefab" onchange="fill()">{opts}<option value="custom">— or enter your own —</option></select>
+      <label>Example application</label>
+      <select id="prefab" onchange="fill()">{opts}<option value="custom">Custom application</option></select>
       <label>Vehicle</label>
       <select name="vehicle" id="vehicle">{vopts}</select>
       <label>Vehicle price (€)</label>
@@ -57,7 +56,7 @@ def _form(prefabs_js: str, rule: GrantRule = DEFAULT_RULE) -> str:
       <input name="line" id="line" type="number" value="{prefabs[0].approved_line_eur}" min="1000" step="500"></div>
       <div class="note">Battery-electric vehicles at or below €{rule.price_cap_eur:,} qualify for the €{rule.amount_eur:,} EV purchase grant,
         applied at point of sale for applications on or after {rule.effective_date}.</div>
-      <button type="submit">Get my decision →</button>
+      <button type="submit">Submit application</button>
     </form>
     <script>const P={prefabs_js};
       function fill(){{const k=document.getElementById('prefab').value;if(k==='custom')return;const p=P[k];
@@ -88,11 +87,10 @@ def _error_card(headline: str, exc: Exception) -> str:
     <div class="eyebrow">Langfuse Bank · service notice</div>
     <div class="card">
       <h2>{headline}</h2>
-      <p class="sub" style="margin:6px 0 14px">Our decision service had a momentary problem and
-        nothing was recorded. Please try again — your details are one click back.</p>
+      <p class="sub" style="margin:6px 0 14px">This request did not complete. Partial execution or error records may be available in Langfuse. Return to the application to try again.</p>
       <div class="kv"><span>Technical detail</span><span>{html.escape(tech[:160])}</span></div>
     </div>
-    <a class="back" href="{local('/')}">← try again</a>"""
+    <a class="back" href="{local('/')}">Return to application</a>"""
 
 
 def create_app(cfg: Config, adapter=None):
@@ -134,9 +132,9 @@ def create_app(cfg: Config, adapter=None):
         d = res["decision"]
         approved = d.decision == "approve"
         verdict = "APPROVED" if approved else "DECLINED"
-        line_txt = ("Good news — we can finance this vehicle within your pre-approved credit line."
+        line_txt = ("The amount financed is within your pre-approved credit line."
                     if approved else
-                    "Unfortunately the amount to finance exceeds your pre-approved credit line.")
+                    "The amount financed exceeds your pre-approved credit line.")
         body = f"""
         <div class="eyebrow">Langfuse Bank · lending decision</div>
         <div class="card active">
@@ -149,11 +147,11 @@ def create_app(cfg: Config, adapter=None):
         </div>
         <form method="post" action="{local('/dispute')}" class="ghost card">
           <input type="hidden" name="trace_id" value="{res['trace_id']}">
-          <label>Think this is wrong? Request a review</label>
+          <label>Review request</label>
           <textarea name="comment" rows="3" placeholder="e.g. the EV purchase grant should put me under my line"></textarea>
           <button type="submit">Request a review</button>
         </form>
-        <a class="back" href="{local('/')}">← new application</a>"""
+        <a class="back" href="{local('/')}">New application</a>"""
         return page(body, title=TITLE)
 
     @app.post("/eval", response_class=HTMLResponse)
@@ -188,13 +186,12 @@ def create_app(cfg: Config, adapter=None):
         body = f"""
         <div class="eyebrow">Langfuse Bank · appeal received</div>
         <div class="card active">
-          <h2>Thanks — your appeal is in</h2>
-          <p class="sub" style="margin:6px 0 14px">We've logged your appeal against this decision. A lending
-            specialist will take another look at your application.</p>
+          <h2>Review request recorded</h2>
+          <p class="sub" style="margin:6px 0 14px">Your review request is recorded against this decision.</p>
           <div class="kv"><span>Your message</span><span>{html.escape(res['comment'])}</span></div>
           <div class="kv"><span>Decision record</span><span><a href="{res['trace_url']}" target="_blank">view →</a></span></div>
         </div>
-        <a class="back" href="{local('/')}">← new application</a>"""
+        <a class="back" href="{local('/')}">New application</a>"""
         return page(body, title=TITLE)
 
     return app

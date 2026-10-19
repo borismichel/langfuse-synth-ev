@@ -1,5 +1,7 @@
 # Presenter Runbook delivery verification — 10 September 2026
 
+> Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](ev-context-verification.md).
+
 Scope: portal issue #237, kit base `2a9e40e`, portal base `f6f9e73`.
 Implementation is complete for review. End-to-end Cloud acceptance remains dependent
 on #235's hosted policy evaluation and #236's fresh production verification.
