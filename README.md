@@ -1,181 +1,66 @@
 # EV Subsidy Silent Regression
 
-A **Demo Depot cartridge**: this repo is a complete Demo Package that the depot
-deploys **as-is** from its catalog, landing the Run-Triad — the Spool, the
-Presenter Runbook, and a live Companion. An operator picks it in the portal, points it at a demo Langfuse project
-(Cloud or self-hosted), and gets a fully seeded, presentable environment. Nothing
-on this page needs installing to *run* the demo; everything developer-facing lives
-at the bottom, under
-[Development and running outside the depot](#development-and-running-outside-the-depot).
+A Demo Depot package with deterministic historical traces, a generated Presenter Runbook and a live loan-application Companion. Deploy it from the catalog into a fresh demo Langfuse project; the Presenter Runbook contains the complete UI journey and setup inputs.
 
-**The story in one line:**
+## Business case
 
-> trace → detect a silent failure → build an evaluator → curate a dataset → fix via prompt management → prove the fix with an experiment.
+A lender retrieves its vehicle handbook and a purchase-grant amendment. The baseline prompt template binds the application and handbook but omits the retrieved `policy_updates`. The model therefore assesses the gross purchase price. Eligible customers can be rejected even though the answers are well formatted. The candidate adds the missing binding; the system prompt, retrieved input, model and response schema stay the same.
 
-## The business case & story arc
- 
-**The business.** A consumer lender approves auto-loan applications with an AI credit-approval agent: it retrieves policy, checks subsidy eligibility, computes affordability against the customer's credit line, and returns an approve/reject decision with a customer-facing rationale. Thousands of decisions a day ride on it, so its outputs are monitored for the things that usually go wrong with an LLM: quality, tone and format.
- 
-**The tension.** A new EV purchase grant takes effect (€6,000 off BEVs ≤ €50,000, applied at the point of sale), but the agent's system prompt predates it. It keeps assessing affordability on the gross price and wrongly rejects borderline applicants who are now affordable. Every quality, tone and format eval stays green: the rejections read perfectly; they're just *wrong*. The only smoke is a rising appeal / `user_disagreement` rate. The failure is silent because nothing was scoring decision *correctness* under the new rule.
- 
-**The arc** (the demo walks the full engineering loop, trace → fix → proof):
- 
-1. **Production reality.** ~4,000 backdated traces show the agent working at scale: a planner → `retrieve_policy` → `check_subsidy_eligibility` + `compute_affordability` tools → the Sonnet `decision` → a Haiku `explain`, with realistic latency, token usage and cost. Quality/tone/format monitors are all green.
-2. **The smoke.** The in-scene Lending Analytics report (`/analytics`) that opens the demo: appeals climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume walking away, while the agent's own quality monitors stay green. Something is wrong that nobody is measuring.
-3. **The missing instrument.** Install the one eval that was absent: a native Boolean `policy_correctness` code evaluator that checks the grant, principal and decision. Backfilled over recent production, it turns red on the disputed rejections. The gap was the whole point.
-4. **Curate & fix.** Curate the eligible false-negatives into a hosted dataset, then fix the prompt through prompt management (v1 stale → v2 grant-aware), labelled `production` / `development`.
-5. **Prove it.** An experiment runs the labelled prompt over the dataset: explicitly select the policy evaluator for both runs and inspect scores alongside outputs and rejection controls. Promote v2 to `production` and the live playground flips subsequent decisions reject → approve, no code change.
+For the default fictional policy, a BEV costing €45,000 qualifies for a €6,000 grant on or after the deployment's effective date. Its €39,000 principal fits a €40,000 credit line. The baseline rejects at €45,000; the candidate can approve at €39,000. Eligibility and arithmetic must also hold for rejection controls.
 
-**This kit tells the prompt-loop story:** catching a silent regression in production and closing the loop on it, end to end.
- 
-The arithmetic that produces the regression (spec §17):
- 
-| Application | v1 (stale) | v2 (fixed) | Judge on v2 |
-|---|---|---|---|
-| BEV €42k, line €40k (eligible, borderline) | reject (42k > 40k) | **approve** (36k ≤ 40k) | PASS |
-| BEV €58k, line €55k (over cap) | reject | reject (no grant) | PASS |
-| PHEV €42k, line €40k (not BEV) | reject | reject (no grant) | PASS |
+## Presenter journey
 
-The full spec lives in this repo as `langfuse-demo-synth-spec.md` — the
-**"Full spec"** doc in the portal's docs reader.
+1. Inspect a disputed decision in Langfuse. Ask the integrated **Halo** assistant to investigate without supplying the diagnosis. Check its citations against the application, retrieved amendment, compiled generation input and managed prompt.
+2. Create and test the native Boolean `policy_correctness` evaluator. It checks list price, grant, financed principal, credit line and decision; a correct rejection with wrong amounts fails.
+3. Ask Halo to create a regression dataset and curate a reserved source case. Review the complete three-string input and policy-derived expected output before approving writes. Retain source observation and session links.
+4. In **Playground**, compare fixed prompt versions with identical input, model, settings and structured output schema. The only template change adds `policy_updates`.
+5. Run two native **Prompt Experiments** against the same frozen dataset version and explicitly select the evaluator. Compare monetary outputs and genuine rejection controls, not only decision labels.
+6. Activate a scoped incoming-observation rule, verify a new undisputed baseline decision, promote the tested candidate once, and submit fresh eligible and rejection cases. Inspect the managed prompt version and automatic policy score in Langfuse.
 
-## What's in the package (the Run-Triad)
+The generated runbook has deployment-specific links, policy dates, reviewed inputs, evaluator source, response schema and production-rule recipe. Rehearse it before presenting; native execution, scores and assistant actions require a working target and project permissions. The direct-provider evidence below does not prove these UI beats.
 
-Deploying this kit lands everything it takes to present the demo:
+## Package contents
 
-- **The Spool** — ~4,000 backdated traces plus scores, sessions, a user
-  population, prompts v1/v2, and the hosted `ev-grant-disputed-rejections`
-  dataset, written into your Langfuse project over OTLP. Byte-deterministic and
-  model-free; the full inventory is under
-  [What the seeded data contains](#what-the-seeded-data-contains).
-- **The Presenter Runbook** — `DEMO_SCRIPT.md`, generated at seed time and
-  filled with *this run's real* dates, trace IDs, figures and deep links. The
-  portal renders it on the deployment page; it is the talk track.
-- **The Companion** — the live decision playground, plus the staff-facing
-  `/analytics` lending report that opens the demo. Started on demand from the
-  portal; see [The Companion, played live](#the-companion-played-live).
+- **Historical data:** configurable backdated traces, sessions, sampled synthetic quality/disagreement scores, baseline/candidate prompts, the regression dataset and an eight-case short cohort. Seed is deterministic and makes no model calls.
+- **Presenter Runbook:** `DEMO_SCRIPT.md`, generated from saved deployment anchors. Changing local configuration later does not change its recorded policy or resource IDs.
+- **Companion:** the loan form and cached `/analytics` report. Start it from the deployment page. Each successful submission performs a real bundled policy lookup and one real decision-model call.
 
-## Deploying it from the depot
+The live trace has four observations: root `credit_agent.assess_application`, child AGENT `credit_agent`, and its `retrieve_policy` RETRIEVER and `decision` GENERATION children. The generation records exact compiled messages, all three input values in `metadata.prompt_variables`, schema and native prompt version. Historical fixtures also contain representative planner, tool and explanation operations; these are generated scenes, not live executions.
 
-1. Pick **EV Subsidy Silent Regression** in the portal catalog and click
-   **Deploy this demo**. Connect a Langfuse demo project — the kit refuses any
-   project whose name doesn't contain `demo`, and the check runs before any job
-   starts, so a customer's production project is never at risk.
-2. The pipeline pauses with the exact billable-units estimate for your OK
-   before anything is written, then runs this kit's own Recipe — materializing
-   the deterministic Spool and replaying it into your project — and finishes
-   with the kit's own `verify`, proving the golden path landed.
-3. Present from the **Presenter Runbook** on the deployment page and the seeded
-   Langfuse project.
-4. The Companion is the encore: it is never running by default — start it from
-   the deployment page when you want to hand the room the wheel. It needs an
-   LLM key (provider chosen at deploy time) for its one real model call per
-   submission.
-5. Teardown is project-level: to run the demo fresh, point a new deployment at
-   a fresh Langfuse project and re-seed.
+**Request a review** records `user_disagreement` against the decision-bearing agent observation. It does not start a human-review workflow. Live submissions and feedback do not rewrite the cached historical lending report. The production prompt is fetched per request with no cache; promotion affects later calls and preserves old evidence.
 
-Configure and test the native policy evaluator in Langfuse using the Demo Package.
+## Default reviewed cohort
 
-## Native policy evaluation
+D is this deployment's grant effective date. See the generated runbook for overridden amounts and dates.
 
-The Demo Package includes a standalone `POLICY_EVALUATOR.py`, deployment-specific
-`POLICY_EVALUATION.json` definitions/examples and `POLICY_EVALUATION.md` setup guide.
-Follow [policy evaluation](docs/policy-evaluation.md) to test the editor, score a
-bounded historical selection and explicitly score native baseline/candidate
-experiments. An optional Boolean LLM judge uses the aligned rubric and reviewed
-expectations. Seed remains model-free and never launches historical evaluations.
-The Companion card is **decision agreement** only; it does not check grant or principal.
-Then follow [fresh-decision verification](docs/live-policy-verification.md), also
-shipped as `LIVE_POLICY_VERIFICATION.md`, to activate the scoped production rule,
-promote once and verify native scores on fresh, undisputed Companion submissions.
-The optional alert walkthrough leaves notification destinations explicitly opt-in.
+| Case | Vehicle / price | Line | Date | Grant | Principal | Expected decision |
+|---|---|---:|---|---:|---:|---|
+| Flagship | BEV / €45,000 | €40,000 | D | €6,000 | €39,000 | approve |
+| Before date | BEV / €45,000 | €40,000 | D−1 | €0 | €45,000 | reject |
+| PHEV | PHEV / €45,000 | €40,000 | D | €0 | €45,000 | reject |
+| Above cap | BEV / €50,001 | €40,000 | D | €0 | €50,001 | reject |
+| Still above line | BEV / €49,000 | €40,000 | D | €6,000 | €43,000 | reject |
+| Exact cap/date/line | BEV / €50,000 | €44,000 | D | €6,000 | €44,000 | approve |
+| Already affordable | BEV / €39,000 | €40,000 | D | €6,000 | €33,000 | approve |
+| Ineligible affordable | ICE / €35,000 | €40,000 | D | €0 | €35,000 | approve |
 
-## The Companion, played live
+Each item contains `application`, `handbook` and `policy_updates` as JSON strings plus a structured expected Decision. Both prompt versions receive this same input. The candidate binds the third field; the baseline leaves it unused. Add a reserved source case only once and record the final count/version. Native experiments replay captured retrieval context; they do not execute the lookup or measure retrieval quality.
 
-The live decision playground is a small configurator so the audience can emit *their own*
-trace: pick one of five prefabs or enter a custom application against an **editable credit
-line**, submit, and get the **real production decision** back — rendered as a native
-agent-graph trace at the top of the timeline. A **Dispute** button logs a `user_disagreement`
-appeal (with a free-text comment) on that trace. The Companion analytics stay a cached historical snapshot. The
-prompt is pulled by the `production` label *per request*, so promoting v2 to production flips
-subsequent submissions from reject → approve — no code change.
+## Deploy and present
 
-The Presenter Runbook puts investigation, policy evaluation, curation, Playground comparison
-and two native prompt experiments in Langfuse. It ends with one promotion and a fresh
-Companion submission whose version and native policy score are checked in Langfuse.
-Allow 12–15 minutes; finish connection/evaluator/rule setup and a scored rehearsal first.
-The generated artifact records missing resources honestly and includes setup instructions.
+1. Select this package in Demo Depot and connect a fresh project whose name contains `demo`.
+2. Review and confirm the deployment's cost estimate. The pipeline validates the target, generates/imports history, provisions assets and verifies the current run.
+3. Open the generated Presenter Runbook and confirm project identity, prompt labels and policy dates. Select a working organization or project LLM connection in Langfuse. The Companion's injected key is separate.
+4. Start the Companion and complete the native rehearsal. For a focused demonstration, disable the three ambient incident cohorts before the initial seed.
+5. Use a fresh project for a reset. Re-seeding an occupied project appends observations and reasserts prompt labels; it does not reset existing data.
 
-For the short demo, switch off all three ambient incident cohorts in the depot's existing
-configuration form. The generated runbook includes equivalent `--set` commands for local
-use. This is a focused configuration, so the default operational scenario and its Spool
-remain unchanged. Prepare a fresh project: changing settings cannot remove ingested history.
+The Companion's **presenter tools** offers SDK fallback runs by `production` or `development` label. Their result is **decision agreement**, not the native five-field policy score. Labels can move; inspect the recorded version and result. A completed native comparison is the preferred rehearsal fallback.
 
-The **presenter tools** disclosure keeps **Run eval · production** and **Run eval · development**
-as SDK fallbacks on the full regression dataset. Their card measures decision agreement,
-not the native grant/principal policy check. A completed native rehearsal comparison is
-the preferred fallback for slow execution.
+## Verification and evidence
 
-The same beat, end to end — **submit → decision + feedback → the recorded trace in Langfuse:**
+[Current verification status](docs/ev-context-verification.md) separates local tests, real direct-provider outputs, native UI rehearsal, release/admission and fresh delivery. [The implemented-kit provider record](docs/evidence/359-implemented-model/README.md) preserves all 24 calls: baseline 4/12 policy-correct, candidate 12/12, with valid structured output in all calls. It is not a native Playground or Experiment run. September screenshots and results document the earlier instruction-based story only and are not embedded as current proof.
 
-| 1 · Submission form | 2 · Decision + feedback | 3 · Recorded trace |
-|---|---|---|
-| ![Playground submission form](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-form.png) | ![Lending decision with review request](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-decision.png) | ![The decision's trace in Langfuse](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/main/docs/img/playground-trace.png) |
-| A BEV at €38,000 against a €32,000 line — borderline-eligible under the new grant. | The stale `production` prompt **declines** it (grant €0, ignoring the €6k it qualifies for); the customer requests a review. | The native agent-graph trace lands in the deployment's project, carrying the real `decision` call (tokens + cost) and the `user_disagreement` score from the review. |
-
-Only the `decision` is a real model call (real tokens + latency); the surrounding agent graph
-is templated/computed exactly like the seed, so the live trace is shape-identical to the
-seeded data. Prefabs: `eligible` (the bug), `overcap`, `phev`, `approvable`, `rejected`.
-
-A second, staff-facing route — **`/analytics`** — is the in-scene **lending-analytics report**
-that opens the demo: the weekly risk dashboard Lending Analytics sends AI Engineering. Appeals
-climbing, decision CSAT breaking down, eligible-BEV approval rate collapsing, financing volume
-walking away — while the agent's own quality monitors stay green. Every figure is **derived from
-the same deterministic plan the seed ingested** (the score draws are replayed from the same
-id-keyed rng substreams), so the report and the data in Langfuse always agree.
-
-## What the seeded data contains
-
-- **~4,000 traces** over 30 days with diurnal/weekly shape; realistic latency (log-normal)
-  with a **time-to-first-token** on every generation; **production-scale token usage**
-  anchored to the visible chat messages (input = messages + per-role overhead; Opus thinking
-  billed as `reasoning` tokens) with **prompt caching** (cache-read / cache-creation split),
-  multi-turn context growth, and Opus reasoning that feeds the decision step's input; cost
-  (token × per-model price, incl. cache rates), and a baseline error rate.
-- Each trace is an **agent graph**: a `credit_agent` orchestrator over a planner (Opus, ~25%),
-  a `retrieve_policy` retriever, two tool calls (`check_subsidy_eligibility`,
-  `compute_affordability`), the Sonnet `decision` (carrying `tool_calls`), and a Haiku `explain`.
-  (Tool/retriever carry their type in metadata; native agent-graph observation types are
-  OTel-only, so they're rendered as spans to spare a small self-hosted ClickHouse.)
-- A realistic **model mix** — so the **cost view and volume view disagree** (Haiku dominates by
-  call count; Sonnet/Opus dominate spend).
-- **Scores by instrument kind** (best-practice coverage): deterministic `format_compliance` on
-  **100%** of traces; an LLM-judge pass (`answer_quality` + `tone`) on a thin **~15%** sample;
-  `user_disagreement` (BOOLEAN) — an **LLM-judge over the interaction** that flags customer
-  pushback, sampled ~15% and **forced true on the disputed false-negatives** (it drifts, and its
-  verdict *drives the `disputed` tag*); and per-session `csat` at a ~30% response rate. **No**
-  decision-correctness score — that gap is the point.
-- **Sessions** (single- and multi-turn), a **user population** with Zipf-ish power users
-  (loan officers), and `production`/`staging` environments.
-- The **golden path**: a drift window of eligible false-negatives (wrongly rejected, ramping to
-  demo day) plus correct-rejection controls; prompt **v1** labelled **`production`** (stale) and
-  **v2** labelled **`development`** (the fix), with every `decision` generation linked to **v1**;
-  the hosted **`ev-grant-disputed-rejections`** dataset (eligible false-negatives + controls,
-  each with `sourceTraceId`); and a **reserved pool** of fresh false-negatives kept *out* of the
-  dataset for the live "add from trace" beat.
-- **Ambient incidents** (toggleable): a cost spike, an error burst, optional latency degradation.
-
-Everything is **deterministic** (single `seed`) and **model-free at seed time** — a large seed
-is free and byte-reproducible. The model runs in exactly one place: the live experiment.
-
-## Delivery model: a cartridge, not a standalone app
-
-Per the delivery-model decision (2026-07-29): **a kit is a cartridge that goes
-into the depot** — the primary delivery method is as-is through the portal,
-which owns deployment, seeding, artifacts, and the Companion's lifecycle. A
-standalone-run story exists (everything below runs from a clone), but the
-decision on how kits run individually *outside* the depot is explicitly
-deferred — this repo references that open question without answering it.
+The [Full spec](langfuse-demo-synth-spec.md) defines the current contract. [Verification checks](VERIFICATION.md), [native experiments](docs/native-prompt-experiments.md), [policy evaluation](docs/policy-evaluation.md) and [fresh monitoring](docs/live-policy-verification.md) provide developer/reference detail; the main presenter path stays in the single runbook.
 
 ---
 
@@ -185,7 +70,7 @@ Everything from here down is for **kit development** — the `synth` CLI, local
 seeding, tests, and release plumbing. None of it is needed to deploy or present
 the demo through the depot. (Running a kit standalone this way works today, but
 it is the kit-dev loop, not a supported delivery method — see the
-[delivery model](#delivery-model-a-cartridge-not-a-standalone-app) note above.)
+package delivery described above.)
 
 This is the first scenario in the demo-data kit. It's a cloneable repo:
 `git clone`, set `.env`, `synth seed`, run the demo. The full spec lives in
@@ -207,9 +92,9 @@ synth seed     --config config/demo.yaml     # spool backdated data to disk → 
 synth verify   --config config/demo.yaml     # query back through the read seam and assert the golden path
 
 # 4. follow DEMO_SCRIPT.md for the live presentation; the experiment runs the *labelled* prompt:
-synth experiment --config config/demo.yaml                     # production (v1, stale) → RED
-synth experiment --config config/demo.yaml --label development  # development (v2, the fix) → GREEN
-# then promote v2 to `production` in the UI and re-run the production command → green
+synth experiment --config config/demo.yaml                     # current production version
+synth experiment --config config/demo.yaml --label development  # current development version
+# compare the recorded versions and actual results before promotion
 ```
 
 `synth seed` writes **`DEMO_SCRIPT.md`** — the Presenter Runbook filled with *this run's real*
@@ -217,7 +102,7 @@ dates, trace IDs, figures and deep links. Re-seeding regenerates a matching scri
 (`synth script` regenerates it from existing run state). After seeding, confirm the data
 matches the narrative with **[`VERIFICATION.md`](VERIFICATION.md)** (`synth verify` + live
 coverage / drift / tag checks). If a large import stalls, the generated data is safe on disk
-— resume with `synth import-spool`.
+— retain it for diagnosis. Import is not resumable; use a fresh target before another import.
 
 ### Running the playground locally
 
@@ -240,7 +125,7 @@ producer-minted ids, and a trace *is* its root observation (v4 has no separate t
 Scores stay `score-create` envelopes on `POST /api/public/ingestion` — the supported v4 path
 for them, not a legacy call. Every write carries `x-langfuse-ingestion-version: 4`, without
 which a v4 project files the data where no v4 query or dashboard can see it. Datasets,
-prompts and the experiment use the v4 SDK (separate API surfaces).
+prompts and experiments use the pinned Python SDK (separate API surfaces).
 
 The write is **two-phase**: generation streams every wire object to an NDJSON **spool on
 disk** first, then a separate pass **imports** it in chunks, so a wedged or slow upload can't
@@ -271,10 +156,10 @@ demo time:  synth experiment [--label production|development] ──▶ run_expe
 
 `decide(application, prompt_label) -> Decision` is the **single agent function** — seeding and
 the experiment both route through it. At seed time the label selects the arithmetic (`"v1"`
-stale vs `"v2"` fixed); at demo time the experiment passes a **Langfuse label**
+missing update vs `"v2"` bound update); at demo time the experiment passes a **Langfuse label**
 (`production` / `development`) that's resolved to the live prompt at runtime — so promoting v2
 to `production` in the UI changes what the eval runs, no code change. See
-[`src/synth/`](src/synth/) and the layout in spec §15.
+[`src/synth/`](src/synth/) and the current Full spec.
 
 ### Repo layout
 
@@ -325,7 +210,7 @@ model call) and exits non-zero below the threshold — drop it in a pipeline as 
 ### Tests
 
 ```bash
-pip install pytest && pytest -q     # determinism, the §17 arithmetic table, golden-path invariants
+pip install pytest && pytest -q     # determinism, the policy arithmetic, golden-path invariants
 ```
 
 ### Image releases
@@ -339,9 +224,9 @@ the portal's verification gate checks against.
 
 ### Native prompt experiments
 
-Seeding also creates `<dataset-name>-demo`, an 11-item policy cohort, and exports
+Seeding also creates `<dataset-name>-demo`, an eight-item policy cohort, and exports
 `NATIVE_EXPERIMENT_ITEMS.json` as a deployment artifact. Both hosted datasets map
-`application` to the same serialised JSON as the live caller. Follow the
+`application`, `handbook` and `policy_updates` to the same string values as the live caller. Follow the
 [native experiment runbook](docs/native-prompt-experiments.md) to check the project
 LLM Connection, curate a reserved observation, and compare the two prompt versions
 in Langfuse. The SDK and Companion experiment routes remain available.

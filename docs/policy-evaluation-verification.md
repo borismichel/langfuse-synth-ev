@@ -1,5 +1,7 @@
 # Policy evaluation verification — 11 September 2026
 
+> Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](ev-context-verification.md).
+
 Scope: portal issue #235. Implementation merged in EV kit PR #36 after #234
 PR #35. The hosted code-evaluation evidence is now complete: #236 supplied editor
 and native experiment verification, and the bounded historical UI batch below

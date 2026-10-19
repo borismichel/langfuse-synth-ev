@@ -91,3 +91,36 @@ def test_seed_delivers_declared_presenter_artifacts_without_model_calls(tmp_path
         assert (runbook.parent / artifact['path']).is_file(), artifact['path']
     assert RunState.load().reserved_item == state.reserved_item
     assert state.reserved_item.get('source_observation_id')
+
+
+def test_runbook_embeds_executable_evaluator_and_schema_from_saved_policy(tmp_path):
+    """The delivered runbook alone supplies runnable setup after config changes."""
+    import re
+    from types import SimpleNamespace
+
+    cfg = load_config('config/demo.yaml', overrides=[
+        'generation.target_traces=100', 'golden_path.grant_amount_eur=4000',
+        'golden_path.price_cap_eur=45000',
+    ])
+    plan = build_plan(cfg, datetime(2026, 6, 9, tzinfo=timezone.utc))
+    state = _build_state(cfg, plan, {'v1': 8, 'v2': 11}, 'custom-demo', {}, False)
+    text = render_script(load_config('config/demo.yaml'), state,
+                         out_path=tmp_path / 'DEMO_SCRIPT.md').read_text()
+    source = next((block for block in re.findall(r'^```python\n(.*?)^```$', text, re.S | re.M)
+                   if 'def evaluate(' in block), None)
+    assert source is not None, 'The runbook must include its executable evaluator'
+    scope = {}
+    exec(source, scope)
+    app = {'applicant_id': 'boundary', 'approved_line_eur': 41000,
+           'vehicle': {'type': 'BEV', 'list_price_eur': 45000},
+           'application_date': '2026-06-02'}
+    decision = {'list_price_eur': 45000, 'approved_line_eur': 41000,
+                'applied_grant_eur': 4000, 'financed_principal_eur': 41000,
+                'decision': 'approve', 'reason': 'Within line after grant.'}
+    result = scope['evaluate'](SimpleNamespace(observation=SimpleNamespace(input=app, output=decision)))
+    assert result.scores[0].value is True
+    schemas = [json.loads(block) for block in re.findall(r'^```json\n(.*?)^```$', text, re.S | re.M)]
+    schema = next(row for row in schemas if isinstance(row, dict)
+                  and row.get('type') == 'object' and 'decision' in row.get('properties', {}))
+    import jsonschema
+    jsonschema.validate(decision, schema)

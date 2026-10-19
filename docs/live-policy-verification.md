@@ -33,8 +33,7 @@ It does not verify the current missing-binding repair; record a new rehearsal fo
    name exactly `credit_agent`, type `AGENT`, environment exactly `production`,
    and metadata key `evaluation_scope` equal to the recipe's value. Inspect the
    actual matched rows before activation: exactly one agent per submitted trace,
-   including the undisputed case. Check the excluded child `decision`, root,
-   tools and simulated generations. Staging, native/SDK experiments and evaluator
+   including the undisputed case. Check the excluded child `decision`, root and `retrieve_policy` observations. Staging, native/SDK experiments and evaluator
    executions must not match. The unique marker is only attached to the live
    agent; do not broaden the rule to names alone or a logical-root shortcut.
 5. Test that selected observation in the hosted evaluator. Create one incoming
