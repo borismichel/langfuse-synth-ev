@@ -1,0 +1,50 @@
+{
+  "scope": "Fresh, unedited UI captures of the completed v0.8.0 ordinary deployment rehearsal; no new model executions during this documentation refresh.",
+  "langfuse_version": "4.64.0",
+  "deployment_id": "697035a5-c5a2-4c32-97a1-6a4652e19258",
+  "project_id": "cmvfnhw3l00cyad0miroa0t9k",
+  "files": [
+    {
+      "file": "native-comparison.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/experiments/results?baseline=cmvfnu53u00dgad0elletj4pa&c=cmvfnvpen00qgad0e9zbn9txv",
+      "captured_at": "2026-10-19T20:01:57.374599+00:00",
+      "sha256": "aa647f51cc1329f020622b395fcf41646c5a737dafd4c8ba1347aa0515967871"
+    },
+    {
+      "file": "playground-binding.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/playground",
+      "captured_at": "2026-10-19T20:02:05.312395+00:00",
+      "sha256": "8b61b4bbbfd645f0dec528b183bbae3978629aa5676c31a64634d4a34abd38c0"
+    },
+    {
+      "file": "playground-results.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/playground",
+      "captured_at": "2026-10-19T20:02:09.310515+00:00",
+      "sha256": "9a7a8f57115119de2766c0b6cc436aa33771eed68eccd7ba544a795702b68628"
+    },
+    {
+      "file": "live-policy-score.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/746ebc299397a2baa46fbcf0159979c8?observation=c23d424c60f60cff",
+      "captured_at": "2026-10-19T20:02:13.486586+00:00",
+      "sha256": "5fe2b7852d88f4e9389148da18206f2e034f8b7c0093d986a254a5915e4582a5"
+    },
+    {
+      "file": "halo-diagnosis.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/d4794385da97b6eb9d550075abab7792",
+      "captured_at": "2026-10-19T20:02:26.484088+00:00",
+      "sha256": "c5428280e3e2793beb072ea7f3d756ff3573f7ebdb9036118d15bf6b3eb9b6c2"
+    },
+    {
+      "file": "halo-curation.png",
+      "url": "https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/traces/d4794385da97b6eb9d550075abab7792",
+      "captured_at": "2026-10-19T20:02:26.931947+00:00",
+      "sha256": "c8cdb456dde32d6bcc07c172ceee5b02e0beaea27c4bcbdd6f9036d275a45724"
+    },
+    {
+      "file": "live-rejection-control.png",
+      "url": "http://localhost:3009/live/df65d485-3e16-4f4d-b0dc-4e481ff3d225/submit",
+      "captured_at": "2026-10-19T20:02:59.187693+00:00",
+      "sha256": "3941208e839893a04ef5b4b190dcc5ae3bfce6cca12022ebf885836ca7ed0273"
+    }
+  ]
+}
