@@ -17,24 +17,26 @@ from ..models import Application, Decision, Vehicle, VehicleType
 def demonstration_items(rule: GrantRule, dataset_name: str) -> list[dict]:
     cap, grant = rule.price_cap_eur, rule.amount_eur
     day = date.fromisoformat(rule.effective_date)
-    price = cap * 21 // 25
-    gap = min(2000, max(1, grant // 2))
-    near_cap = cap - max(1, cap // 25)
-    net = price - grant
-    # scenario, type, price, credit line, day offset, grant, principal, decision
+    price = cap * 9 // 10
+    gap = min(cap // 10, max(1, grant - 1000))
+    line = price - gap
+    near_cap = cap - max(1, cap // 50)
+    affordable = min(cap * 39 // 50, line)
+    ice_price = min(cap * 7 // 10, line)
+    # scenario, type, price, credit line, day offset, grant, principal, decision.
+    # Default policy reproduces the eight independently reviewed simulation cases.
+    # Configured policies retain their eligibility and affordability contrasts.
     cases: list[tuple[str, VehicleType, int, int, int, int, int, str]] = [
-        ("false_negative", "BEV", price, price - gap, 0, grant, net, "approve"),
-        ("grant_still_above_line", "BEV", near_cap, near_cap - grant - gap,
+        ("false_negative", "BEV", price, line, 0, grant, price - grant, "approve"),
+        ("date_before", "BEV", price, line, -1, 0, price, "reject"),
+        ("control_phev", "PHEV", price, line, 0, 0, price, "reject"),
+        ("cap_above", "BEV", cap + 1, line, 0, 0, cap + 1, "reject"),
+        ("grant_still_above_line", "BEV", near_cap, min(line, near_cap - grant - 1),
          0, grant, near_cap - grant, "reject"),
-        ("cap_equal", "BEV", cap, cap - grant, 0, grant, cap - grant, "approve"),
-        ("cap_above", "BEV", cap + 1, cap - 1000, 0, 0, cap + 1, "reject"),
-        ("control_phev", "PHEV", price, price - gap, 0, 0, price, "reject"),
-        ("control_ice", "ICE", price, price, 0, 0, price, "approve"),
-        ("date_before", "BEV", price, price - gap, -1, 0, price, "reject"),
-        ("date_on_line_equal", "BEV", price, net, 0, grant, net, "approve"),
-        ("date_after_line_below", "BEV", price, net - 1, 1, grant, net, "reject"),
-        ("cap_below", "BEV", cap - 1, cap - grant, 0, grant, cap - 1 - grant, "approve"),
-        ("line_above", "BEV", price, net + 1, 0, grant, net, "approve"),
+        ("cap_date_line_equal", "BEV", cap, cap - grant, 0, grant, cap - grant, "approve"),
+        ("eligible_already_affordable", "BEV", affordable, line,
+         0, grant, affordable - grant, "approve"),
+        ("control_ice", "ICE", ice_price, line, 0, 0, ice_price, "approve"),
     ]
     rows = []
     for scenario, kind, gross, line, offset, benefit, principal, verdict in cases:

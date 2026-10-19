@@ -25,8 +25,11 @@ Policy: BEV only, list price <= EUR {rule.price_cap_eur}, application date on/af
 {rule.effective_date}: grant EUR {rule.amount_eur}; otherwise grant zero.
 Principal = list price minus qualifying grant. Approve iff principal <= approved line.
 Read a bare application, an application JSON-string wrapper, or the one user chat message.
+For native prompts, read the Application JSON before the Lending handbook section.
+The optional Policy updates section can be absent: always apply the complete policy above.
 Read a Decision object, JSON text/code fence, or one assistant message as the output.
-Check applied_grant_eur, financed_principal_eur AND decision. A correct reject with
+Check list_price_eur, approved_line_eur, applied_grant_eur, financed_principal_eur
+AND decision. A correct reject with
 wrong amounts fails. Missing, malformed or ambiguous output fails; explain that separately.
 Return a Boolean score and concise reasoning identifying expected and actual amounts.
 Do not use the model's reason as evidence of correct arithmetic.
@@ -53,6 +56,26 @@ def write_package(plan: Plan, destination: Path) -> list[Path]:
     bad["observation"]["output"].update(applied_grant_eur=0,
                                       financed_principal_eur=bad["observation"]["output"]["list_price_eur"])
     examples.append(bad)
+    for field, name in (("list_price_eur", "correct_reject_wrong_list_price"),
+                        ("approved_line_eur", "correct_reject_wrong_line")):
+        altered = json.loads(json.dumps(contrast))
+        altered.update(name=name, expected_score=False)
+        altered["observation"]["output"][field] += 1
+        examples.append(altered)
+    from langfuse.api import ChatPrompt
+    from langfuse.model import ChatPromptClient
+    from ..seed.prompts import chat_prompt
+    flagship = next(row for row in cohort if row["metadata"]["scenario"] == "false_negative")
+    for label, name in (("v1", "baseline_compiled_input"), ("v2", "candidate_compiled_input")):
+        prompt = ChatPromptClient(ChatPrompt(name="credit_decision", version=1,
+            prompt=chat_prompt(label), config={}, labels=[], tags=[]))
+        output = dict(flagship["expected_output"])
+        if label == "v1":
+            output.update(applied_grant_eur=0, financed_principal_eur=output["list_price_eur"],
+                          decision="reject", reason="Full price exceeds the credit line.")
+        examples.append({"name": name, "expected_score": label == "v2",
+            "observation": {"input": prompt.compile(**flagship["input"]), "output": output},
+            "expectation_basis": flagship["metadata"]["expectation_basis"]})
     examples.append({"name": "malformed_output", "expected_score": False,
                      "expected_status": "malformed_output",
                      "observation": {"input": contrast["observation"]["input"], "output": "not JSON"}})
@@ -80,8 +103,8 @@ def write_package(plan: Plan, destination: Path) -> list[Path]:
         "editor_examples": examples,
         "optional_judge": {"type": "llm_as_judge", "name": "policy_correctness_judge",
             "prompt": judge_prompt(rule), "outputDefinition": {"dataType": "BOOLEAN",
-            "reasoning": {"description": "Explain expected vs actual grant, principal and decision; identify malformed output."},
-            "score": {"description": "True only if grant, financed principal and final decision all follow the supplied policy."}}}}
+            "reasoning": {"description": "Explain expected vs actual list price, grant, principal, credit line and decision; identify malformed output."},
+            "score": {"description": "True only if list price, grant, financed principal, credit line and decision all follow the supplied policy."}}}}
     destination.mkdir(parents=True, exist_ok=True)
     files = {"POLICY_EVALUATOR.py": source,
              "POLICY_EVALUATION.json": json.dumps(manifest, indent=2) + "\n",

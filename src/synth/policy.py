@@ -21,7 +21,8 @@ def lookup_policy(application: Application, rule: GrantRule | None) -> dict:
     def render(document):
         return {key: value.format(**values) for key, value in document.items()}
     return {"handbook": render(fixture["handbook"]),
-            "policy_updates": [render(fixture["policy_update"])] if rule else []}
+            "policy_updates": [render(fixture["policy_update"])]
+            if rule and values["published_date"] <= application.application_date else []}
 
 
 def policy_variables(application: Application, rule: GrantRule | None, *, documents: dict | None = None) -> dict[str, str]:

@@ -115,9 +115,12 @@ def test_submission_keeps_the_seeded_policy_anchor(
     result = submit(load_config("config/demo.yaml"), app, adapter=adapter, log=lambda _: None)
     assert (result["expected"].applied_grant_eur, result["expected"].decision) == (expected_grant, expected_verdict)
     evidence = next(s.kw["output"] for s in client.spans if s.kw["name"] == "retrieve_policy")
-    update = evidence["policy_updates"][0]
-    assert update["effective_date"] == as_of[:4] + "-06-02"
-    assert "4,000" in update["content"] and "45,000" in update["content"]
+    if expected_grant:
+        update = evidence["policy_updates"][0]
+        assert update["effective_date"] == as_of[:4] + "-06-02"
+        assert "4,000" in update["content"] and "45,000" in update["content"]
+    else:
+        assert evidence["policy_updates"] == []  # The future bulletin is not published yet.
     assert len(model_calls) == 1
     submitted = json.loads(model_calls[0]["messages"][0]["content"])
     assert submitted["application_date"] == datetime.now(timezone.utc).date().isoformat()

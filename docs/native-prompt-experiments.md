@@ -1,7 +1,7 @@
 # Native EV prompt experiments — portal #234
 
 The hosted regression dataset keeps its configured name and all 24 default cases.
-Seeding additionally creates `<dataset-name>-demo` with 11 authored policy cases.
+Seeding additionally creates `<dataset-name>-demo` with eight authored policy cases.
 Fixture generation and dataset creation make no model calls. The deployment artifact
 `NATIVE_EXPERIMENT_ITEMS.json` contains the demonstration inputs and the three reserved
 curation payloads, including policy arithmetic to review before use.
@@ -20,8 +20,9 @@ Use the deployment task model when that model is available through the connectio
 otherwise record the deliberate alternative. Use temperature 0 when supported, and
 512 output tokens. If the provider/model does not support a sampling parameter, omit
 it in both runs. Select fixed numeric prompt versions, rather than a label someone
-might move during the comparison. Both stored versions need only `application`;
-the grant date in v2 has already been resolved during registration.
+might move during the comparison. Both versions receive identical dataset input. The baseline binds `application` and
+`handbook`; the candidate appends only `policy_updates`. Dates and policy values
+live in the captured documents, anchored to this deployment.
 
 Check the actual experiment form for a **Dataset Version** selector. If present,
 record and reuse the same timestamp. If absent, finish curation first and keep the
@@ -33,8 +34,9 @@ history alone is not evidence that experiment setup supports pinning.
 
 ## Input contract and reserved observation curation
 
-Each item input is an object containing exactly one key, `application`, whose value
-is a JSON **string**. It contains `applicant_id`, `approved_line_eur`, `vehicle` and
+Each item input contains three JSON **strings**: `application`, `handbook`,
+`policy_updates`. The latter two replay the captured local retrieval result. The
+application string contains `applicant_id`, `approved_line_eur`, `vehicle` and
 `application_date`, just like the live caller's `Application.model_dump_json()`.
 Expected output is a structured Decision object, not a JSON string or the stale
 rejection. Scenario information belongs in metadata. Hosted schemas reject a missing
@@ -46,66 +48,44 @@ the generated input unchanged; reordered objects must be serialised through the
 Application model first. Inspect the mapping preview and policy date before running.
 The schema checks date shape, not calendar validity (for example February 31).
 
-For one of the reserved trace IDs in the artifact:
+Use Halo as the primary investigation and curation path in the generated Presenter
+Runbook. Start from disputed decisions without revealing the root cause; verify its
+citations to retrieval, compiled generation input and managed prompt. Ask it to
+create a dataset and curate a reserved source case after reviewing the input and
+expected output. Record actual approvals and supported actions. Missing capabilities
+require a scope decision, not an unlabelled script replacement.
 
-1. Open its **decision** observation and use **Add to dataset**. This retains the
-   source trace and observation links. Choose the demo cohort for a short rehearsal,
-   or the full regression dataset for the complete run.
-2. The decision input is chat messages: the user message at `input[1].content`
-   contains the application JSON string. Map that value to the new object's
-   `application` field. Check the preview against the artifact's `input`. If the
-   editor cannot build that object, paste the artifact's complete input object into
-   the add-item editor while retaining the source observation link.
-3. Paste the artifact's `expected_output` and `metadata`. Review its arithmetic:
-   BEV, date on/after the effective date, price at/below the cap; deduct the grant,
-   then approve only if principal is at/below the line. Record the reviewer's name
-   and date in metadata. Never use the observation's rejection as ground truth.
-4. Save and reopen the item. Verify the application string, structured expectation,
-   scenario metadata, and clickable source observation before launching either run.
+The complete three-field input is available in the generation's
+`metadata.prompt_variables` and the generated curation artifact. Do not map the
+whole compiled user message to `application`, or use only the baseline's rendered
+context: both would lose the captured update. Keep source trace, decision observation
+and session provenance. If an item was already curated, inspect it rather than adding
+a duplicate. Freeze the final dataset version only after this review.
 
-The authored cohort has fixture provenance, not fabricated observation IDs. The
-reserved item is the observation-linked addition used to demonstrate curation.
-[Observation mapping](https://langfuse.com/docs/evaluation/experiments/datasets#batch-add-observations-to-datasets)
+## Reviewed default cases
 
-## Execute and compare inside Langfuse
+Dates use D, this deployment's grant effective date. Expectations are hand-worked
+from the fictional EUR 6,000 grant / EUR 50,000 cap; no model output supplies truth.
+All cases carry the same three-field contract, including ineligible controls.
 
-Open the chosen dataset's **Experiments → Run experiment → via User Interface → Configure**. Select
-`credit_decision`'s baseline numeric version and the verified connection/settings.
-Preview a compiled item: there must be no unresolved `{{application}}`. Start the
-baseline, then repeat with the candidate version and the same frozen dataset/settings.
-No terminal or Companion trigger is involved in either native execution.
-Compare generated outputs side by side, including all numeric Decision fields;
-matching approve/reject alone does not prove grant correctness.
-
-Enable **Structured output** with a Decision JSON schema for both runs. Require
-`decision` (enum `approve`, `reject`), integer `list_price_eur`, `applied_grant_eur`,
-`financed_principal_eur`, `approved_line_eur`, and string `reason`; disallow additional
-properties. Saving a reusable schema makes it available to all project members.
-Prompt instructions alone did not guarantee JSON-only responses in the Cloud rehearsal:
-Sonnet 4.6 added Markdown fences and one response contained two conflicting decisions.
-[Native experiment workflow](https://langfuse.com/docs/evaluation/experiments/experiments-via-ui)
-
-For the default fictional EUR 6,000 grant, EUR 50,000 cap (D = effective date), the
-independently worked cohort is:
-
-| Scenario | Vehicle / price | Line | Date | Grant | Principal | Decision |
+| Case | Vehicle / price EUR | Line EUR | Date | Grant EUR | Principal EUR | Decision |
 |---|---|---:|---|---:|---:|---|
-| False negative | BEV / 42,000 | 40,000 | D | 6,000 | 36,000 | approve |
-| Still above line | BEV / 48,000 | 40,000 | D | 6,000 | 42,000 | reject |
-| At cap | BEV / 50,000 | 44,000 | D | 6,000 | 44,000 | approve |
-| Above cap | BEV / 50,001 | 49,000 | D | 0 | 50,001 | reject |
-| PHEV control | PHEV / 42,000 | 40,000 | D | 0 | 42,000 | reject |
-| ICE control | ICE / 42,000 | 42,000 | D | 0 | 42,000 | approve |
-| Before date | BEV / 42,000 | 40,000 | D−1 | 0 | 42,000 | reject |
-| On date / equal line | BEV / 42,000 | 36,000 | D | 6,000 | 36,000 | approve |
-| After date / below line | BEV / 42,000 | 35,999 | D+1 | 6,000 | 36,000 | reject |
-| Below cap | BEV / 49,999 | 44,000 | D | 6,000 | 43,999 | approve |
-| Above line | BEV / 42,000 | 36,001 | D | 6,000 | 36,000 | approve |
+| Eligible flagship | BEV / 45,000 | 40,000 | D | 6,000 | 39,000 | approve |
+| Before date | BEV / 45,000 | 40,000 | D−1 | 0 | 45,000 | reject |
+| PHEV control | PHEV / 45,000 | 40,000 | D | 0 | 45,000 | reject |
+| Above cap | BEV / 50,001 | 40,000 | D | 0 | 50,001 | reject |
+| Grant still above line | BEV / 49,000 | 40,000 | D | 6,000 | 43,000 | reject |
+| Exact cap, date and line | BEV / 50,000 | 44,000 | D | 6,000 | 44,000 | approve |
+| Eligible already affordable | BEV / 39,000 | 40,000 | D | 6,000 | 33,000 | approve |
+| Ineligible affordable | ICE / 35,000 | 40,000 | D | 0 | 35,000 | approve |
 
-For overridden policy values use the generated artifact, not this default table.
-Baselines can reject correctly yet report the wrong grant/principal (the still-above-line
-case is intentional). The Companion's immediate verdict compares decision labels;
-review amounts separately in Langfuse. The candidate must not approve every BEV.
+For overridden policies, review the generated artifact instead of this default table.
+The deterministic evaluator checks all five fields: list price, grant, principal,
+approved line and decision. Baseline rejection labels can match while amounts fail.
+Native experiments test context assembly and decisions over captured retrieval;
+they do not measure retrieval-algorithm quality. Keep system/model/schema settings
+and the frozen dataset version identical. Repeat the flagship Playground comparison
+five times per version during rehearsal and retain every outcome.
 
 ## SDK / Companion fallback
 
@@ -116,7 +96,14 @@ For the small cohort from the CLI, set
 `--set golden_path.dataset.name=ev-grant-disputed-rejections-demo`.
 The offline `--gate` path accepts the wrapper as well.
 
-## Cloud verification record
+## Historical Cloud verification — superseded story
+
+The record below describes the earlier instruction-based demo. It is retained as
+prior evidence only and does not verify the missing-binding repair, eight-case
+cohort, new evaluator or Halo workflow. Current native rehearsal is pending until
+the exact new release has been executed and its evidence recorded.
+
+### Prior record
 
 Rehearsed on 2026-09-10 in Langfuse Cloud v4.33.0, project
 [new-ev-demo](https://cloud.langfuse.com/project/cmtvq2l5x00u8ad0d7rpc0uvp).

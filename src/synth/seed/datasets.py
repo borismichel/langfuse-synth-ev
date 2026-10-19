@@ -1,8 +1,8 @@
 """Pre-seed the hosted golden-path dataset (spec §7, §16).
 
 Creates ``ev-grant-disputed-rejections`` and its items via the datasets API. Each item:
-- ``input``           = {"application": serialised application JSON} (native prompt variables)
-- ``expected_output`` = the *correct* (v2) Decision — NOT the v1 wrong rejection
+- ``input``           = application, handbook and policy_updates JSON strings
+- ``expected_output`` = independently calculated policy Decision, never model output
 - ``metadata``        = eligibility flags ({eligible, borderline, scenario})
 - ``source_trace_id`` = the disputed trace it was built from
 
@@ -76,16 +76,20 @@ def create_dataset(lf, cfg, golden: GoldenPath) -> dict:
                   golden.effective_date.date().isoformat(), "seeded": True},
     ), "create_dataset")
 
+    by_trace = {spec.trace_id: spec for spec in golden.disputed_specs}
     created = 0
     for it in golden.dataset_plan:
+        spec = by_trace[it.source_trace_id]
+        provenance = {"source_observation_id": spec.decision_obs_id} if spec.decision_obs_id else {}
         _tolerate_v2_response(lambda it=it: lf.create_dataset_item(
             dataset_name=ds.name,
             id=it.item_id,
             input=policy_variables(it.application, golden.rule),
             expected_output=it.expected.model_dump(),
             metadata={"eligible": it.eligible, "borderline": it.borderline,
-                      "scenario": it.scenario},
-            source_trace_id=it.source_trace_id,
+                      "scenario": it.scenario, "source_session_id": spec.session_id,
+                      "expectation_basis": it.expected.reason},
+            source_trace_id=it.source_trace_id, **provenance,
         ), f"create_dataset_item {it.item_id}")
         created += 1
 
@@ -139,7 +143,8 @@ def reserved_items(golden: GoldenPath) -> list[dict]:
             "input": policy_variables(app, rule), "expected_output": expected.model_dump(),
             "source_trace_id": spec.trace_id,
             "metadata": {"scenario": "false_negative", "eligible": True, "borderline": True,
-                         "source": "reserved seeded observation", "expectation_basis": basis},
+                         "source": "reserved seeded observation", "expectation_basis": basis,
+                         "source_session_id": spec.session_id},
         }
         if spec.decision_obs_id:
             row["source_observation_id"] = spec.decision_obs_id

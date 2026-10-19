@@ -125,3 +125,15 @@ def test_history_exposes_retrieved_update_and_exact_baseline_input_without_fake_
     assert json.loads(generation['langfuse.observation.metadata.prompt_variables']) == variables
     assert 'ignored_by_agent' not in json.dumps(spans)
     assert 'vector_search' not in json.dumps(spans)
+
+
+def test_lookup_only_exposes_updates_published_by_application_date():
+    from synth.policy import lookup_policy
+    rule = GrantRule(effective_date="2026-06-02")
+    app = Application(applicant_id="case", approved_line_eur=40000,
+        vehicle={"type": "BEV", "list_price_eur": 45000}, application_date="2026-05-25")
+    assert lookup_policy(app, rule)["policy_updates"] == []
+    # Publication and eligibility are different boundaries: a published amendment
+    # can already be visible while an application remains too early to qualify.
+    app.application_date = "2026-05-26"
+    assert lookup_policy(app, rule)["policy_updates"][0]["effective_date"] == "2026-06-02"

@@ -103,17 +103,14 @@ def test_demo_cohort_has_independently_worked_policy_expectations():
     # Worked against the fictional EUR 6,000 grant / EUR 50,000 cap policy,
     # never obtained by calling decide(v2). Tuple: decision, grant, principal.
     expected = {
-        "false_negative": ("approve", 6000, 36000),
-        "grant_still_above_line": ("reject", 6000, 42000),
-        "cap_equal": ("approve", 6000, 44000),
+        "false_negative": ("approve", 6000, 39000),
+        "date_before": ("reject", 0, 45000),
+        "control_phev": ("reject", 0, 45000),
         "cap_above": ("reject", 0, 50001),
-        "control_phev": ("reject", 0, 42000),
-        "control_ice": ("approve", 0, 42000),
-        "date_before": ("reject", 0, 42000),
-        "date_on_line_equal": ("approve", 6000, 36000),
-        "date_after_line_below": ("reject", 6000, 36000),
-        "cap_below": ("approve", 6000, 43999),
-        "line_above": ("approve", 6000, 36000),
+        "grant_still_above_line": ("reject", 6000, 43000),
+        "cap_date_line_equal": ("approve", 6000, 44000),
+        "eligible_already_affordable": ("approve", 6000, 33000),
+        "control_ice": ("approve", 0, 35000),
     }
     assert len(rows) == len(expected)
     for row in rows:
@@ -234,7 +231,7 @@ def test_small_grant_and_cap_can_still_produce_a_demo_cohort():
     fn = next(row for row in rows if row["metadata"]["scenario"] == "false_negative")
     assert fn["expected_output"]["decision"] == "approve"
     assert fn["expected_output"]["applied_grant_eur"] == 2000
-    assert fn["expected_output"]["financed_principal_eur"] == 27400
+    assert fn["expected_output"]["financed_principal_eur"] == 29500
 
 
 @pytest.mark.parametrize("application", ["not JSON", "{}", "[]",
@@ -266,3 +263,23 @@ def test_experiment_link_prefers_supported_url_or_dataset_comparison(monkeypatch
     monkeypatch.setattr(ingest, "assert_demo_project", lambda *args: ("project-test", "demo-test"))
     result = run_experiment(load_config("config/demo.yaml"), adapter=adapter, log=lambda _: None)
     assert result["run_url"] == expected
+
+
+def test_curated_history_keeps_observation_and_conversation_provenance():
+    from synth.seed.traces import build_trace_events
+    from synth.seed.datasets import reserved_items
+
+    cfg = load_config("config/demo.yaml", overrides=["generation.target_traces=100"])
+    plan = build_plan(cfg, datetime(2026, 6, 9, tzinfo=timezone.utc))
+    for spec in plan.golden.disputed_specs:
+        build_trace_events(plan.rng, cfg, spec, prompt_v1_version=1)
+    by_trace = {spec.trace_id: spec for spec in plan.golden.disputed_specs}
+    hosted = HostedDatasets()
+    create_dataset(hosted, cfg, plan.golden)
+    for row in hosted.datasets[cfg.golden_path.dataset.name] + reserved_items(plan.golden):
+        spec = by_trace[row["source_trace_id"]]
+        assert row["source_observation_id"] == spec.decision_obs_id
+        assert row["metadata"]["source_session_id"] == spec.session_id
+        assert row["metadata"]["expectation_basis"]
+    seeded = {row["source_trace_id"] for row in hosted.datasets[cfg.golden_path.dataset.name]}
+    assert seeded.isdisjoint(plan.golden.reserved_trace_ids)
