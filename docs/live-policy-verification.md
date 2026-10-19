@@ -82,8 +82,8 @@ incoming rule fires without manual batch evaluation or customer feedback.
    score must be observation-linked and originate from the active rule, not
    from local checks, manual API scores or an experiment.
 5. Submit the reviewed PHEV rejection control through the Companion using
-   today's date: under the default policy, price €45,000 and line €40,000, with
-   grant €0 and principal €45,000. It must reject and receive `true`. This matches
+   today's date and the exact saved-policy input and expected amounts from the
+   package's reviewed cases. It must reject and receive `true`. This matches
    the released-image live rehearsal. The frozen native cohort also checks
    `grant_still_above_line`: an eligible BEV still rejects with the correct grant
    and net principal. Use this deployment's reviewed inputs for overridden policies. Never promise the candidate
