@@ -92,7 +92,7 @@ The generated `DEMO_SCRIPT.md` is the single Presenter Runbook. It contains save
 4. Open the generation in Playground. Explicitly choose the intended connection/model, 512-token limit and shared schema in each window. Do not assume prompt configuration is inherited. Compare identical complete input; confirm the candidate's compiled message includes the amendment.
 5. Run fixed baseline/candidate versions on the same frozen cohort with identical settings and evaluator. Inspect all amounts, execution coverage and rejection controls. Rehearse five flagship attempts per version; retain all outcomes.
 6. Activate the scoped incoming rule. Make a new undisputed baseline call after activation and inspect its automatic score.
-7. Promote the tested numeric candidate once. Repeat the eligible application and a qualifying-but-unaffordable control; inspect the native prompt association and automatic agent score. Record failures and delays rather than retrying until green.
+7. Promote the tested numeric candidate once. Repeat the eligible application and the PHEV rejection control (the qualifying-but-unaffordable case is also covered in the native cohort); inspect the native prompt association and automatic agent score. Record failures and delays rather than retrying until green.
 
 ## Deployment, determinism and reset
 

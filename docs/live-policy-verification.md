@@ -81,11 +81,12 @@ incoming rule fires without manual batch evaluation or customer feedback.
    its explanation. The same trace must have no `user_disagreement` score. The
    score must be observation-linked and originate from the active rule, not
    from local checks, manual API scores or an experiment.
-5. Submit the `grant_still_above_line` rejection control from the package's
-   reviewed editor examples, through the Companion using today's date. It must
-   still reject, with the qualifying grant and net principal correct, and receive
-   `true`. If the current date precedes the policy, choose/review an applicable
-   ineligible control instead and record the reason. Never promise the candidate
+5. Submit the reviewed PHEV rejection control through the Companion using
+   today's date: under the default policy, price €45,000 and line €40,000, with
+   grant €0 and principal €45,000. It must reject and receive `true`. This matches
+   the released-image live rehearsal. The frozen native cohort also checks
+   `grant_still_above_line`: an eligible BEV still rejects with the correct grant
+   and net principal. Use this deployment's reviewed inputs for overridden policies. Never promise the candidate
    passes until the real model output and score have arrived. If a control returns
    the wrong decision, retain that failure and score; do not retry until green or
    substitute a different control without recording both outcomes.
