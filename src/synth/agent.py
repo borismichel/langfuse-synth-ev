@@ -133,29 +133,16 @@ def _decide_live(
     # prompt to `production` in the UI takes effect on the very next experiment run.
     prompt = lf.get_prompt(prompt_name, label=prompt_label, type="chat", cache_ttl_seconds=0)
     from .policy import policy_variables
-    from .seed.prompts import decision_schema
-    application_json = app.model_dump_json()
+    from .decision_request import prepare_decision_request
     variables = variables if variables is not None else policy_variables(app, rule)
-    messages = prompt.compile(**variables)
-
-    # Split Langfuse chat messages into a system prompt + turns (the provider layer
-    # re-attaches the system prompt in each SDK's native shape).
-    system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
-    turns = [m for m in messages if m.get("role") != "system"]
-    if not turns:
-        turns = [{"role": "user", "content": application_json}]
-
-    # Log the model call as a `decision` generation nested in the caller's trace (the
-    # experiment item's trace), with the compiled chat turn as input and the managed
-    # prompt linked — same shape as the seeded decision generations.
-    chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
+    request = prepare_decision_request(prompt, variables, llm.provider)
+    # The SDK experiment owns this observation; Companion uses its live emitter.
     with lf.start_as_current_observation(
-        as_type="generation", name="decision", model=llm.model, input=chat,
-        model_parameters={"max_tokens": 512}, prompt=prompt,
-        metadata={"prompt_variables": variables, "response_schema": decision_schema()},
+        as_type="generation", name="decision", model=llm.model, input=request.messages,
+        model_parameters=request.parameters, prompt=prompt,
+        metadata={"prompt_variables": variables, "response_schema": request.kwargs["response_schema"]},
     ) as gen:
-        result = llm.complete(system=system, messages=turns, max_tokens=512,
-                              response_schema=decision_schema())
+        result = llm.complete(**request.kwargs)
         gen.update(output=result.text, usage_details={"input": result.input_tokens, "output": result.output_tokens})
         decision = parse_decision(result.text, app)
         gen.update(output=decision.model_dump(),

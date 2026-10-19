@@ -137,3 +137,51 @@ def test_lookup_only_exposes_updates_published_by_application_date():
     # can already be visible while an application remains too early to qualify.
     app.application_date = "2026-05-26"
     assert lookup_policy(app, rule)["policy_updates"][0]["effective_date"] == "2026-06-02"
+
+
+def test_sdk_experiment_and_companion_record_the_same_effective_model_request():
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+    from synth.agent import decide
+    from synth.live.trace import emit_live_trace
+    from synth.policy import policy_variables
+    from synth.seed.prompts import chat_prompt
+
+    app = Application(applicant_id="parity", approved_line_eur=40000,
+        vehicle={"type":"BEV", "list_price_eur":45000}, application_date="2026-06-05")
+    rule = GrantRule(effective_date="2026-06-02")
+    variables = policy_variables(app, rule)
+    for provider in ("anthropic", "openai"):
+        for template in (chat_prompt("v1"), [{"role":"system", "content":"Assess the application."}]):
+            recorded, calls = [], []
+            class Observation:
+                id = "trace"
+                def update(self, **kwargs): pass
+                @contextmanager
+                def observation(self, name, **kwargs):
+                    if name == "decision": recorded.append(kwargs)
+                    yield self
+                generation = observation
+            observer = Observation()
+            prompt = ChatPromptClient(ChatPrompt(name="credit_decision", version=1,
+                prompt=template, config={}, labels=[], tags=[]))
+            lf = SimpleNamespace(get_prompt=lambda *a,**k:prompt,
+                start_as_current_observation=lambda **k:observer.observation(**k))
+            emitter = SimpleNamespace(trace=lambda name,**k:observer.observation(name,**k))
+            def complete(**kwargs):
+                calls.append(kwargs)
+                return SimpleNamespace(text=decide(app,"v1",rule=rule).model_dump_json(),
+                    input_tokens=10,output_tokens=10)
+            llm = SimpleNamespace(provider=provider, model="parity-model", complete=complete)
+            decide(variables,"production",rule=rule,live=True,lf=lf,llm=llm)
+            emit_live_trace(emitter,load_config("config/demo.yaml"),application=app,rule=rule,llm=llm,prompt=prompt)
+            assert calls[0] == calls[1]
+            assert recorded[0]["input"] == recorded[1]["input"]
+            expected_parameters = {"max_tokens":512, **({"temperature":0} if provider=="openai" else {})}
+            for trace, request in zip(recorded, calls):
+                assert trace["model_parameters"] == expected_parameters
+                assert {key:request[key] for key in expected_parameters} == expected_parameters
+                assert trace["metadata"]["response_schema"] == request["response_schema"]
+                assert [m for m in trace["input"] if m["role"]!="system"] == request["messages"]
+                assert "\n\n".join(m["content"] for m in trace["input"] if m["role"]=="system") == request["system"]
+                assert request["messages"]  # system-only prompts get an observable application fallback

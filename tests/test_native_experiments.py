@@ -84,7 +84,7 @@ def test_wrapped_dataset_input_reaches_live_model_unchanged():
 
     lf = SimpleNamespace(get_prompt=lambda *a, **k: prompt,
         start_as_current_observation=lambda **k: nullcontext(SimpleNamespace(update=lambda **k: None)))
-    llm = SimpleNamespace(model="test", complete=complete)
+    llm = SimpleNamespace(provider="anthropic", model="test", complete=complete)
     for payload in (app.model_dump(), {"application": app.model_dump_json()}):
         result = decide(payload, "development", live=True, lf=lf, llm=llm)
         assert result.decision == "approve"
