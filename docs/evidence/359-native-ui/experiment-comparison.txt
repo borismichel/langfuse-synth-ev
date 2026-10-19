@@ -1,0 +1,295 @@
+Browser tab: 508524247, Title: "Experiments | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments/results?baseline=cmvfi0qk00c7zad0ghluo5bp4&c=cmvfi27l90dwqad0e5eahdx62".
+1 AXWebArea Experiments | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments/results?baseline=cmvfi0qk00c7zad0ghluo5bp4&c=cmvfi27l90dwqad0e5eahdx62
+	2 container
+		3 link Description: Langfuse Logo, Value: cloud.langfuse.com/
+		4 pop up button (collapsed) v4.63.0, ID: radix-_r_3_, Secondary Actions: Expand
+			5 text v4.63.0
+		6 content list
+			7 button Go to... ⌘ K
+				8 text Go to...
+				9 text ⌘
+				10 text K
+			11 link Description: Home, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr
+			12 link Description: Dashboards, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/dashboards
+		13 container
+			14 text Observability
+			15 content list
+				16 link Description: Tracing, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/traces
+				17 link Description: Sessions, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/sessions
+				18 link Description: Users, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/users
+				19 link Description: Alerts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/alerts
+		20 container
+			21 text Context Management
+			22 content list
+				23 link Description: Skills Beta, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/skills
+				24 link Description: Prompts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/prompts
+				25 link Description: Playground, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground
+		26 container
+			27 text Evaluation
+			28 content list
+				29 link Description: Scores, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/scores
+				30 link Description: Evaluators, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/evals
+				31 link Description: Human Annotation, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/annotation-queues
+				32 link Description: Datasets, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets
+				33 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments
+		34 content list
+			35 link Description: Settings, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/settings
+			36 link Description: Book a call, Value: cal.com/team/langfuse/welcome-to-langfuse
+			37 button Support
+		38 content list
+			39 pop up button (collapsed) Boris Michel, boris.michel@clickhouse.com Boris Michel boris.michel@clickhouse.com, ID: radix-_r_k_, Secondary Actions: Expand
+				40 container Boris Michel, boris.michel@clickhouse.com
+				41 text Boris Michel
+				42 text boris.michel@clickhouse.com
+		43 button Toggle Sidebar
+		44 container page
+			45 container page-header
+				46 button Toggle Sidebar
+				47 container breadcrumb
+					48 content list
+						49 pop up button (collapsed) Boris Demo Enterprise Enterprise, Secondary Actions: Expand
+							50 text Boris Demo Enterprise
+							51 text Enterprise
+						52 pop up button (collapsed) ev-context-rehearsal-20261019, Secondary Actions: Expand
+						53 link (disabled) Experiments
+							54 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments
+				55 checkbox Description: Open Halo, Value: 0
+					56 text Halo
+					57 text ⌘
+					58 text I
+				59 image Experiment
+				60 heading 2
+				61 text Baseline
+				62 combo box (collapsed) Value: EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z 1m ago, Secondary Actions: Expand
+					63 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+					115 text 1m ago
+				64 button Clear baseline
+				65 container
+					66 text Compare
+					260 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+					261 button Remove EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+					116 text field (settable)
+				247 container
+					248 button Auto-select a comparison experiment by default
+					249 button ev-grant-disputed-rejections-demo 2
+						250 text ev-grant-disputed-rejections-demo
+						251 text 2
+					252 button EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z LATEST just now
+						253 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+						254 text LATEST
+						255 text just now
+					256 button (disabled) EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z BASELINE 1m ago
+						257 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+						258 text BASELINE
+						259 text 1m ago
+				67 button Show details
+			68 container resizable-layout-experiment-detail-cmvfi0qk00c7zad0ghluo5bp4
+				69 container
+					70 container
+						71 text Search — e.g. level:ERROR, scores.quality:>0.8
+						72 combo box (collapsed) Description: Search, Secondary Actions: Expand
+					73 pop up button (collapsed) My Views 0, Help: My Views, Secondary Actions: Expand
+						74 text My Views
+						75 text 0
+					76 pop up button (collapsed) Display, ID: radix-_r_1d_, Secondary Actions: Expand
+					77 pop up button (collapsed) Columns 4/10, Help: Show/hide columns, Secondary Actions: Expand
+						78 text Columns
+						79 text 4/10
+					80 pop up button (collapsed) Description: Row height, ID: radix-_r_1g_, Secondary Actions: Expand
+					81 container resizable-layout-filter-layout-experiment-items
+						82 container Experiment filters
+							83 text Filters
+							84 button Collapse filters
+							85 container
+								86 checkbox Description: Show only active, Value: 1
+								87 text Show only active
+							88 text No active filters.
+							89 pop up button (collapsed) Description: Add filter, Secondary Actions: Expand
+						90 splitter 15.642000198364258
+						91 container
+							262 table
+								263 row
+									264 cell
+										265 checkbox Description: Select all, Value: 0
+									266 cell
+										267 text Input
+									268 cell
+										269 container
+											270 text Ⓑ
+											271 text policy_correctness (eval) · Observation
+											272 text 50% true
+											273 text vs 
+											274 text 100% true
+											275 text -
+											276 text 0.50
+											277 container 4 regressed
+												278 text ↘ 4
+										279 pop up button (collapsed) Description: Filter items by this score, ID: radix-_r_g8_, Secondary Actions: Expand
+									280 cell
+										281 text Trace Scores
+									282 cell
+										283 text Experiment
+								284 row
+									285 cell
+										286 checkbox Description: Select row, Value: 0
+										287 slider Description: Row height, Value: 96
+									288 cell
+										289 container
+											290 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									291 cell
+										292 container
+											293 text false
+											294 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											295 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										296 container
+											297 text true
+											298 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											299 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											300 text false → true
+									301 cell
+										302 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										303 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								304 row
+									305 cell
+										306 checkbox Description: Select row, Value: 0
+									307 cell
+										308 container
+											309 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									310 cell
+										311 container
+											312 text false
+											313 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											314 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										315 container
+											316 text true
+											317 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											318 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											319 text false → true
+									320 cell
+										321 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										322 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								323 row
+									324 cell
+										325 checkbox Description: Select row, Value: 0
+									326 cell
+										327 container
+											328 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									329 cell
+										330 container
+											331 text true
+											332 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											333 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										334 container
+											335 text true
+											336 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											337 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									338 cell
+										339 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										340 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								341 row
+									342 cell
+										343 checkbox Description: Select row, Value: 0
+									344 cell
+										345 container
+											346 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									347 cell
+										348 container
+											349 text true
+											350 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											351 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										352 container
+											353 text true
+											354 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											355 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									356 cell
+										357 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										358 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								359 row
+									360 cell
+										361 checkbox Description: Select row, Value: 0
+									362 cell
+										363 container
+											364 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									365 cell
+										366 container
+											367 text true
+											368 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											369 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										370 container
+											371 text true
+											372 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											373 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									374 cell
+										375 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										376 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								377 row
+									378 cell
+										379 checkbox Description: Select row, Value: 0
+									380 cell
+										381 container
+											382 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									383 cell
+										384 container
+											385 text false
+											386 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											387 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										388 container
+											389 text true
+											390 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											391 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											392 text false → true
+									393 cell
+										394 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										395 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								396 row
+									397 cell
+										398 checkbox Description: Select row, Value: 0
+									399 cell
+										400 container
+											401 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									402 cell
+										403 container
+											404 text true
+											405 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											406 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										407 container
+											408 text true
+											409 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											410 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									411 cell
+										412 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										413 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+								414 row
+									415 cell
+										416 checkbox Description: Select row, Value: 0
+									417 cell
+										418 container
+											419 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									420 cell
+										421 container
+											422 text false
+											423 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											424 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										425 container
+											426 text true
+											427 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											428 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											429 text false → true
+									430 cell
+										431 text EV policy baseline v1 — native 2026-10-19 - 2026-10-19T16:58:38.124Z
+										432 text EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+							433 text Rows per page
+							434 combo box (collapsed) Value: 20, Secondary Actions: Expand
+								435 text 20
+							436 text Page
+							437 stepper (settable, integer) 1
+							438 text of  1
+							439 button (disabled) Go to first page
+							440 button (disabled) Go to previous page
+							441 button (disabled) Go to next page
+							442 button (disabled) Go to last page
+	112 container
+		113 container Notifications alt+T
+	114 text Experiments | Langfuse
+
+The focused UI element is 116 text field (settable)

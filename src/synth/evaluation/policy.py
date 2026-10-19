@@ -77,6 +77,36 @@ def _message(value: Any, role: str, label: str) -> Any:
     return value
 
 
+def _application(value: Any) -> dict:
+    """Read the shipped native template envelope, not arbitrary embedded JSON."""
+    if isinstance(value, str) and value.startswith("Application:\n"):
+        decoder = json.JSONDecoder()
+        remainder = value
+        fields = {}
+        for heading, kind in (("Application", dict), ("Lending handbook", dict),
+                              ("Policy updates", list)):
+            prefix = heading + ":\n"
+            if heading == "Policy updates" and not remainder:
+                break  # Baseline intentionally lacks this binding.
+            if not remainder.startswith(prefix):
+                raise ValueError(f"input: expected {heading} section")
+            try:
+                parsed, end = decoder.raw_decode(remainder[len(prefix):].lstrip())
+            except ValueError as exc:
+                raise ValueError(f"input: invalid {heading} JSON") from exc
+            if not isinstance(parsed, kind):
+                raise ValueError(f"input: invalid {heading} type")
+            fields[heading] = parsed
+            remainder = remainder[len(prefix):].lstrip()[end:].strip()
+        if remainder:
+            raise ValueError("input: unexpected content after policy sections")
+        return fields["Application"]
+    app = _object(value, "input")
+    if "policy" in app and _object(app["policy"], "input.policy") != POLICY:
+        raise ValueError("input.policy: deployment policy differs from evaluator constants")
+    return _object(app["application"], "input.application") if "application" in app else app
+
+
 def evaluate(ctx: Any) -> EvaluationResult:
     """Score policy correctness; bad context/config raises, malformed output fails distinctly."""
     grant_amount = _integer(POLICY.get("amount_eur"), "policy.amount_eur")
@@ -85,11 +115,7 @@ def evaluate(ctx: Any) -> EvaluationResult:
     if grant_amount < 0 or cap < 0:
         raise ValueError("policy: amount and cap must be non-negative")
     raw = _message(ctx.observation.input, "user", "input")
-    app = _object(raw, "input")
-    if "policy" in app and _object(app["policy"], "input.policy") != POLICY:
-        raise ValueError("input.policy: deployment policy differs from evaluator constants")
-    if "application" in app:
-        app = _object(app["application"], "input.application")
+    app = _application(raw)
     vehicle = _object(app.get("vehicle"), "input.vehicle")
     kind = vehicle.get("type")
     if kind not in ("BEV", "PHEV", "ICE"):
@@ -99,11 +125,16 @@ def evaluate(ctx: Any) -> EvaluationResult:
     applied_on = _day(app.get("application_date"), "input.application_date")
     benefit = grant_amount if kind == "BEV" and price <= cap and applied_on >= effective else 0
     principal = price - benefit
-    expected = {"applied_grant_eur": benefit, "financed_principal_eur": principal,
+    expected = {"list_price_eur": price, "approved_line_eur": line,
+                "applied_grant_eur": benefit, "financed_principal_eur": principal,
                 "decision": "approve" if principal <= line else "reject"}
     try:
         output = _object(_message(ctx.observation.output, "assistant", "output"), "output")
-        for field in ("applied_grant_eur", "financed_principal_eur"):
+        if set(output) != set(expected) | {"reason"}:
+            raise ValueError("output: expected the five decision fields and reason only")
+        if not isinstance(output["reason"], str):
+            raise ValueError("output.reason: expected text")
+        for field in ("list_price_eur", "approved_line_eur", "applied_grant_eur", "financed_principal_eur"):
             _integer(output.get(field), f"output.{field}")
         if output.get("decision") not in ("approve", "reject"):
             raise ValueError("output.decision: expected approve or reject")

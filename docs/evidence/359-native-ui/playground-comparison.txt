@@ -1,0 +1,215 @@
+Browser tab: 508524244, Title: "Playground | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground".
+0 AXWebArea Playground | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground
+	1 container
+		2 link Description: Langfuse Logo, Value: cloud.langfuse.com/
+		3 pop up button (collapsed) v4.63.0, ID: radix-_r_3_, Secondary Actions: Expand
+			4 text v4.63.0
+		5 content list
+			6 button Go to... ⌘ K
+				7 text Go to...
+				8 text ⌘
+				9 text K
+			10 link Description: Home, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr
+			11 link Description: Dashboards, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/dashboards
+		12 container
+			13 text Observability
+			14 content list
+				15 link Description: Tracing, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/traces
+				16 link Description: Sessions, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/sessions
+				17 link Description: Users, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/users
+				18 link Description: Alerts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/alerts
+		19 container
+			20 text Context Management
+			21 content list
+				22 link Description: Skills Beta, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/skills
+				23 link Description: Prompts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/prompts
+				24 link Description: Playground, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground
+		25 container
+			26 text Evaluation
+			27 content list
+				28 link Description: Scores, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/scores
+				29 link Description: Evaluators, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/evals
+				30 link Description: Human Annotation, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/annotation-queues
+				31 link Description: Datasets, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets
+				32 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments
+		33 content list
+			34 link Description: Settings, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/settings
+			35 link Description: Book a call, Value: cal.com/team/langfuse/welcome-to-langfuse
+			36 button Support
+		37 content list
+			38 pop up button (collapsed) Boris Michel, boris.michel@clickhouse.com Boris Michel boris.michel@clickhouse.com, ID: radix-_r_k_, Secondary Actions: Expand
+				39 container Boris Michel, boris.michel@clickhouse.com
+				40 text Boris Michel
+				41 text boris.michel@clickhouse.com
+		42 button Toggle Sidebar
+		43 container page
+			44 container page-header
+				45 button Toggle Sidebar
+				46 container breadcrumb
+					47 content list
+						48 pop up button (collapsed) Boris Demo Enterprise Enterprise, Secondary Actions: Expand
+							49 text Boris Demo Enterprise
+							50 text Enterprise
+						51 pop up button (collapsed) ev-context-rehearsal-20261019, Secondary Actions: Expand
+				52 checkbox Description: Open Halo (1 needs attention), Value: 0
+					53 text Halo
+					54 text ⌘
+					55 text I
+				56 heading Playground  More information, Help: Playground, Value: 2
+					57 text Playground
+					58 pop up button (collapsed) Description: More information, Secondary Actions: Expand
+				59 button Find in messages
+				60 text 2  window s
+				61 button Run All ⌘ ↵, Help: Execute all playground windows simultaneously
+					62 text Run All
+					63 text ⌘
+					64 text ↵
+				65 button Reset playground, Help: Reset playground state
+			66 container
+				67 combo box (collapsed) Value: Anthropic: claude-sonnet-4-6, Secondary Actions: Expand
+					68 text Anthropic: claude-sonnet-4-6
+				69 pop up button (collapsed) Secondary Actions: Expand
+				70 container
+					71 pop up button (collapsed) Save as prompt, Secondary Actions: Expand
+					72 button New split window
+					128 button Remove window
+				73 pop up button (collapsed) Tools, Secondary Actions: Expand
+				74 pop up button (collapsed) Schema 1, Secondary Actions: Expand
+				75 pop up button (collapsed) Variables 2, Secondary Actions: Expand
+				76 container
+					77 text credit_decision
+					78 text v1
+				79 container
+					80 container
+						81 sortable
+						82 button System
+						83 text entry area (settable) You assess vehicle-loan applications for a lender using the supplied policy documents.
+These documents define a fictional policy; do not use outside knowledge of grant programmes.
+Determine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.
+Return the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.
+
+
+							84 text You assess vehicle-loan applications for a lender using the supplied policy documents.
+							85 text These documents define a fictional policy; do not use outside knowledge of grant programmes.
+							86 text Determine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.
+							87 text Return the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.
+						88 button Delete message
+					89 container
+						90 sortable
+						91 button User
+						92 text entry area (settable) Application:
+{{application}}
+
+
+Lending handbook:
+{{handbook}}
+							93 text Application:
+							94 text {{application}}
+							95 text Lending handbook:
+							96 text {{handbook}}
+						97 button Delete message
+					98 button Message
+						99 text Message
+					100 pop up button (collapsed) ID: radix-_r_7b_, Secondary Actions: Expand
+					101 button Placeholder
+						102 text Placeholder
+					103 splitter 80
+					177 container
+						178 text Output
+						179 container
+							180 button Toggle Input/Output JSON
+							181 button Copy output
+							182 button Add to messages, Help: Add as assistant message
+						183 text {
+  "list_price_eur": 45000,
+  "applied_grant_eur": 0,
+  "financed_principal_eur": 45000,
+  "approved_line_eur": 40000,
+  "reason": "No applicable grant policy was found for this BEV application dated 2026-10-12, so the full list price of €45,000 is financed, which exceeds the approved credit line of €40,000.",
+  "decision": "reject"
+}
+				184 button Submit
+					185 text Submit
+				186 pop up button (collapsed) ID: radix-_r_7g_, Secondary Actions: Expand
+				129 combo box (collapsed) Value: Anthropic: claude-sonnet-4-6, Secondary Actions: Expand
+					130 text Anthropic: claude-sonnet-4-6
+				131 pop up button (collapsed) Secondary Actions: Expand
+				132 container
+					133 pop up button (collapsed) Save as prompt, Secondary Actions: Expand
+					134 button New split window
+					135 button Remove window
+				136 pop up button (collapsed) Tools, Secondary Actions: Expand
+				137 pop up button (collapsed) Schema 1, Secondary Actions: Expand
+				138 pop up button (collapsed) Variables 3, Secondary Actions: Expand
+				139 container
+					140 text credit_decision
+					141 text v1 · edited
+				142 container
+					143 container
+						144 sortable
+						145 button System
+						146 text entry area (settable) You assess vehicle-loan applications for a lender using the supplied policy documents.
+These documents define a fictional policy; do not use outside knowledge of grant programmes.
+Determine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.
+Return the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.
+
+
+							147 text You assess vehicle-loan applications for a lender using the supplied policy documents.
+							148 text These documents define a fictional policy; do not use outside knowledge of grant programmes.
+							149 text Determine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.
+							150 text Return the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.
+						151 button Delete message
+					152 container
+						153 sortable
+						154 button User
+						155 text entry area (settable) Application:
+{{application}}
+
+
+Lending handbook:
+{{handbook}}
+
+
+Policy updates:
+{{policy_updates}}
+							159 text Application:
+							171 text {{application}}
+							172 text Lending handbook:
+							173 text {{handbook}}
+							174 text Policy updates:
+							175 container
+								176 text { {policy_updates} }
+						160 button Delete message
+					161 button Message
+						162 text Message
+					163 pop up button (collapsed) ID: radix-_r_a3_, Secondary Actions: Expand
+					164 button Placeholder
+						165 text Placeholder
+					166 splitter 80
+					187 container
+						188 text Output
+						189 container
+							190 button Toggle Input/Output JSON
+							191 button Copy output
+							192 button Add to messages, Help: Add as assistant message
+						193 text {
+  "list_price_eur": 45000,
+  "applied_grant_eur": 6000,
+  "financed_principal_eur": 39000,
+  "approved_line_eur": 40000,
+  "reason": "The BEV qualifies for the EUR 6,000 grant under BULLETIN-EV-1 (application date 2026-10-12, price EUR 45,000 ≤ EUR 50,000), reducing the financed principal to EUR 39,000, which is at or below the approved line of EUR 40,000.",
+  "decision": "approve"
+}
+				194 button Submit
+					195 text Submit
+				196 pop up button (collapsed) ID: radix-_r_a8_, Secondary Actions: Expand
+	108 container
+		126 container Notifications alt+T
+		197 container
+			198 button Halo finished Investigate customer loan rejection disputes
+				199 text Halo finished
+				200 text Investigate customer loan rejection disputes
+			201 button Dismiss
+	127 text Playground | Langfuse
+
+The focused UI element is 0 AXWebArea Playground | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground

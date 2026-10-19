@@ -1,0 +1,10 @@
+{
+  "exact_four_observations": true,
+  "exact_names": true,
+  "one_usage_record": true,
+  "one_generation": true,
+  "managed_prompt_v1": true,
+  "one_native_false_agent_score": true,
+  "exact_rule": true,
+  "correct_baseline": true
+}

@@ -1,0 +1,1234 @@
+{
+  "calls": 38,
+  "results": [
+    {
+      "case": "eligible_flip",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV's list price of EUR 45,000 qualifies for the EUR 6,000 grant under BULLETIN-2026-10 (application dated 2026-10-19, price at or below EUR 50,000), reducing the financed principal to EUR 39,000, which is within the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 3.309
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 39000,
+            "actual": 45000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No grant policy document was supplied, so no grant is applied; the financed principal of \u20ac45,000 exceeds the approved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 3.318
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 39000,
+            "actual": 45000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable grant policy was found for BEV vehicles, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.463
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV at EUR 45,000 qualifies for the EUR 6,000 grant under BULLETIN-2026-10 (application dated 2026-10-19, price \u2264 EUR 50,000), reducing the financed principal to EUR 39,000, which is at or below the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.653
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "baseline",
+      "repetition": 3,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 39000,
+            "actual": 45000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable purchase grant was found in the policy documents, so the full list price of \u20ac45,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.633
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "candidate",
+      "repetition": 3,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV's list price of EUR 45,000 is at or below EUR 50,000 and the application date of 2026-10-19 is on or after 2026-10-01, so the EUR 6,000 grant applies, reducing the financed principal to EUR 39,000, which is within the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.844
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "baseline",
+      "repetition": 4,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 39000,
+            "actual": 45000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable grant was found in the policy documents, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.685
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "candidate",
+      "repetition": 4,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV is priced at EUR 45,000 (\u2264 EUR 50,000) and the application date of 2026-10-19 is on or after 2026-10-01, so the EUR 6,000 grant applies, reducing the financed principal to EUR 39,000, which is at or below the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.878
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "baseline",
+      "repetition": 5,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 39000,
+            "actual": 45000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable grant policy was provided, so the full list price of \u20ac45,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.678
+    },
+    {
+      "case": "eligible_flip",
+      "variant": "candidate",
+      "repetition": 5,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV is priced at EUR 45,000 (\u2264 EUR 50,000), so the EUR 6,000 grant from BULLETIN-2026-10 applies, reducing the financed principal to EUR 39,000, which is within the EUR 40,000 approved line.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.569
+    },
+    {
+      "case": "before_effective_date",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant is applicable under the supplied policy documents, so the full list price of \u20ac45,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.805
+    },
+    {
+      "case": "before_effective_date",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "The application date of 2026-09-30 falls before the 2026-10-01 effective date of the BEV grant bulletin, so no grant applies, and the full EUR 45,000 financed principal exceeds the EUR 40,000 approved line.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.725
+    },
+    {
+      "case": "before_effective_date",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant policy was found in the supplied documents, so the full list price of \u20ac45,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 3.008
+    },
+    {
+      "case": "before_effective_date",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "The application date of 2026-09-30 is before the 2026-10-01 effective date of the BEV grant programme, so no grant applies, leaving the financed principal at EUR 45,000 which exceeds the approved line of EUR 40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.825
+    },
+    {
+      "case": "ineligible_phev",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable grant exists for a PHEV, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.758
+    },
+    {
+      "case": "ineligible_phev",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "The vehicle is a PHEV, which does not qualify for the EUR 6,000 BEV-only grant under BULLETIN-2026-10, so the full list price of EUR 45,000 is financed and exceeds the approved credit line of EUR 40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.962
+    },
+    {
+      "case": "ineligible_phev",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable grant policy was found for a PHEV purchased on 2026-10-19, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.92
+    },
+    {
+      "case": "ineligible_phev",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "approved_line_eur": 40000,
+          "reason": "The vehicle is a PHEV, which does not qualify for the EUR 6,000 BEV grant under BULLETIN-2026-10, so the full list price of EUR 45,000 is financed and exceeds the approved line of EUR 40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.864
+    },
+    {
+      "case": "above_price_cap",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 45000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "approved_line_eur": 45000,
+          "reason": "No applicable grant policy was found for this BEV application, so the full list price of \u20ac50,001 is financed, which exceeds the approved credit line of \u20ac45,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.721
+    },
+    {
+      "case": "above_price_cap",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 45000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "approved_line_eur": 45000,
+          "reason": "The vehicle's list price of EUR 50,001 exceeds the EUR 50,000 threshold required to qualify for the BEV purchase grant, so no grant is applied and the full price of EUR 50,001 is financed, which exceeds the approved line of EUR 45,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.865
+    },
+    {
+      "case": "above_price_cap",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 45000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "approved_line_eur": 45000,
+          "reason": "The vehicle's list price of EUR 50,001 exceeds the EUR 50,000 ceiling for the BEV grant, so no grant applies and the full purchase price of EUR 50,001 exceeds the approved line of EUR 45,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.532
+    },
+    {
+      "case": "above_price_cap",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 45000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "approved_line_eur": 45000,
+          "reason": "No applicable purchase grant was found in the policy documents, so the full list price of \u20ac50,001 is financed, which exceeds the approved credit line of \u20ac45,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 3.92
+    },
+    {
+      "case": "still_above_line",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 43000,
+            "actual": 49000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 49000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 49000,
+          "approved_line_eur": 40000,
+          "reason": "No applicable purchase grant was found in the policy documents, so the full list price of \u20ac49,000 is financed, which exceeds the preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.322
+    },
+    {
+      "case": "still_above_line",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 49000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 43000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV at EUR 49,000 qualifies for the EUR 6,000 grant under BULLETIN-2026-10, reducing the financed principal to EUR 43,000, which exceeds the approved line of EUR 40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.395
+    },
+    {
+      "case": "still_above_line",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 43000,
+            "actual": 49000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 49000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 49000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant applies, so the full list price of \u20ac49,000 is the financed principal, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.342
+    },
+    {
+      "case": "still_above_line",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 49000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 43000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV is priced at EUR 49,000 (\u2264 EUR 50,000) and the application date of 2026-10-19 qualifies for the EUR 6,000 grant under BULLETIN-2026-10, reducing the financed principal to EUR 43,000, which exceeds the approved line of EUR 40,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.962
+    },
+    {
+      "case": "at_cap_date_and_line",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 44000,
+            "actual": 50000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50000,
+          "approved_line_eur": 44000,
+          "reason": "No purchase grant policy was supplied, so the full list price of \u20ac50,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac44,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.568
+    },
+    {
+      "case": "at_cap_date_and_line",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "decision": {
+            "expected": "approve",
+            "actual": "reject"
+          },
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 44000,
+            "actual": 50000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50000,
+          "approved_line_eur": 44000,
+          "reason": "No applicable purchase grant was found in the policy documents, so the full list price of \u20ac50,000 is financed, which exceeds the applicant's preapproved credit line of \u20ac44,000.",
+          "decision": "reject"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.578
+    },
+    {
+      "case": "at_cap_date_and_line",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 44000,
+          "approved_line_eur": 44000,
+          "reason": "The BEV at EUR 50,000 qualifies for the EUR 6,000 grant effective 2026-10-01, reducing the financed principal to EUR 44,000, which exactly meets the preapproved credit line.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 3.763
+    },
+    {
+      "case": "at_cap_date_and_line",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 50000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 44000,
+          "approved_line_eur": 44000,
+          "reason": "The BEV's list price of EUR 50,000 qualifies for the EUR 6,000 grant under BULLETIN-2026-10 (application dated 2026-10-01), reducing the financed principal to EUR 44,000, which exactly meets the preapproved credit line.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.777
+    },
+    {
+      "case": "eligible_already_affordable",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 33000,
+            "actual": 39000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 39000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant policy document was supplied, so no grant is applied; the financed principal of \u20ac39,000 is at or below the approved line of \u20ac40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.899
+    },
+    {
+      "case": "eligible_already_affordable",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 39000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 33000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV's list price of EUR 39,000 qualifies for the EUR 6,000 grant under BULLETIN-2026-10 (application dated 2026-10-19, price \u2264 EUR 50,000), reducing the financed principal to EUR 33,000, which is below the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.859
+    },
+    {
+      "case": "eligible_already_affordable",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": false,
+        "strict_json": true,
+        "mismatches": {
+          "applied_grant_eur": {
+            "expected": 6000,
+            "actual": 0
+          },
+          "financed_principal_eur": {
+            "expected": 33000,
+            "actual": 39000
+          }
+        },
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 39000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 39000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant policy was found in the supplied documents, so the full list price of \u20ac39,000 is financed, which is at or below the approved credit line of \u20ac40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.656
+    },
+    {
+      "case": "ineligible_affordable",
+      "variant": "baseline",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant applies to an ICE vehicle, so the financed principal of \u20ac35,000 is at or below the approved credit line of \u20ac40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.008
+    },
+    {
+      "case": "eligible_already_affordable",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 39000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 33000,
+          "approved_line_eur": 40000,
+          "reason": "The BEV has a list price of EUR 39,000 (\u2264 EUR 50,000), so the EUR 6,000 grant from BULLETIN-2026-10 applies, reducing the financed principal to EUR 33,000, which is within the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.719
+    },
+    {
+      "case": "ineligible_affordable",
+      "variant": "candidate",
+      "repetition": 1,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "approved_line_eur": 40000,
+          "reason": "The vehicle is an ICE type and does not qualify for any purchase grant, so the full list price of EUR 35,000 is financed, which is at or below the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.339
+    },
+    {
+      "case": "ineligible_affordable",
+      "variant": "baseline",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "approved_line_eur": 40000,
+          "reason": "No purchase grant applies to ICE vehicles, so the full list price of \u20ac35,000 is financed, which is at or below the approved credit line of \u20ac40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.395
+    },
+    {
+      "case": "ineligible_affordable",
+      "variant": "candidate",
+      "repetition": 2,
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "score": {
+        "passed": true,
+        "strict_json": true,
+        "mismatches": {},
+        "reason_present": true,
+        "parsed": {
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "approved_line_eur": 40000,
+          "reason": "The vehicle is an ICE type, which does not qualify for the EUR 6,000 BEV grant, so the full list price of EUR 35,000 is financed and is within the approved line of EUR 40,000.",
+          "decision": "approve"
+        }
+      },
+      "arithmetic_consistent": true,
+      "status": "complete",
+      "elapsed_seconds": 2.419
+    }
+  ]
+}

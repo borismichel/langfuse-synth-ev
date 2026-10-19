@@ -60,7 +60,8 @@ def test_native_experiment_exports_item_identity_decisions_and_comparison_url(mo
         application = json.loads(kwargs["messages"][0]["content"])
         expected = next(item["expectedOutput"] for item in items
                         if item["id"] == application["applicant_id"])
-        return SimpleNamespace(text=json.dumps({**expected, "reason": "Policy calculation."}),
+        return SimpleNamespace(text=json.dumps({**expected, "list_price_eur": application["vehicle"]["list_price_eur"],
+            "approved_line_eur": application["approved_line_eur"], "reason": "Policy calculation."}),
                                input_tokens=120, output_tokens=40)
 
     exported = InMemorySpanExporter()

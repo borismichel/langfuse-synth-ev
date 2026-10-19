@@ -1,5 +1,7 @@
 # EV UI refresh: release rehearsal — portal #238
 
+> Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](ev-context-verification.md).
+
 Status on 11 September 2026: **Cloud comparison and live policy checks passed;
 signed release/registration and the complete depot-delivered rehearsal remain pending.**
 Version `0.7.0` is prepared in `pyproject.toml`; this is not evidence that its tag,

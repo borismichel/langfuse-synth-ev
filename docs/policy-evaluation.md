@@ -1,7 +1,7 @@
 # EV policy correctness — portal #235
 
 The main scoring beat is the native Boolean `policy_correctness` code evaluator.
-It checks the grant, financed principal and approve/reject decision against the
+It checks list price, approved line, applied grant, financed principal and decision against the
 fictional deployment policy. A correct rejection with incorrect amounts fails.
 The optional LLM judge uses the same rubric, but is not the arithmetic authority.
 
@@ -59,7 +59,9 @@ the native experiment guide. Before the full comparison, inspect real item conte
 in the evaluator editor.
 Input normalization supports the bare application and the dataset's `application`
 JSON string wrapper. Native chat input (an array or a JSON-encoded array) must have exactly one user message carrying
-that application JSON. Output can be a Decision object, JSON text (optionally one
+the shipped `Application:` JSON and `Lending handbook:` JSON sections, plus the optional
+`Policy updates:` array. The baseline omits the last section; evaluation still uses
+the complete deployment policy constants. Output can be a Decision object, JSON text (optionally one
 JSON code fence), or a single assistant message carrying that text. Unsupported or
 ambiguous shapes must be surfaced, never guessed from sibling spans or expected
 output. Expected output is a reviewed calibration reference, not a substitute for
@@ -67,7 +69,7 @@ model output or policy constants.
 
 Compare the `policy_correctness` score column and individual generated outputs.
 Show an eligible false negative, a still-above-line BEV, an over-cap BEV and a
-non-BEV rejection. Show grant and principal alongside the decision. The candidate
+non-BEV rejection. Show all four monetary fields alongside the decision. The candidate
 should fix eligible errors while preserving policy-correct rejections; do not
 promise an all-green result before inspecting actual model outputs.
 

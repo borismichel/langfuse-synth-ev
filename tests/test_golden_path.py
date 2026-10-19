@@ -107,7 +107,7 @@ def test_trace_events_well_formed():
     # ... and its input is the actual LLM turn: system prompt + application user message
     dec_input = json.loads(decision_attrs[otlp.OBS_INPUT])
     assert dec_input[0]["role"] == "system"
-    assert "credit-decision agent" in dec_input[0]["content"]
+    assert "vehicle-loan applications" in dec_input[0]["content"]
     assert dec_input[1]["role"] == "user"
     assert str(spec.application.vehicle.list_price_eur) in dec_input[1]["content"]
 
@@ -160,7 +160,7 @@ def test_grant_effective_date_is_recent_relative_to_run():
     assert plan.golden.effective_date < RUN_DATE
 
 
-def test_seeded_rejection_ignores_an_available_deployment_grant():
+def test_seeded_rejection_omits_retrieved_deployment_grant_context():
     cfg = load_config("config/demo.yaml")
     cfg.generation.total_traces = 120
     cfg.golden_path.grant_amount_eur = 4000
@@ -172,8 +172,53 @@ def test_seeded_rejection_ignores_an_available_deployment_grant():
     assert evidence["applicable_subsidies"] == [{"name": "EV Purchase Grant", "amount_eur": 4000}]
     assert evidence["policy"] == {"amount_eur": 4000, "price_cap_eur": 45000,
                                   "effective_date": "2026-06-02"}
-    assert json.loads(spans["check_subsidy_eligibility"]["langfuse.observation.metadata.ignored_by_agent"]) is True
+    retrieval = json.loads(spans["retrieve_policy"][otlp.OBS_OUTPUT])
+    assert retrieval["policy_updates"][0]["effective_date"] == "2026-06-02"
+    assert "4,000" in retrieval["policy_updates"][0]["content"]
+    assert "BULLETIN-EV-1" not in spans["decision"][otlp.OBS_INPUT]
+    assert "ignored_by_agent" not in str(spans)
     affordability = json.loads(spans["compute_affordability"][otlp.OBS_INPUT])
-    assert affordability["financed_principal_eur"] == spec.application.vehicle.list_price_eur
-    assert json.loads(spans["compute_affordability"][otlp.OBS_OUTPUT]) == {"within_line": False}
+    assert affordability["financed_principal_eur"] == spec.application.vehicle.list_price_eur - 4000
+    assert json.loads(spans["compute_affordability"][otlp.OBS_OUTPUT]) == {"within_line": True}
     assert spec.decision.decision == "reject" and spec.decision.applied_grant_eur == 0
+
+
+def test_historical_policy_tools_calculate_affordability_independently_of_baseline_decision():
+    from synth.agent import GrantRule, decide
+    from synth.models import Application
+    from synth.seed.traces import TraceSpec
+    from langfuse_synth_core.rng import Rng
+
+    # Expected values are hand-worked policy cases. The baseline remains unchanged;
+    # the observed first failure must be decision context assembly, not an earlier tool.
+    cases = [
+        ("BEV", 45000, 40000, "2026-06-05", "2026-06-02", 6000, 39000, True),
+        ("BEV", 45000, 39000, "2026-06-05", "2026-06-02", 6000, 39000, True),
+        ("BEV", 45000, 38999, "2026-06-05", "2026-06-02", 6000, 39000, False),
+        ("BEV", 50001, 45000, "2026-06-05", "2026-06-02", 0, 50001, False),
+        ("PHEV", 45000, 40000, "2026-06-05", "2026-06-02", 0, 45000, False),
+        ("ICE", 45000, 45000, "2026-06-05", "2026-06-02", 0, 45000, True),
+        ("BEV", 45000, 40000, "2026-06-01", "2026-06-02", 0, 45000, False),
+        ("BEV", 45000, 40000, "2026-06-05", "2099-06-02", 0, 45000, False),
+    ]
+    cfg = load_config("config/demo.yaml")
+    for index, (kind, price, line, day, effective, grant, principal, within_line) in enumerate(cases):
+        rule = GrantRule(effective_date=effective)
+        app = Application(applicant_id=f"tool-case-{index}", approved_line_eur=line,
+            vehicle={"type": kind, "list_price_eur": price}, application_date=day)
+        baseline = decide(app, "v1", rule=rule)
+        spec = TraceSpec(trace_id=Rng(1).trace_id("tool-case", index), timestamp=RUN_DATE,
+            application=app, decision=baseline, user_id="test", session_id=None,
+            environment="production", kind="control", grant_rule=rule)
+        spans = {s["name"]: _attrs(s) for s in build_trace_events(Rng(1), cfg, spec, 1)}
+        eligibility = json.loads(spans["check_subsidy_eligibility"][otlp.OBS_OUTPUT])
+        assert eligibility["applicable_subsidies"] == (
+            [{"name": "EV Purchase Grant", "amount_eur": grant}] if grant else [])
+        assert json.loads(spans["compute_affordability"][otlp.OBS_INPUT]) == {
+            "financed_principal_eur": principal, "approved_line_eur": line}
+        assert json.loads(spans["compute_affordability"][otlp.OBS_OUTPUT]) == {"within_line": within_line}
+        emitted_decision = json.loads(spans["decision"][otlp.OBS_OUTPUT])
+        assert emitted_decision == baseline.model_dump()
+        assert emitted_decision["applied_grant_eur"] == 0
+        assert emitted_decision["financed_principal_eur"] == price
+        assert "BULLETIN-EV-1" not in spans["decision"][otlp.OBS_INPUT]

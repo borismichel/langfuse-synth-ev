@@ -1,0 +1,119 @@
+Browser tab: 508524260, Title: "Prompts | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts/credit_decision?version=2".
+0 AXWebArea Prompts | Langfuse, URL: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts/credit_decision?version=2
+	1 container
+		2 link Description: Langfuse Logo, Value: cloud.langfuse.com/
+		3 pop up button (collapsed) v4.63.0, ID: radix-_r_3_, Secondary Actions: Expand
+			4 text v4.63.0
+		5 content list
+			6 button Go to... ⌘ K
+				7 text Go to...
+				8 text ⌘
+				9 text K
+			10 link Description: Home, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm
+			11 link Description: Dashboards, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/dashboards
+		12 container
+			13 text Observability
+			14 content list
+				15 link Description: Tracing, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/traces
+				16 link Description: Sessions, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/sessions
+				17 link Description: Users, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/users
+				18 link Description: Alerts, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/alerts
+		19 container
+			20 text Context Management
+			21 content list
+				22 link Description: Skills Beta, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/skills
+				23 link Description: Prompts, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts
+				24 link Description: Playground, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/playground
+		25 container
+			26 text Evaluation
+			27 content list
+				28 link Description: Scores, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/scores
+				29 link Description: Evaluators, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/evals
+				30 link Description: Human Annotation, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/annotation-queues
+				31 link Description: Datasets, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/datasets
+				32 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/experiments
+		33 content list
+			34 link Description: Settings, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/settings
+			35 link Description: Book a call, Value: cal.com/team/langfuse/welcome-to-langfuse
+			36 button Support
+		37 content list
+			38 pop up button (collapsed) Boris Michel, boris.michel@clickhouse.com Boris Michel boris.michel@clickhouse.com, ID: radix-_r_k_, Secondary Actions: Expand
+				39 container Boris Michel, boris.michel@clickhouse.com
+				40 text Boris Michel
+				41 text boris.michel@clickhouse.com
+		42 button Toggle Sidebar
+		47 container page
+			48 container page-header
+				49 button Toggle Sidebar
+				50 container breadcrumb
+					51 content list
+						52 pop up button (collapsed) Boris Demo Enterprise Enterprise, Secondary Actions: Expand
+							53 text Boris Demo Enterprise
+							54 text Enterprise
+						55 pop up button (collapsed) ev-demo-verification-20261019, Secondary Actions: Expand
+						56 link (disabled) Prompts
+							57 link Description: Prompts, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts
+				58 checkbox Description: Open Halo, Value: 0
+					59 text Halo
+					60 text ⌘
+					61 text I
+				62 image Prompt
+				63 heading credit_decision  More information, Value: 2
+					64 text credit_decision
+					65 pop up button (collapsed) Description: More information, Secondary Actions: Expand
+				66 button Add tag
+				67 pop up button (collapsed) Duplicate, Help: Duplicate prompt, Secondary Actions: Expand
+				68 container
+					69 link Description: Versions, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts/credit_decision
+					70 link Description: Metrics, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts/credit_decision/metrics
+			71 container
+				72 combo box (expanded, settable) ID: radix-_r_1u_, Secondary Actions: Collapse
+				73 button New version
+					74 link Description: New version, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/prompts/new?promptId=ed60bdd5-b8bf-4f39-8417-2388c8c668ab
+				75 container
+					76 container
+						77 text #  2 production latest development v2 bind retrieved policy updates 10/19/2026, 6:53:31 PM  by API
+					78 container
+						79 text #  1 v1 application and handbook 10/19/2026, 6:53:30 PM  by API
+						80 button Compare with selected prompt
+				81 text #  2 bind retrieved policy updates production latest development v2
+				82 pop up button (collapsed) Add label, Secondary Actions: Expand
+				83 pop up button (collapsed) Playground, Help: Test in LLM playground, ID: radix-_r_27_, Secondary Actions: Expand
+				84 pop up button (collapsed) Run experiment, Secondary Actions: Expand
+				85 button Add comment
+				86 pop up button (collapsed) Description: More actions, ID: radix-_r_2c_, Secondary Actions: Expand
+				87 tab group
+					88 tab (selected, settable, boolean) Prompt, ID: radix-_r_2e_-trigger-prompt, Value: 1
+Prompt
+					89 tab (selectable, settable, boolean) Config, ID: radix-_r_2e_-trigger-config, Value: 0
+Config
+					90 tab (selectable, settable, boolean) Linked Generations, ID: radix-_r_2e_-trigger-linked-generations, Value: 0
+Linked Generations
+					91 tab (selectable, settable, boolean) Use Prompt, ID: radix-_r_2e_-trigger-use-prompt, Value: 0
+Use Prompt
+				92 container Description: Prompt, ID: radix-_r_2e_-content-prompt
+					93 text System
+					94 button Collapse system prompt
+					95 button Copy to clipboard
+					96 text You assess vehicle-loan applications for a lender using the supplied policy documents.
+These documents define a fictional policy; do not use outside knowledge of grant programmes.
+Determine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.
+Return the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.
+					97 button Collapse system prompt
+					98 text User
+					99 button Copy to clipboard
+					100 text Application:
+{{application}}
+					101 text Lending handbook:
+{{handbook}}
+					102 text Policy updates:
+{{policy_updates}}
+					103 text The following variables are available:
+					104 text application
+					105 text handbook
+					106 text policy_updates
+	44 container
+		45 container Notifications alt+T
+	46 text Langfuse
+
+The focused UI element is 82 pop up button (collapsed) Add label, Secondary Actions: Expand

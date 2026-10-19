@@ -1,225 +1,35 @@
-# Post-Seed Verification
+# Verification checks
 
-After `synth seed` finishes, confirm the data actually matches the demo narrative
-before you rely on it in a workshop. Two layers:
+Use the same configuration, target and saved run state as the initial deployment. Verify the project identity before reading results. Credentials stay in the configured environment; never copy them into evidence.
 
-1. **`synth verify`** — automated golden-path assertions (run this always).
-2. **Live spot-checks** — a small script that prints coverage, the `disputed`↔judge
-   alignment, prompt versions, and the drift curve (run when you want the full picture).
-
-> **Async indexing note.** Langfuse writes to ClickHouse asynchronously, so trace/score
-> **counts can lag a few seconds–minutes** behind the import, and the v2 query API may
-> briefly return `500` under load right after a big seed. If counts read slightly low or
-> a call errors, wait and re-run — the numbers converge to the spool's exact figures.
-
-Both layers read credentials from `.env` (`LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`,
-`LANGFUSE_SECRET_KEY`). Run everything from the repo root.
-
----
-
-## 1. `synth verify` (always run this)
+## Current-run verification
 
 ```bash
 synth verify --config config/demo.yaml
 ```
 
-Expected — **all checks PASS**:
+Inspect every reported check. Counts, prompt versions, policy dates and reserved IDs come from this run's saved state; do not compare them with a hardcoded example from another deployment. Allow bounded ingestion/indexing delay and repeat reads if needed. A missing observation or failed read is not a passed check.
 
-```
-[PASS] dataset_items: 24 items (expected 24); 24 carry sourceTraceId
-[PASS] reserved_pool: 3/3 reserved traces exist; 0 leaked into dataset
-[PASS] disagreement_drift: appeal rate baseline=0.02 -> drift=0.27 (... before / ... during)
-[PASS] quality_green: answer_quality mean in drift window = 0.86 over ... scores
-[PASS] prompt_v1_linkage: trace ... decision generations linked to credit_decision v1: True
-✓ ALL CHECKS PASSED
-```
+Verify the hosted regression and demonstration dataset schemas, source links, all three string inputs (`application`, `handbook`, `policy_updates`) and structured expected outputs. The short cohort starts with eight authored cases; curated items change its count and version. Reserved cases must remain absent until deliberately added.
 
-What each check guarantees:
+For a disputed historical case, inspect the amendment in `retrieve_policy`, the same full context in the generation metadata, and its absence from the baseline's compiled input. Check the actual prompt version association and decision amounts. Historical quality and disagreement scores are generated fixtures; they are not newly executed policy evaluations.
 
-| Check | Asserts |
-|---|---|
-| `dataset_items` | The hosted dataset has the expected item count and every item links back to a `sourceTraceId`. |
-| `reserved_pool` | The live-add cases exist as traces but are **not** in the dataset (kept fresh for the demo). |
-| `disagreement_drift` | The appeal rate is **higher in the drift window** than the baseline before it. |
-| `quality_green` | `answer_quality` stays **green** in that same window — the failure is silent. |
-| `prompt_v1_linkage` | The disputed `decision` generations link to `credit_decision` **v1**. |
+## Native and live verification
 
-If `verify` fails, stop and fix before the workshop — the live spot-checks below help locate why.
+Follow the delivered Presenter Runbook. Save actual Halo investigation/approval evidence, the selected project connection/model, shared output schema, fixed prompt versions and frozen dataset version. Check both experiments' complete score coverage and monetary outputs, including rejection controls.
 
----
+A fresh successful Companion trace contains root, agent, real bundled retrieval and one real decision generation. Confirm the generation's exact compiled input, native prompt version, actual output/usage and all three `metadata.prompt_variables`. After enabling the scoped incoming rule, verify a new undisputed agent observation is automatically scored. Following promotion, verify both an eligible approval and a genuine rejection.
 
-## 2. Live spot-checks (optional, fuller picture)
+Record missing/pending scores, execution errors, malformed output and policy failures separately. No HTTP-success, local test or SDK decision-agreement card substitutes for native policy-score evidence.
 
-Save as `scripts/check_seed.py` (or run inline) and execute with the project's `.venv`:
+## Offline and delivery checks
 
-```python
-import os, time, collections, requests
-from dotenv import load_dotenv
+Run the repository's tests, manifest validation and established advisory conformance gate before release. Preserve intentional historical golden changes with their causal explanation. Strict authoring check currently reports inherited Companion migration findings; see the current evidence record rather than claiming strict readiness.
 
-load_dotenv()  # reads .env from the repo root
-BASE = os.environ["LANGFUSE_BASE_URL"].rstrip("/")
-AUTH = (os.environ["LANGFUSE_PUBLIC_KEY"], os.environ["LANGFUSE_SECRET_KEY"])
+Admission must identify the exact immutable release and signed image digest. Catalog publication then requires one ordinary fresh deployment, its delivered artifacts and real live verification. Existing deployment projects are not reset or overwritten.
 
-def get(path, **params):
-    for attempt in range(5):                       # retry: CH can 500 right after a big import
-        r = requests.get(f"{BASE}{path}", params=params, auth=AUTH, timeout=30)
-        if r.status_code == 500:
-            time.sleep(2 * (attempt + 1)); continue
-        r.raise_for_status(); return r.json()
-    r.raise_for_status()
+[Current verification status](docs/ev-context-verification.md) distinguishes these gates. September verification records retain their dates and apply only to the prior story.
 
-def score_count(name):
-    return get("/api/public/v2/scores", name=name, limit=1)["meta"]["totalItems"]
+## Reset
 
-def all_scores(name):
-    out, p = [], 1
-    while True:
-        d = get("/api/public/v2/scores", name=name, limit=100, page=p)
-        out += d["data"]
-        if p >= d["meta"]["totalPages"] or not d["data"]: break
-        p += 1
-    return out
-
-traces = get("/api/public/traces", limit=1)["meta"]["totalItems"]
-print(f"traces: {traces}\n")
-
-print("score coverage (of all traces):")
-for s in ["format_compliance", "answer_quality", "tone", "user_disagreement", "csat"]:
-    c = score_count(s)
-    print(f"  {s:<18} {c:>5}  ({c / traces * 100:4.0f}%)")
-
-dis = all_scores("user_disagreement")
-true = sum(1 for x in dis if float(x.get("value") or 0) == 1)
-disputed = get("/api/public/traces", tags="disputed", limit=1)["meta"]["totalItems"]
-print(f"\nuser_disagreement: {true} true / {len(dis)} judged")
-print(f"disputed-tagged traces: {disputed}   (tag == judge-true? {disputed == true})")
-
-pr = get("/api/public/v2/prompts", name="credit_decision", limit=5)["data"]
-print(f"credit_decision versions: {[x.get('versions') for x in pr]}")
-
-aq = all_scores("answer_quality")
-by_d = collections.defaultdict(list); by_q = collections.defaultdict(list)
-for x in dis: by_d[x["timestamp"][:10]].append(float(x.get("value") or 0))
-for x in aq:  by_q[x["timestamp"][:10]].append(float(x.get("value") or 0))
-print("\ndrift (appeal rate should rise to demo day; quality stays green):")
-for day in sorted(set(by_d) | set(by_q))[-8:]:
-    ar = sum(by_d[day]) / len(by_d[day]) if by_d.get(day) else 0
-    qm = sum(by_q[day]) / len(by_q[day]) if by_q.get(day) else 0
-    print(f"  {day}  appeals_n={len(by_d.get(day, [])):>3}  appeal_rate={ar:.2f}  quality={qm:.2f}")
-```
-
-```bash
-.venv/bin/python scripts/check_seed.py
-```
-
----
-
-## What "good" looks like
-
-Coverage follows the **kind** of instrument (see `config/demo.yaml` → `scoring`), not one
-blanket ratio. With the default config:
-
-| Score | Expected coverage | Why |
-|---|---|---|
-| `format_compliance` | **~100%** of traces | deterministic schema check (`format_check_coverage: 1.0`) |
-| `answer_quality` + `tone` | **~15%** (`quality_judge_ratio`) | one LLM-judge pass, thin sample — counts move together |
-| `user_disagreement` | **~15%** (`disagreement_judge_ratio`) | LLM-judge over the interaction; forced true on the disputed FNs |
-| `csat` | **~30% of sessions** (`csat_response_ratio`) | per-session customer survey |
-
-Key invariants:
-
-- **`disputed` tag count == `user_disagreement` true count.** The tag is a pure *output*
-  of the disagreement judge — every flagged-true trace is tagged, and nothing else is.
-  (Typically ~42: the 32 golden false-negatives forced true, plus organic ambient pushback.)
-- **`credit_decision versions: [1, 2]`** — pristine. If you see `[1, 2, 3, 4, …]`, the
-  prompt was registered more than once (see Troubleshooting).
-- **Drift:** `appeal_rate` is ~0 before the window and **rises toward demo day** (peak
-  ~0.4 on the most recent full day), while `quality` holds ~0.85–0.87 throughout. That
-  divergence — appeals climbing while quality stays green — *is* the demo's smoke.
-
----
-
-## Troubleshooting
-
-| Symptom | Likely cause / fix |
-|---|---|
-| Counts read slightly low (e.g. 3,989 vs 4,000) or a query `500`s | ClickHouse async-indexing lag right after import. Wait a moment and re-run. |
-| `credit_decision versions: [1, 2, 3, 4]` | Prompt registered by more than one seed. Registration is idempotent on content, so it can't *reset* — seed a **fresh project** for pristine `v1=1 / v2=2`. |
-| `disputed` count ≠ `user_disagreement` true count | The tag is applied at generation from the judge verdict; a mismatch means a code change broke that coupling — re-check `run.py` (`disagreement_score` → tag). |
-| `disagreement_drift` fails / curve looks flat | Drift signal too thin. Raise `disagreement_judge_ratio` (or check the eligible FNs are landing in the window). |
-| Re-seeding the **same** project shows stale/extra scores | Ingestion is append-only and never deletes. Changing coverage (which scores get emitted) requires a **fresh project**, or old scores linger as orphans. |
-
----
-
-## Reset for a clean run
-
-The seed is deterministic, but Langfuse data is append-only within its merge window, so the
-clean-slate path is **project-level**: create a fresh project (name must contain the
-`project_hint`, default `demo`), put its keys in `.env`, and run `synth seed` once.
-
----
-
-## Offline determinism golden gate (author-time, pre-ingestion)
-
-The two layers above verify data *after* it lands in Langfuse. The golden gate verifies the
-generator itself, **offline, before any ingestion** — it is the migration oracle for
-Spec A (`langfuse-synth-core`, Step 0 · #30).
-
-`tests/test_determinism.py::test_full_payload_golden_is_byte_identical` materializes the
-**entire pre-ingestion Spool** (the NDJSON event stream — traces + observations + scores)
-in a subprocess under `PYTHONHASHSEED=0` and a **deny-LLM egress block**, and asserts it is
-byte-identical to the blessed snapshot at `tests/golden/ev_spool.ndjson`. So it proves, in
-one shot, that generation is **deterministic** and **model-free at seed runtime**. Any
-refactor that silently perturbs the pool, or that plants an LLM call in generation code,
-fails here — loudly, before a single event is ingested.
-
-```bash
-pip install -e ".[dev]"        # pulls the git-pinned langfuse-synth-core[authoring] gate
-pytest tests/test_determinism.py
-```
-
-**The oracle is pinned at `target_traces=300`** (`generation.total_traces`; EV maps the
-canonical `target_traces` knob identity → direct count). The whole hand-authored narrative —
-golden-path disputes, the hosted dataset, multi-turn CSAT, every score family — is captured
-at this volume because those assets are config-sized, not ambient-scaled.
-
-> **Known oracle boundary.** `incident:cost_spike` is captured at 300, but
-> `incident:error_burst` is so low-probability it only surfaces near production volume
-> (~4000 traces / ~37 MB). It is therefore **out of this oracle by design** — the pin trades
-> full ambient-incident coverage for a committable ~2.7 MB snapshot. Determinism itself is
-> scale-independent, so this does not weaken the byte-for-byte guarantee on everything the
-> oracle *does* contain.
-
-**Re-blessing** (only for a *deliberate* pool change — never hand-edit the snapshot):
-
-```bash
-synth-authoring freeze golden_seed:seed \
-    --golden tests/golden/ev_spool.ndjson --target-traces 300 --search-path tests
-```
-
-## Inclusive demo schedule — Depot #326
-
-The optional Manifest setup schedule declares UTC calendar days including Data as of.
-A 14-day run for 2026-10-16 starts on 2026-10-03. Core's legacy exclusive sampler is
-unchanged; this kit opts into its inclusive sampler. Generation still uses the selected
-calendar date at noon UTC for policy/incident anchors, and preserves seeded RNG streams.
-
-`SCHEDULE.json` records version1, requested as_of_date/history_days/timezone/end, and the
-actual minimum observation start and maximum observation end (`generated_range`). It is
-written with the other seed artifacts and retained in RunState.summary. Actual bounds
-are measured after materialization, not inferred from nominal dates.
-
-Offline candidate verification: 148 tests passed against the coordinated core source
-candidate. Date tests inspect emitted OTLP roots and child endpoints at14/30days,
-year/leap-day boundaries, and seed60/6000traces whose final graph previously crossed
-midnight. The overflowing graph shifts earlier by its exact overshoot plus1microsecond;
-its3.688-second duration is preserved. Other graphs are unchanged by this bound.
-
-Intentional chronology changes were frozen with synth-authoring freeze at the existing
-300-trace fixture scale.300traces/483scores remain; observations change2862→2861 because
-ambient incident membership follows the newly sampled dates. Dataset and reserved cohorts
-remain24/3. Analytics goldens change calculated daily distributions/percentages only;
-Companion markup, narrative, comparisons and controls are unchanged. All scenario tests pass.
-
-This is source-candidate evidence. Released core pins, signed kit publication and registry
-consumption remain pending the coordinating release review; no live seed was performed.
+Use a fresh demo project for another import. OTLP appends; `import-spool` is non-resumable. Do not re-seed an occupied project. `synth script` only regenerates the runbook from saved state and does not change historical data or prompt labels.

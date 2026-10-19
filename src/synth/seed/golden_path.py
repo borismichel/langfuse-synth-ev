@@ -164,7 +164,20 @@ def _select_dataset(out: GoldenPath, cfg: Config, rng: Rng,
     chosen_phev = phev[:n_phev]
 
     def item(spec: TraceSpec, eligible_flag: bool, scenario: str) -> DatasetItemPlan:
-        expected = decide(spec.application, "v2", rule=out.rule)  # the CORRECT decision
+        # Dataset truth is a separate policy calculation, never the task model's answer.
+        app = spec.application
+        eligible = (app.vehicle.type == "BEV" and app.vehicle.list_price_eur <= out.rule.price_cap_eur
+                    and app.application_date >= out.rule.effective_date)
+        grant = out.rule.amount_eur if eligible else 0
+        principal = app.vehicle.list_price_eur - grant
+        verdict = "approve" if principal <= app.approved_line_eur else "reject"
+        basis = (f"Fictional policy: BEV, price <= EUR {out.rule.price_cap_eur}, date >= "
+                 f"{out.rule.effective_date}; qualifying grant EUR {out.rule.amount_eur}. "
+                 f"This application: {app.vehicle.list_price_eur} - {grant} = {principal}; "
+                 f"{'<=' if verdict == 'approve' else '>'} line {app.approved_line_eur}.")
+        expected = Decision(decision=verdict, list_price_eur=app.vehicle.list_price_eur,
+            applied_grant_eur=grant, financed_principal_eur=principal,
+            approved_line_eur=app.approved_line_eur, reason=basis)
         return DatasetItemPlan(
             item_id=rng.item_id("dsitem", spec.trace_id), source_trace_id=spec.trace_id,
             application=spec.application, expected=expected, eligible=eligible_flag,

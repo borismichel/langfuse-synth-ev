@@ -1,0 +1,455 @@
+{
+  "captured_date": "2026-10-19",
+  "langfuse_version": "4.63.0",
+  "checks": [
+    {
+      "file": "readback-summary.md",
+      "sha256": "ff34ce3a53594f4f62609a86ff3033bf2181d5930133badccc176f5252c58134",
+      "source_sha256": "ff34ce3a53594f4f62609a86ff3033bf2181d5930133badccc176f5252c58134",
+      "source": "native-evidence/readback-summary.md",
+      "redacted_paths": []
+    },
+    {
+      "file": "native-eight-case-readback.json",
+      "sha256": "ec6a0f38b0e8f5013b9cae167bea8fdbc80aedb4bb0497c46c78afba68f17543",
+      "source_sha256": "ec6a0f38b0e8f5013b9cae167bea8fdbc80aedb4bb0497c46c78afba68f17543",
+      "source": "native-evidence/native-eight-case-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiments-api.json",
+      "sha256": "01531d6e387f4c5dc80e9987e75fdc4cc1fbc743f6bfbd1a80769041a11d9c18",
+      "source_sha256": "01531d6e387f4c5dc80e9987e75fdc4cc1fbc743f6bfbd1a80769041a11d9c18",
+      "source": "native-evidence/experiments-api.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-generations.json",
+      "sha256": "f81bf65a513acde712cd025e9b4af4c1f014a28a1fb195918916f1d8cf29076f",
+      "source_sha256": "f81bf65a513acde712cd025e9b4af4c1f014a28a1fb195918916f1d8cf29076f",
+      "source": "native-evidence/experiment-generations.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-observations-readback.json",
+      "sha256": "336dcffb860e4b79579bba8bb4780eb3ed516e737bda7bf28ec8548797a063d1",
+      "source_sha256": "336dcffb860e4b79579bba8bb4780eb3ed516e737bda7bf28ec8548797a063d1",
+      "source": "native-evidence/experiment-observations-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-scores-readback.json",
+      "sha256": "0ac37fa968b234180a43ca763d92eaa48fb2c0abd8fb9a6b7aac0954fbc24545",
+      "source_sha256": "0ac37fa968b234180a43ca763d92eaa48fb2c0abd8fb9a6b7aac0954fbc24545",
+      "source": "native-evidence/experiment-scores-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-v1-config.txt",
+      "sha256": "41c0dedae689bf56ec88ad9fea93dba77e012e10c85439fa240b08e30dc1487f",
+      "source_sha256": "41c0dedae689bf56ec88ad9fea93dba77e012e10c85439fa240b08e30dc1487f",
+      "source": "native-evidence/experiment-v1-config.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-v2-config.txt",
+      "sha256": "13eb22907d8b65cd3c8014ac7d4e871ed591b65b921c8d3cba1ff55f92931c2c",
+      "source_sha256": "13eb22907d8b65cd3c8014ac7d4e871ed591b65b921c8d3cba1ff55f92931c2c",
+      "source": "native-evidence/experiment-v2-config.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-comparison.txt",
+      "sha256": "96ca4d725de0a4194fdb664672ead974c39eb7b50252ea45aff945a6e7f26920",
+      "source_sha256": "96ca4d725de0a4194fdb664672ead974c39eb7b50252ea45aff945a6e7f26920",
+      "source": "native-evidence/experiment-comparison.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "experiment-comparison.png",
+      "sha256": "80a8052f9323ffaf971803943072ac69c5b6c20ea570cccea932ce876958c5ec",
+      "source_sha256": "80a8052f9323ffaf971803943072ac69c5b6c20ea570cccea932ce876958c5ec",
+      "source": "native-evidence/experiment-comparison.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "playground-comparison.txt",
+      "sha256": "4165e91bb2a4d21f9114e6a214af5b6ff8767171a9a2700f1b42abd5ea190062",
+      "source_sha256": "4165e91bb2a4d21f9114e6a214af5b6ff8767171a9a2700f1b42abd5ea190062",
+      "source": "native-evidence/playground-comparison.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "playground-comparison.png",
+      "sha256": "fb5a3d8422136ae55f7fea09ee97c6856cd5f35bffdab4fa210eeaaed921bd4c",
+      "source_sha256": "fb5a3d8422136ae55f7fea09ee97c6856cd5f35bffdab4fa210eeaaed921bd4c",
+      "source": "native-evidence/playground-comparison.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-diagnosis.txt",
+      "sha256": "299e2c83eb7b985be350099120014d28957b6f736bcfc798a721e7412b2a2388",
+      "source_sha256": "299e2c83eb7b985be350099120014d28957b6f736bcfc798a721e7412b2a2388",
+      "source": "native-evidence/halo-diagnosis.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-corrected-diagnosis.txt",
+      "sha256": "ff8282b04e1157b61dcd53b479cd18c86c22735c6f37aaa8193bdab5466c0771",
+      "source_sha256": "ff8282b04e1157b61dcd53b479cd18c86c22735c6f37aaa8193bdab5466c0771",
+      "source": "native-evidence/halo-corrected-diagnosis.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-corrected-diagnosis.png",
+      "sha256": "d3b31338ae5781ff055daadd4eea4a6f5cbbc8d70484b5631607a6f65cb9d992",
+      "source_sha256": "d3b31338ae5781ff055daadd4eea4a6f5cbbc8d70484b5631607a6f65cb9d992",
+      "source": "native-evidence/halo-corrected-diagnosis.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-curation-conversation.txt",
+      "sha256": "9ff5d54df24ccaaf140c03d47acafe9e894071fdfb8661fee80cfc69c3a62892",
+      "source_sha256": "9ff5d54df24ccaaf140c03d47acafe9e894071fdfb8661fee80cfc69c3a62892",
+      "source": "native-evidence/halo-curation-conversation.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-dataset-readback.json",
+      "sha256": "938d8380e69b6dce0dd9624319a0f9b9e35643d4786bc0e81e4a9c79297a1d1c",
+      "source_sha256": "938d8380e69b6dce0dd9624319a0f9b9e35643d4786bc0e81e4a9c79297a1d1c",
+      "source": "native-evidence/halo-dataset-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-items-raw.json",
+      "sha256": "4c9dca3775201759040f89a42487f819f21fe3c12bca2fdc28afbaacc598b628",
+      "source_sha256": "4c9dca3775201759040f89a42487f819f21fe3c12bca2fdc28afbaacc598b628",
+      "source": "native-evidence/halo-items-raw.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-source-observations.json",
+      "sha256": "c58996c23453109951f82d9e0a5d1de18d7b03e4216d544bf1b54674098e0467",
+      "source_sha256": "c58996c23453109951f82d9e0a5d1de18d7b03e4216d544bf1b54674098e0467",
+      "source": "native-evidence/halo-source-observations.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline.txt",
+      "sha256": "b23a359b1b9ae443fb595ce958e95265a4b7fc46a6f65a5f05cf8e3cfeb8b416",
+      "source_sha256": "b23a359b1b9ae443fb595ce958e95265a4b7fc46a6f65a5f05cf8e3cfeb8b416",
+      "source": "native-evidence/live-baseline.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline.png",
+      "sha256": "23936b6afd9f85eb99989989cff52d07e84544c491d2354f1a230b88f84f1da7",
+      "source_sha256": "23936b6afd9f85eb99989989cff52d07e84544c491d2354f1a230b88f84f1da7",
+      "source": "native-evidence/live-baseline.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-observations.json",
+      "sha256": "2616baa829e491c3fd8d0157ba4126a9f246a0bd6ec6a83a41f3590a426b971a",
+      "source_sha256": "944af0f1e2bcf4c5f7d067ba607947abcdd42934a6917a545e449f5da1193f99",
+      "source": "final-rehearsal/live-baseline-observations.json",
+      "redacted_paths": [
+        "data[1].metadata.scope.attributes.public_key",
+        "data[2].metadata.scope.attributes.public_key",
+        "data[3].metadata.scope.attributes.public_key",
+        "data[4].metadata.scope.attributes.public_key"
+      ]
+    },
+    {
+      "file": "live-baseline-scores.json",
+      "sha256": "433846f57d1d8f17c4027d857387d8b8b11bfcc8c8a2129699500a2f8b0ea917",
+      "source_sha256": "433846f57d1d8f17c4027d857387d8b8b11bfcc8c8a2129699500a2f8b0ea917",
+      "source": "final-rehearsal/live-baseline-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-receipt.json",
+      "sha256": "353f4f7b7ebe7a962e573389e8bd0269c568523f840c178e710a37110ce00d7e",
+      "source_sha256": "353f4f7b7ebe7a962e573389e8bd0269c568523f840c178e710a37110ce00d7e",
+      "source": "final-rehearsal/live-baseline-receipt.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "monitoring-receipt.json",
+      "sha256": "254b8c13b70ceecd601cd270d275885179e796416e8f19442f98af8ad573ea3a",
+      "source_sha256": "254b8c13b70ceecd601cd270d275885179e796416e8f19442f98af8ad573ea3a",
+      "source": "final-rehearsal/monitoring-receipt.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "monitoring-rule-readback.json",
+      "sha256": "68ea12315e903414dc65acf143ddb0fbd8aec7c3c731051001bd196acdc46dba",
+      "source_sha256": "68ea12315e903414dc65acf143ddb0fbd8aec7c3c731051001bd196acdc46dba",
+      "source": "final-rehearsal/monitoring-rule-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "monitoring-evaluator-readback.json",
+      "sha256": "da4a513945452ad9122f327c660c3aeebe2ecee7d9019c959f35136e684c27f3",
+      "source_sha256": "da4a513945452ad9122f327c660c3aeebe2ecee7d9019c959f35136e684c27f3",
+      "source": "final-rehearsal/monitoring-evaluator-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "native-nine-case-readback.json",
+      "sha256": "4a7d3cacda10a0def04513f174a00bf6876b218c003b7f41325548305b396a9b",
+      "source_sha256": "4a7d3cacda10a0def04513f174a00bf6876b218c003b7f41325548305b396a9b",
+      "source": "native-evidence/native-nine-case-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiment-generations.json",
+      "sha256": "3eebf616c4ef0cedbeaf85da960d72de3e8a036911735beeb3e75fd3ef27dbce",
+      "source_sha256": "3eebf616c4ef0cedbeaf85da960d72de3e8a036911735beeb3e75fd3ef27dbce",
+      "source": "native-evidence/halo-experiment-generations.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiment-observations.json",
+      "sha256": "861a46a0e3a39538c4a66b60044764bafdb6532ae28b1ba3e7ba7f5b3d55b8ee",
+      "source_sha256": "861a46a0e3a39538c4a66b60044764bafdb6532ae28b1ba3e7ba7f5b3d55b8ee",
+      "source": "native-evidence/halo-experiment-observations.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiment-scores.json",
+      "sha256": "ee98576a0c8a1c99d5d58bccb045f20e23fe2df92a96f3648e2f9c2fb0bb44d5",
+      "source_sha256": "ee98576a0c8a1c99d5d58bccb045f20e23fe2df92a96f3648e2f9c2fb0bb44d5",
+      "source": "native-evidence/halo-experiment-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiment-v1-config.txt",
+      "sha256": "e5f082f27b70135331dea8c01e710ad951eaed6ee7adee04fbc6c73d6370c0f4",
+      "source_sha256": "e5f082f27b70135331dea8c01e710ad951eaed6ee7adee04fbc6c73d6370c0f4",
+      "source": "native-evidence/halo-experiment-v1-config.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiment-v2-config.txt",
+      "sha256": "2347e30043743ec31572ca25e890b6d19d115d44713ab8792f164ee3d3382b78",
+      "source_sha256": "2347e30043743ec31572ca25e890b6d19d115d44713ab8792f164ee3d3382b78",
+      "source": "native-evidence/halo-experiment-v2-config.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-experiments-api.json",
+      "sha256": "bcbe316927e3ab41177bd04b2fa8cf85373b06df025e0ef6e61f80d0cfed228f",
+      "source_sha256": "bcbe316927e3ab41177bd04b2fa8cf85373b06df025e0ef6e61f80d0cfed228f",
+      "source": "native-evidence/halo-experiments-api.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-corrected.png",
+      "sha256": "2582a9c59baf5209dec9a499cb58d08c23959a11501a7c7f9acd86656875a29f",
+      "source_sha256": "2582a9c59baf5209dec9a499cb58d08c23959a11501a7c7f9acd86656875a29f",
+      "source": "native-evidence/live-baseline-corrected.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-corrected.txt",
+      "sha256": "1bcede581b74ae5bf2b42b7aa2dbc64bc0b11926026d921fb586a739d6578f34",
+      "source_sha256": "1bcede581b74ae5bf2b42b7aa2dbc64bc0b11926026d921fb586a739d6578f34",
+      "source": "native-evidence/live-baseline-corrected.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate.png",
+      "sha256": "348b0e144a34e6fa27431198eb164f90123770cb2e0f76cbf228ece50e58b021",
+      "source_sha256": "348b0e144a34e6fa27431198eb164f90123770cb2e0f76cbf228ece50e58b021",
+      "source": "native-evidence/live-candidate.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate.txt",
+      "sha256": "de3a78b2de0f3fa147b72a25602712f0193b515deb3a984844beb7ab9b280614",
+      "source_sha256": "de3a78b2de0f3fa147b72a25602712f0193b515deb3a984844beb7ab9b280614",
+      "source": "native-evidence/live-candidate.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-control.png",
+      "sha256": "3f320946844d2ef5dc1f032932a904be8cc6a7c7553552340391f0b90bf37150",
+      "source_sha256": "3f320946844d2ef5dc1f032932a904be8cc6a7c7553552340391f0b90bf37150",
+      "source": "native-evidence/live-control.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-control.txt",
+      "sha256": "73a6cccbe7ad53373150209aab65a3c4cc7a6df6e0779d26dce69167c872a309",
+      "source_sha256": "73a6cccbe7ad53373150209aab65a3c4cc7a6df6e0779d26dce69167c872a309",
+      "source": "native-evidence/live-control.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "promotion.png",
+      "sha256": "856b985c77c7f756acbdeda135a8c5f3270d58f8955297201bd26b2e7e4cbe9f",
+      "source_sha256": "856b985c77c7f756acbdeda135a8c5f3270d58f8955297201bd26b2e7e4cbe9f",
+      "source": "native-evidence/promotion.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "promotion.txt",
+      "sha256": "79422d6c86d7a4f735107b794fee6849a46f19e34b06b6dc2997a730c6f85624",
+      "source_sha256": "79422d6c86d7a4f735107b794fee6849a46f19e34b06b6dc2997a730c6f85624",
+      "source": "native-evidence/promotion.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-nine-comparison.png",
+      "sha256": "9b9e47277943580c9635bce4f39879287df2ba241df27f08f292226dff078d41",
+      "source_sha256": "9b9e47277943580c9635bce4f39879287df2ba241df27f08f292226dff078d41",
+      "source": "native-evidence/halo-nine-comparison.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "halo-nine-comparison.txt",
+      "sha256": "4fb505f1dc9c1c34f5b2f00dd1618f6103c363fc26ad15fdb79128412a84d1b6",
+      "source_sha256": "4fb505f1dc9c1c34f5b2f00dd1618f6103c363fc26ad15fdb79128412a84d1b6",
+      "source": "native-evidence/halo-nine-comparison.txt",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-corrected-observations.json",
+      "sha256": "01cd7d895e5d971e54e276ff6314a3ed51807c3c90150ccb8953cb1861aca6c3",
+      "source_sha256": "ad9c9b116c974cfe11d2315c548e758084eb1a010478c688bc9e85b40432cad6",
+      "source": "final-rehearsal/live-baseline-corrected-observations.json",
+      "redacted_paths": [
+        "data[0].metadata[\"scope.attributes.public_key\"]",
+        "data[1].metadata[\"scope.attributes.public_key\"]",
+        "data[2].metadata[\"scope.attributes.public_key\"]",
+        "data[3].metadata[\"scope.attributes.public_key\"]"
+      ]
+    },
+    {
+      "file": "live-baseline-corrected-scores.json",
+      "sha256": "c54e4cc97bdb0592dc18a80739d3581c6acbca4ea742417327f3a69ba261104c",
+      "source_sha256": "c54e4cc97bdb0592dc18a80739d3581c6acbca4ea742417327f3a69ba261104c",
+      "source": "final-rehearsal/live-baseline-corrected-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-corrected-receipt.json",
+      "sha256": "559a16e8130d812a05612dc4cd598625ae7cafa6e59bf6d650c6a79c433b6475",
+      "source_sha256": "559a16e8130d812a05612dc4cd598625ae7cafa6e59bf6d650c6a79c433b6475",
+      "source": "final-rehearsal/live-baseline-corrected-receipt.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-corrected-checks.json",
+      "sha256": "5f9d593cd502dbb85fce317cc3dc0a52550e12d6d013ddc6af1d310cecc91b4a",
+      "source_sha256": "5f9d593cd502dbb85fce317cc3dc0a52550e12d6d013ddc6af1d310cecc91b4a",
+      "source": "final-rehearsal/live-baseline-corrected-checks.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-observations.json",
+      "sha256": "f27e36352fbdb070f47dd569082efe04a549ed84698cb7040fe036c3bea701e9",
+      "source_sha256": "d781c63d2819b1553c14e7949cd1978515bc58ca8e2083a19a853cec94c3d32d",
+      "source": "final-rehearsal/live-candidate-observations.json",
+      "redacted_paths": [
+        "data[0].metadata[\"scope.attributes.public_key\"]",
+        "data[1].metadata[\"scope.attributes.public_key\"]",
+        "data[2].metadata[\"scope.attributes.public_key\"]",
+        "data[3].metadata[\"scope.attributes.public_key\"]"
+      ]
+    },
+    {
+      "file": "live-candidate-scores.json",
+      "sha256": "7c67fc302edfbd44fdc53d2065fe9f11f640f38dd4c1ffc7d5096a8e4b9cd330",
+      "source_sha256": "7c67fc302edfbd44fdc53d2065fe9f11f640f38dd4c1ffc7d5096a8e4b9cd330",
+      "source": "final-rehearsal/live-candidate-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-receipt.json",
+      "sha256": "986851c9b98aa023985d86cbfa7990d1ab68c2f78471aa99ed8d60223698a131",
+      "source_sha256": "986851c9b98aa023985d86cbfa7990d1ab68c2f78471aa99ed8d60223698a131",
+      "source": "final-rehearsal/live-candidate-receipt.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-checks.json",
+      "sha256": "79335ccd227a3bf44dbf628090ec6f13dce29bf8387193c5ec08b82bda316498",
+      "source_sha256": "79335ccd227a3bf44dbf628090ec6f13dce29bf8387193c5ec08b82bda316498",
+      "source": "final-rehearsal/live-candidate-checks.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-control-observations.json",
+      "sha256": "ade62aa7169763d6cd68631d124b9fb8427a426ad5dcbd1113d8e503506f097e",
+      "source_sha256": "3f438dc6ea4203af7bd6b7540989105b8e5571a15e2983cbcec00c2239759135",
+      "source": "final-rehearsal/live-control-observations.json",
+      "redacted_paths": [
+        "data[0].metadata[\"scope.attributes.public_key\"]",
+        "data[1].metadata[\"scope.attributes.public_key\"]",
+        "data[2].metadata[\"scope.attributes.public_key\"]",
+        "data[3].metadata[\"scope.attributes.public_key\"]"
+      ]
+    },
+    {
+      "file": "live-control-scores.json",
+      "sha256": "cabf3347ab479e0443e7530be0e2e59f8e86ab8f646cdd8e78ef1a28eaf24512",
+      "source_sha256": "cabf3347ab479e0443e7530be0e2e59f8e86ab8f646cdd8e78ef1a28eaf24512",
+      "source": "final-rehearsal/live-control-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-control-receipt.json",
+      "sha256": "35b6826cfa0eca30be370e82d9deb8909434ecb9a18ad3b2985d352e9571f81c",
+      "source_sha256": "35b6826cfa0eca30be370e82d9deb8909434ecb9a18ad3b2985d352e9571f81c",
+      "source": "final-rehearsal/live-control-receipt.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-control-checks.json",
+      "sha256": "79335ccd227a3bf44dbf628090ec6f13dce29bf8387193c5ec08b82bda316498",
+      "source_sha256": "79335ccd227a3bf44dbf628090ec6f13dce29bf8387193c5ec08b82bda316498",
+      "source": "final-rehearsal/live-control-checks.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-ending-checks.json",
+      "sha256": "da621d6a131b2cfd9bcf89dc9faca2241c2e7e8aa98e633e32bfdd2fa820c67d",
+      "source_sha256": "da621d6a131b2cfd9bcf89dc9faca2241c2e7e8aa98e633e32bfdd2fa820c67d",
+      "source": "final-rehearsal/live-ending-checks.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-promoted-prompt-readback.json",
+      "sha256": "d8fd2b3233586fd631be1fb44c5d9aa0fa9ab720c1094d4702d4788e0e69046c",
+      "source_sha256": "d8fd2b3233586fd631be1fb44c5d9aa0fa9ab720c1094d4702d4788e0e69046c",
+      "source": "final-rehearsal/live-promoted-prompt-readback.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-baseline-after-promotion-scores.json",
+      "sha256": "c54e4cc97bdb0592dc18a80739d3581c6acbca4ea742417327f3a69ba261104c",
+      "source_sha256": "c54e4cc97bdb0592dc18a80739d3581c6acbca4ea742417327f3a69ba261104c",
+      "source": "final-rehearsal/live-baseline-after-promotion-scores.json",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-langfuse.png",
+      "sha256": "bc3aba07f0b2855c3f22473311a8919083fa1287f4390f611e5e42bd8d7be148",
+      "source_sha256": "bc3aba07f0b2855c3f22473311a8919083fa1287f4390f611e5e42bd8d7be148",
+      "source": "native-evidence/live-candidate-langfuse.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-langfuse.txt",
+      "sha256": "0208df26361aba6026087f171269ec6906b93eada867065c399e043836c27e50",
+      "source_sha256": "0208df26361aba6026087f171269ec6906b93eada867065c399e043836c27e50",
+      "source": "native-evidence/live-candidate-langfuse.txt",
+      "redacted_paths": []
+    }
+  ],
+  "credentials_included": false,
+  "note": "Native screenshots retained unchanged. No credential files/process environments included. SDK public-key metadata redacted in observation exports, with exact paths listed."
+}

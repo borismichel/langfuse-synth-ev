@@ -1,13 +1,4 @@
-"""Register the v1 (stale) and v2 (fixed) system prompts in prompt management (spec §7, §17).
-
-Registered as **chat** prompts: a system message (the policy) plus a ``{{application}}``
-user message, so ``decide()``'s live path can ``compile(application=...)`` and split into
-Anthropic system + messages. ``{{grant_date}}`` in v2 is baked to the seeded effective
-date so the stored prompt shows the real date and matches the judge's constant.
-
-v1 is registered first so its version is 1 — the version the backdated ``decision``
-generations link to ("every bad decision used v1" is visibly true).
-"""
+"""Register context-assembly baseline and candidate as versioned chat prompts."""
 from __future__ import annotations
 
 import os
@@ -17,16 +8,13 @@ from pathlib import Path
 
 from langfuse_synth_core.http import request_retry
 
-from ..agent import GrantRule
-
 REPO_ROOT = Path(__file__).resolve().parents[3]
 PROMPTS_DIR = REPO_ROOT / "prompts"
 
 
 @lru_cache(maxsize=None)
 def prompt_text(label: str) -> str:
-    """The system-prompt text for a label ('v1'|'v2') — the same bytes that get
-    registered in prompt management and that seeded decision inputs display."""
+    """The user-message template registered and replayed in historical inputs."""
     return (PROMPTS_DIR / f"credit_decision.{label}.txt").read_text().rstrip() + "\n"
 
 
@@ -46,11 +34,23 @@ def set_version_labels(base_url: str, name: str, version: int, labels: list[str]
     resp.raise_for_status()
 
 
-def _chat_prompt(system_text: str) -> list[dict]:
+def chat_prompt(label: str) -> list[dict]:
+    """Both templates share instructions; v2 adds only the updates binding."""
     return [
-        {"role": "system", "content": system_text},
-        {"role": "user", "content": "{{application}}"},
+        {"role": "system", "content": (PROMPTS_DIR / "credit_decision.system.txt").read_text()},
+        {"role": "user", "content": prompt_text(label).rstrip()},
     ]
+
+
+def decision_schema() -> dict:
+    import json
+    return json.loads((PROMPTS_DIR / "decision-schema.json").read_text())
+
+
+def prompt_config(cfg) -> dict:
+    return {"model": cfg.model_by_role("work").name, "max_tokens": 512,
+            "response_format": {"type": "json_schema", "json_schema": {
+                "name": "credit_decision", "strict": True, "schema": decision_schema()}}}
 
 
 def _norm(msgs) -> list[tuple]:
@@ -60,7 +60,7 @@ def _norm(msgs) -> list[tuple]:
 
 
 def _reuse_or_create(lf, name: str, prompt: list[dict], lookup_label: str,
-                     create_labels: list[str], commit: str) -> int:
+                     create_labels: list[str], commit: str, config: dict) -> int:
     """Return the version for ``lookup_label``: reuse the existing labelled version if its
     content already matches (idempotent re-seed — no version churn), else create a new
     version carrying ``create_labels``.
@@ -69,12 +69,13 @@ def _reuse_or_create(lf, name: str, prompt: list[dict], lookup_label: str,
     demo wants ``decision`` generations to link to a stable v1 == version 1."""
     try:
         existing = lf.get_prompt(name, label=lookup_label, type="chat", cache_ttl_seconds=0)
-        if _norm(getattr(existing, "prompt", None)) == _norm(prompt):
+        if (_norm(getattr(existing, "prompt", None)) == _norm(prompt)
+                and getattr(existing, "config", None) == config):
             return getattr(existing, "version", None)
     except Exception:  # noqa: BLE001 — not found / first run: fall through to create
         pass
     created = lf.create_prompt(name=name, type="chat", prompt=prompt,
-                               labels=create_labels, commit_message=commit)
+                               labels=create_labels, commit_message=commit, config=config)
     return getattr(created, "version", None)
 
 
@@ -86,26 +87,13 @@ def register_prompts(lf, cfg, effective_date: datetime, *, register_v1: bool = T
     v2 is registered as the fix but **not** promoted. The demo's experiment runs whatever
     is labelled ``production``, so the presenter flips ``production`` v1 → v2 to go red → green.
     A fresh seed always starts with production == v1 (the reset state)."""
-    from langfuse_synth_core.timegen import iso_date
-
     name = cfg.golden_path.prompt_name
     versions: dict[str, int] = {}
 
-    if register_v1:
-        # production is asserted separately (set_production_label) so it resets on re-seed.
-        versions["v1"] = _reuse_or_create(
-            lf, name, _chat_prompt(prompt_text("v1")), "v1", ["v1"],
-            "stale prompt: gross-price affordability")
-
-    if register_v2:
-        rule = GrantRule.from_config(cfg, iso_date(effective_date))
-        v2_text = (prompt_text("v2")
-                   .replace("{{grant_date}}", rule.effective_date)
-                   .replace("{{grant_amount}}", f"{rule.amount_eur:,}")
-                   .replace("{{price_cap}}", str(rule.price_cap_eur))
-                   .replace("{{price_cap_formatted}}", f"{rule.price_cap_eur:,}"))
-        versions["v2"] = _reuse_or_create(
-            lf, name, _chat_prompt(v2_text), "v2", ["v2"],
-            "fix: apply EV purchase grant before affordability")
-
+    for label, enabled in (("v1", register_v1), ("v2", register_v2)):
+        if enabled:
+            versions[label] = _reuse_or_create(
+                lf, name, chat_prompt(label), label, [label],
+                "application and handbook" if label == "v1" else "bind retrieved policy updates",
+                prompt_config(cfg))
     return versions

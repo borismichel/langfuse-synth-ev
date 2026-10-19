@@ -1,0 +1,53 @@
+{
+  "data": [
+    {
+      "id": "58de9a9b-59da-5bce-ae5d-fdc9d96fd284",
+      "projectId": "cmvfhtkwo0dw0ad0e3t9ybrvm",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:16:40.993Z",
+      "environment": "production",
+      "createdAt": "2026-10-19T17:16:41.000Z",
+      "updatedAt": "2026-10-19T17:16:41.087Z",
+      "comment": "Policy correct: grant EUR 6000; 45000 - 6000 = 39000; principal <= line 40000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "7ae58f1ca4bf0cc6af4c7858c57069f7",
+        "job_configuration_id": "cmvfi7pmt0cavad0gjq3jitpp",
+        "evaluation_rule_id": "cmvfi7pmt0cavad0gjq3jitpp",
+        "evaluation_rule_assignment_id": "cmvfi7pmt0caxad0g742u9pdi",
+        "evaluator_version_id": "cmvfi73x40dgkad0e23xogyb9",
+        "evaluator_id": "cmvfi73x40dgiad0ep3ldn4og",
+        "target_trace_id": "339ad11d0eed37d0e0db6d47b8a66021",
+        "target_observation_id": "d7bd34b70b5db85d",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "d7bd34b70b5db85d",
+        "traceId": "339ad11d0eed37d0e0db6d47b8a66021"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    }
+  ],
+  "meta": {
+    "pages": 1,
+    "fetchedItems": 1,
+    "truncated": false
+  }
+}

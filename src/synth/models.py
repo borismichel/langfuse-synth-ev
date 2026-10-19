@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 VehicleType = Literal["BEV", "PHEV", "ICE"]
 DecisionType = Literal["approve", "reject"]
@@ -44,6 +44,8 @@ class Application(BaseModel):
 
 class Decision(BaseModel):
     """What ``decide()`` returns and what seeded ``decision`` generations emit (spec §16)."""
+
+    model_config = ConfigDict(extra="forbid")
 
     decision: DecisionType
     list_price_eur: int

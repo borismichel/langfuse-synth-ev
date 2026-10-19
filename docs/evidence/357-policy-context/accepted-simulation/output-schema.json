@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "list_price_eur": {
+      "type": "integer"
+    },
+    "applied_grant_eur": {
+      "type": "integer"
+    },
+    "financed_principal_eur": {
+      "type": "integer"
+    },
+    "approved_line_eur": {
+      "type": "integer"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "reject"
+      ]
+    }
+  },
+  "required": [
+    "list_price_eur",
+    "applied_grant_eur",
+    "financed_principal_eur",
+    "approved_line_eur",
+    "reason",
+    "decision"
+  ],
+  "additionalProperties": false
+}

@@ -6,8 +6,8 @@ calls a model.
 
 Two execution paths, identical contract:
 
-- **Deterministic (seed path, default).** Pure arithmetic that mirrors the policy
-  in the prompt: v1 finances the gross list price; v2 subtracts a qualifying
+- **Deterministic (seed path, default).** Pure arithmetic that mirrors the evidence
+  supplied by each template: v1 finances the gross list price; v2 subtracts a qualifying
   EV grant first. No model call — a few-thousand-trace seed is free and reproducible
   (spec §2, §9). The seeded v1 rejections are exactly what ``decide(app, "v1")``
   produces, so they are reproducible policy failures a judge can detect.
@@ -16,12 +16,11 @@ Two execution paths, identical contract:
   system prompt from Langfuse prompt management by label, calls the configured model,
   and parses the structured Decision. Experiments exercise this decision prompt.
 
-The grant rule (amount, cap, effective date) is data, passed in ``GrantRule`` — the
-same numbers the v2 prompt and the judge reference, sourced from ``config/demo.yaml``.
+The grant rule is fixture data in retrieved policy updates, sourced from configuration.
+The baseline template omits that field; the candidate binds it.
 """
 from __future__ import annotations
 
-import json
 from dataclasses import asdict, dataclass
 from typing import TYPE_CHECKING
 
@@ -127,29 +126,24 @@ def _decide_live(
     lf,
     llm,
     prompt_name: str,
+    rule: GrantRule,
+    variables: dict | None = None,
 ) -> Decision:
     # cache_ttl_seconds=0: always pull the *current* labelled version, so promoting a new
     # prompt to `production` in the UI takes effect on the very next experiment run.
     prompt = lf.get_prompt(prompt_name, label=prompt_label, type="chat", cache_ttl_seconds=0)
-    application_json = app.model_dump_json()
-    messages = prompt.compile(application=application_json)
-
-    # Split Langfuse chat messages into a system prompt + turns (the provider layer
-    # re-attaches the system prompt in each SDK's native shape).
-    system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
-    turns = [m for m in messages if m.get("role") != "system"]
-    if not turns:
-        turns = [{"role": "user", "content": application_json}]
-
-    # Log the model call as a `decision` generation nested in the caller's trace (the
-    # experiment item's trace), with the compiled chat turn as input and the managed
-    # prompt linked — same shape as the seeded decision generations.
-    chat = [{"role": m.get("role"), "content": m.get("content")} for m in messages]
+    from .policy import policy_variables
+    from .decision_request import prepare_decision_request
+    variables = variables if variables is not None else policy_variables(app, rule)
+    request = prepare_decision_request(prompt, variables, llm.provider)
+    # The SDK experiment owns this observation; Companion uses its live emitter.
     with lf.start_as_current_observation(
-        as_type="generation", name="decision", model=llm.model, input=chat,
-        model_parameters={"temperature": 0, "max_tokens": 512}, prompt=prompt,
+        as_type="generation", name="decision", model=llm.model, input=request.messages,
+        model_parameters=request.parameters, prompt=prompt,
+        metadata={"prompt_variables": variables, "response_schema": request.kwargs["response_schema"]},
     ) as gen:
-        result = llm.complete(system=system, messages=turns, temperature=0, max_tokens=512)
+        result = llm.complete(**request.kwargs)
+        gen.update(output=result.text, usage_details={"input": result.input_tokens, "output": result.output_tokens})
         decision = parse_decision(result.text, app)
         gen.update(output=decision.model_dump(),
                    usage_details={"input": result.input_tokens,
@@ -158,27 +152,18 @@ def _decide_live(
 
 
 def parse_decision(text: str, app: Application) -> Decision:
-    """Parse the model's JSON object into a Decision, tolerating code fences/prose."""
-    raw = _extract_json(text)
-    data = json.loads(raw)
-    # Backfill any field the model omitted from the application so the contract holds.
-    data.setdefault("list_price_eur", app.vehicle.list_price_eur)
-    data.setdefault("approved_line_eur", app.approved_line_eur)
-    if "financed_principal_eur" not in data and "applied_grant_eur" in data:
-        data["financed_principal_eur"] = app.vehicle.list_price_eur - int(data["applied_grant_eur"])
-    return Decision.model_validate(data)
-
-
-def _extract_json(text: str) -> str:
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("```", 2)[1]
-        if text.lstrip().startswith("json"):
-            text = text.lstrip()[4:]
-    start, end = text.find("{"), text.rfind("}")
-    if start == -1 or end == -1:
-        raise ValueError(f"no JSON object found in model output: {text[:200]!r}")
-    return text[start : end + 1]
+    """Validate one complete response; never repair or select a later correction."""
+    decision = Decision.model_validate_json(text, strict=True)
+    if decision.list_price_eur != app.vehicle.list_price_eur or decision.approved_line_eur != app.approved_line_eur:
+        raise ValueError("decision amounts do not match the application")
+    if not 0 <= decision.applied_grant_eur <= decision.list_price_eur:
+        raise ValueError("applied grant must be between zero and the purchase price")
+    if decision.financed_principal_eur != decision.list_price_eur - decision.applied_grant_eur:
+        raise ValueError("financed principal does not match purchase price minus grant")
+    expected = "approve" if decision.financed_principal_eur <= decision.approved_line_eur else "reject"
+    if decision.decision != expected:
+        raise ValueError("decision contradicts financed principal and approved line")
+    return decision
 
 
 # ---------------------------------------------------------------------------
@@ -206,5 +191,7 @@ def decide(
     if live:
         if lf is None or llm is None:
             raise ValueError("live=True requires both lf (Langfuse) and llm (LLMClient) clients")
-        return _decide_live(app, prompt_label, lf=lf, llm=llm, prompt_name=prompt_name)
+        variables = application if isinstance(application, dict) and "handbook" in application and "policy_updates" in application else None
+        return _decide_live(app, prompt_label, lf=lf, llm=llm, prompt_name=prompt_name,
+                            rule=rule, variables=variables)
     return _decide_deterministic(app, prompt_label, rule)

@@ -61,14 +61,20 @@ def test_exported_decision_preserves_policy_evidence_and_prompt(
         name="credit_decision", version=1 if label == "v1" else 2,
         prompt=[{"role": "user", "content": "{{application}}"}], config={}, labels=[], tags=[],
     ))
-    messages = prompt.compile(application=application.model_dump_json())
-    trace_id = emit_live_trace(
-        emitter, cfg, application=application, decision=decision, rule=rule,
-        decision_input=messages, decision_usage=(1200, 180), prompt=prompt,
-        tags=["ev-grant", "playground"], user_id="presenter", environment="production",
-    )
+    from types import SimpleNamespace
+    from synth.seed.prompts import chat_prompt
+    from synth.policy import policy_variables
+    prompt = ChatPromptClient(ChatPrompt(name="credit_decision", version=1 if label == "v1" else 2,
+        prompt=chat_prompt(label), config={}, labels=[], tags=[]))
+    messages = prompt.compile(**policy_variables(application, rule))
+    llm = SimpleNamespace(model="claude-sonnet-4-6", provider="anthropic",
+        complete=lambda **kwargs: SimpleNamespace(text=decision.model_dump_json(), input_tokens=1200, output_tokens=180))
+    actual, trace_id = emit_live_trace(
+        emitter, cfg, application=application, rule=rule, llm=llm, prompt=prompt,
+        tags=["ev-grant", "playground"], user_id="presenter", environment="production")
+    assert actual == decision
     spans = {span.name: span for span in exported.get_finished_spans()}
-    assert len(spans) == 9
+    assert len(spans) == 4
     root = spans[TRACE_NAME]
     assert root.parent is None
     assert trace_id == format(root.context.trace_id, "032x")
@@ -80,29 +86,70 @@ def test_exported_decision_preserves_policy_evidence_and_prompt(
         assert span.attributes["langfuse.environment"] == "production"
         assert list(span.attributes["langfuse.trace.tags"]) == ["ev-grant", "playground"]
         assert json.loads(span.attributes["langfuse.trace.metadata.kind"]) == "live"
-    parents = {"credit_agent": TRACE_NAME, "load_application": "credit_agent",
-               "extract_fields": "load_application", "retrieve_policy": "credit_agent",
-               "check_subsidy_eligibility": "credit_agent", "compute_affordability": "credit_agent",
-               "decision": "credit_agent", "explain": "credit_agent"}
+    parents = {"credit_agent": TRACE_NAME, "retrieve_policy": "credit_agent", "decision": "credit_agent"}
     for name, parent in parents.items():
         assert spans[name].parent.span_id == spans[parent].context.span_id
-    agent = spans["credit_agent"].attributes
-    assert json.loads(agent["langfuse.observation.metadata.ignored_grant"]) is ignored
-    eligibility = spans["check_subsidy_eligibility"].attributes
-    assert json.loads(eligibility["langfuse.observation.metadata.ignored_by_agent"]) is ignored
-    assert json.loads(eligibility["langfuse.observation.output"])["policy"] == {
-        "amount_eur": 6000, "price_cap_eur": 50000, "effective_date": "2026-06-02"}
-    affordability = spans["compute_affordability"].attributes
-    assert json.loads(affordability["langfuse.observation.input"])["financed_principal_eur"] == principal
-    assert json.loads(affordability["langfuse.observation.output"]) == {"within_line": verdict == "approve"}
+    retrieval = json.loads(spans["retrieve_policy"].attributes["langfuse.observation.output"])
+    assert retrieval["policy_updates"][0]["effective_date"] == "2026-06-02"
+    assert "ignored_by_agent" not in str(spans)
     generation = spans["decision"].attributes
     assert generation["langfuse.observation.type"] == "generation"
     assert json.loads(generation["langfuse.observation.input"]) == messages
     assert json.loads(generation["langfuse.observation.output"]) == decision.model_dump()
     usage = json.loads(generation["langfuse.observation.usage_details"])
     assert usage["input"] == 1200 and usage["output"] == 180
-    costs = json.loads(generation["langfuse.observation.cost_details"])
-    assert costs["input"] > 0 and costs["output"] > 0 and costs["total"] > 0
     assert generation["langfuse.observation.model.name"] == cfg.model_by_role("work").name
     assert generation["langfuse.observation.prompt.name"] == "credit_decision"
     assert generation["langfuse.observation.prompt.version"] == prompt.version
+
+
+def test_real_anthropic_sdk_does_not_duplicate_manually_recorded_decision(monkeypatch):
+    """Real provider SDK + HTTP fixture catches auto-spans hidden by completion fakes."""
+    import anthropic
+    import httpx2
+    from opentelemetry.sdk.trace import TracerProvider
+    from langfuse_synth_core.companion.llm import LLMClient
+    from synth.seed.prompts import chat_prompt
+
+    cfg = load_config("config/demo.yaml")
+    app = Application(applicant_id="sdk-tracing", approved_line_eur=40000,
+        vehicle={"type":"BEV", "list_price_eur":45000}, application_date="2026-06-05")
+    rule = GrantRule(effective_date="2026-06-02")
+    decision = decide(app,"v1",rule=rule)
+    provider = TracerProvider()
+    exported = InMemorySpanExporter()
+    sdk = anthropic.Anthropic(api_key="test-key", max_retries=0,
+        open_telemetry={"tracer_provider":provider},
+        http_client=httpx2.Client(transport=httpx2.MockTransport(lambda request: httpx2.Response(
+            200, json={"id":"msg_test", "type":"message", "role":"assistant",
+                "model":"claude-sonnet-4-6", "content":[{"type":"text", "text":decision.model_dump_json()}],
+                "stop_reason":"end_turn", "stop_sequence":None,
+                "usage":{"input_tokens":664,"output_tokens":96}}))))
+    monkeypatch.setattr(anthropic,"Anthropic",lambda **kwargs:sdk)
+    client = Langfuse(base_url="http://langfuse.test", public_key=f"pk-test-{uuid.uuid4()}",
+        secret_key="sk-test", tracer_provider=provider, span_exporter=exported,
+        httpx_client=httpx.Client(transport=httpx.MockTransport(
+            lambda request: (_ for _ in ()).throw(AssertionError("Unexpected Langfuse HTTP")))))
+    prompt = ChatPromptClient(ChatPrompt(name="credit_decision",version=1,
+        prompt=chat_prompt("v1"),config={},labels=[],tags=[]))
+    try:
+        emitter = LiveEmitter("http://langfuse.test",client=client)
+        actual, _ = emit_live_trace(emitter,cfg,application=app,rule=rule,
+            llm=LLMClient("anthropic","claude-sonnet-4-6"),prompt=prompt)
+        assert actual == decision
+        spans = exported.get_finished_spans()
+        assert sorted(span.name for span in spans) == sorted([
+            TRACE_NAME,"credit_agent","retrieve_policy","decision"])
+        generation = next(span for span in spans if span.name=="decision")
+        assert json.loads(generation.attributes["langfuse.observation.usage_details"]) == {
+            "input":664,"output":96}
+        assert generation.attributes["langfuse.observation.prompt.version"] == 1
+        # The SDK client remains instrumented for work outside the EV manual wrapper.
+        exported.clear()
+        sdk.messages.create(model="claude-sonnet-4-6",max_tokens=512,
+            messages=[{"role":"user","content":"Independent call"}])
+        client.flush()
+        assert [span.name for span in exported.get_finished_spans()] == ["anthropic.messages.create"]
+    finally:
+        client.shutdown()
+        sdk.close()

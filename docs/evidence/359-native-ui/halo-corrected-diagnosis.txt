@@ -1,0 +1,1905 @@
+v4.63.0
+Go to...
+⌘
+K
+Home
+Dashboards
+Observability
+Tracing
+Sessions
+Users
+Alerts
+Context Management
+Skills
+Beta
+Prompts
+Playground
+Evaluation
+Scores
+Evaluators
+Human Annotation
+Datasets
+Experiments
+Settings
+Book a call
+Support
+BM
+Boris Michel
+boris.michel@clickhouse.com
+Toggle Sidebar
+Boris Demo Enterprise
+Enterprise
+/
+ev-demo-verification-20261019
+30d
+Past 30 days
+Off
+Halo
+⌘
+I
+Tracing 
+Search — e.g. level:ERROR, -env:dev, latency:>2, scores.accuracy:>0.8
+Ask AI
+Quality
+Slow
+Cost
+My Views
+0
+Table
+Chart
+Columns
+16/38
+Filters
+Is Root Observation
+True
+120
+False
+1K
+Name
+Select
+Text
+check_subsidy_eligibility
+120
+compute_affordability
+120
+credit_agent
+120
+credit_agent.assess_application
+120
+decision
+120
+explain
+120
+extract_fields
+120
+load_application
+120
+retrieve_policy
+120
+policy_cache_hit
+35
+plan
+28
+Type
+Select
+Text
+GENERATION
+388
+SPAN
+240
+TOOL
+240
+AGENT
+120
+RETRIEVER
+120
+EVENT
+35
+Environment
+Select
+Text
+production
+1K
+staging
+67
+Trace Name
+Metadata
+Trace Tags
+Session ID
+User ID
+Trace ID
+Status
+Provided Model Name
+Prompt Name
+Latency (s)
+Numeric Scores
+Model ID
+Version
+Release
+Status Message
+API Key
+SDK Name
+SDK Version
+Ingestion Source
+Experiment Dataset ID
+Experiment ID
+Experiment Name
+Time To First Token (s)
+Input Tokens
+Cached Input Tokens
+Output Tokens
+Total Tokens
+Input Cost ($)
+Cached Input Cost ($)
+Output Cost ($)
+Cost ($)
+Tool Names (Available)
+Tool Names (Called)
+Available Tools
+Tool Calls
+Categorical Scores
+Boolean Scores
+Comment Count
+Comment Content
+Cost
+Sep 21
+Sep 24
+Sep 26
+Sep 29
+Oct 2
+Oct 4
+Oct 7
+Oct 10
+Oct 12
+Oct 15
+Oct 18
+$0.1
+$0.02
+	
+Start Time
+sorted descending
+	
+Type
+	
+Name
+	
+Trace Name
+	
+Input
+	
+Output
+	
+Metadata
+	
+Status
+	
+Latency (s)
+	
+Cost ($)
+	
+Time To First Token (s)
+	
+Provided Model Name
+	
+Prompt Name
+	
+Environment
+	
+Trace Tags
+
+
+	
+2026-10-19 17:10:12
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+We're unable to approve this application: the amount to finance exceeds your pre-approved credit line.
+	
+{"execution":"generated_history","stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","attributes.langfuse.observation.completion_start_time":"2026-10-19T15:10:12.299Z","attributes.langfuse.observation.cost_details":{"input":0.000137,"output":0.000115,"cache_creation_input_tokens":0.000529,"total":0.000781},"attributes.langfuse.observation.usage_details":{"input":137,"output":23,"cache_creation_input_tokens":423,"total":583},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.62s
+	
+$0.000781
+	
+0.25s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:11
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":52500,"applied_grant_eur":0,"financed_principal_eur":52500,"approved_line_eur":45417,"reason":"Financed amount of EUR 52,500 exceeds the approved line of EUR 45,4
+	
+{"stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0119\\\",\\\"approved_line_eur\\\":45417,\\\"vehicle\\\":{\\\"type\\\":\\\"PHEV\\\",\\\"list_price_eur\\\":52500},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"F","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T15:10:11.465Z","attributes.langfuse.observation.cost_details":{"input":0.001866,"output":0.00084,"cache_read_input_tokens":0.000481,"total":0.003188},"attributes.langfuse.observation.usage_details":{"input":622,"output":56,"cache_read_input_tokens":1605,"total":2283},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.02s
+	
+$0.003188
+	
+0.44s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+compute_affordability
+	
+credit_agent.assess_application
+	
+{"financed_principal_eur":52500,"approved_line_eur":45417}
+	
+{"within_line":false}
+	
+{"stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","execution":"generated_history","toolCallId":"8c45b4b579bd9333","tool":"affordability_engine","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.08s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+check_subsidy_eligibility
+	
+credit_agent.assess_application
+	
+{"vehicle":{"type":"PHEV","list_price_eur":52500},"application_date":"2026-10-19"}
+	
+{"applicable_subsidies":[],"policy":{"amount_eur":6000,"price_cap_eur":50000,"effective_date":"2026-10-12"},"note":"vehicle does not qualify for the EV purchase grant"}
+	
+{"stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","execution":"generated_history","toolCallId":"946f7ac8a157dc49","tool":"subsidy_lookup","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.07s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+retrieve_policy
+	
+credit_agent.assess_application
+	
+{"application_date":"2026-10-19"}
+	
+{"handbook":{"document_id":"LENDING-1","title":"Vehicle lending handbook","published_date":"2026-04-15","effective_date":"2026-04-15","content":"For a vehicle purchase, the amount financed is the purc
+	
+{"stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","execution":"generated_history","retriever":"bundled_policy_lookup","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"retriever","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.13s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+credit_agent
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0119","approved_line_eur":45417,"vehicle":{"type":"PHEV","list_price_eur":52500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":52500,"applied_grant_eur":0,"financed_principal_eur":52500,"approved_line_eur":45417,"reason":"Financed amount of EUR 52,500 exceeds the approved line of EUR 45,4
+	
+{"vehicle_type":"PHEV","kind":"ambient","execution":"generated_history","stale_grant_window":false,"tool_calls":[{"id":"946f7ac8a157dc49","name":"check_subsidy_eligibility"},{"id":"8c45b4b579bd9333","name":"compute_affordability"}],"attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"agent","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+2.42s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+credit_agent.assess_application
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0119","approved_line_eur":45417,"vehicle":{"type":"PHEV","list_price_eur":52500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":52500,"applied_grant_eur":0,"financed_principal_eur":52500,"approved_line_eur":45417,"reason":"Financed amount of EUR 52,500 exceeds the approved line of EUR 45,4
+	
+{"execution":"generated_history","stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"span"}
+	
+default
+	
+2.42s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+extract_fields
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"Extract the structured application fields from the raw intake text. Respond with ONLY a JSON object: applicant_id, approved_line_eur, vehicle {type, list_price_eur}, appli
+	
+{"applicant_id":"anon_0119","approved_line_eur":45417,"vehicle":{"type":"PHEV","list_price_eur":52500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","vehicle_model":"Aurora PHEV","attributes.langfuse.observation.completion_start_time":"2026-10-19T15:10:10.525Z","attributes.langfuse.observation.cost_details":{"input":0.000086,"output":0.00019,"cache_read_input_tokens":0.000039,"total":0.000315},"attributes.langfuse.observation.usage_details":{"input":86,"output":38,"cache_read_input_tokens":388,"total":512},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.49s
+	
+$0.000315
+	
+0.28s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 17:10:10
+	
+	
+load_application
+	
+credit_agent.assess_application
+	
+{"raw":"PHEV 52500 line 45417"}
+	
+{"applicant_id":"anon_0119","approved_line_eur":45417,"vehicle":{"type":"PHEV","list_price_eur":52500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":false,"vehicle_type":"PHEV","kind":"ambient","attributes.langfuse.environment":"staging","attributes.langfuse.observation.type":"span","attributes.langfuse.trace.tags":["staging"],"attributes.langfuse.session.id":"b31be03173efbb9252fb8696f17b158b","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.49s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+staging
+	
+staging
+
+
+	
+2026-10-19 13:47:08
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+We're unable to approve this application: the amount to finance exceeds your pre-approved credit line.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:47:08.748Z","attributes.langfuse.observation.cost_details":{"input":0.000057,"output":0.00012,"cache_read_input_tokens":0.000032,"total":0.000209},"attributes.langfuse.observation.usage_details":{"input":57,"output":24,"cache_read_input_tokens":320,"total":401},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.42s
+	
+$0.000209
+	
+0.21s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:07
+	
+	
+policy_cache_hit
+	
+credit_agent.assess_application
+	
+—
+No value
+	
+—
+No value
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","layer":"policy","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"event","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:07
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34110,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,1
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0051\\\",\\\"approved_line_eur\\\":34110,\\\"vehicle\\\":{\\\"type\\\":\\\"PHEV\\\",\\\"list_price_eur\\\":38500},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"F","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:47:08.107Z","attributes.langfuse.observation.cost_details":{"input":0.000615,"output":0.000765,"cache_read_input_tokens":0.000348,"total":0.001728},"attributes.langfuse.observation.usage_details":{"input":205,"output":51,"cache_read_input_tokens":1159,"total":1415},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.02s
+	
+$0.001728
+	
+0.58s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:07
+	
+	
+compute_affordability
+	
+credit_agent.assess_application
+	
+{"financed_principal_eur":38500,"approved_line_eur":34110}
+	
+{"within_line":false}
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","toolCallId":"1ca052d3782bbac0","tool":"affordability_engine","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.10s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:07
+	
+	
+check_subsidy_eligibility
+	
+credit_agent.assess_application
+	
+{"vehicle":{"type":"PHEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"applicable_subsidies":[],"policy":{"amount_eur":6000,"price_cap_eur":50000,"effective_date":"2026-10-12"},"note":"vehicle does not qualify for the EV purchase grant"}
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","toolCallId":"8a1d31b83540d836","tool":"subsidy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.10s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:07
+	
+	
+retrieve_policy
+	
+credit_agent.assess_application
+	
+{"application_date":"2026-10-19"}
+	
+{"handbook":{"document_id":"LENDING-1","title":"Vehicle lending handbook","published_date":"2026-04-15","effective_date":"2026-04-15","content":"For a vehicle purchase, the amount financed is the purc
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","retriever":"bundled_policy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"retriever","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.20s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:06
+	
+	
+credit_agent.assess_application
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0051","approved_line_eur":34110,"vehicle":{"type":"PHEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34110,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,1
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span"}
+	
+default
+	
+2.30s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:06
+	
+	
+extract_fields
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"Extract the structured application fields from the raw intake text. Respond with ONLY a JSON object: applicant_id, approved_line_eur, vehicle {type, list_price_eur}, appli
+	
+{"applicant_id":"anon_0051","approved_line_eur":34110,"vehicle":{"type":"PHEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","vehicle_model":"Aurora PHEV","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:47:06.939Z","attributes.langfuse.observation.cost_details":{"input":0.00018,"output":0.00017,"cache_read_input_tokens":0.000047,"total":0.000397},"attributes.langfuse.observation.usage_details":{"input":180,"output":34,"cache_read_input_tokens":468,"total":682},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.46s
+	
+$0.000397
+	
+0.28s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:06
+	
+	
+load_application
+	
+credit_agent.assess_application
+	
+{"raw":"PHEV 38500 line 34110"}
+	
+{"applicant_id":"anon_0051","approved_line_eur":34110,"vehicle":{"type":"PHEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.46s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:47:06
+	
+	
+credit_agent
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0051","approved_line_eur":34110,"vehicle":{"type":"PHEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34110,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,1
+	
+{"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","stale_grant_window":true,"tool_calls":[{"id":"8a1d31b83540d836","name":"check_subsidy_eligibility"},{"id":"1ca052d3782bbac0","name":"compute_affordability"}],"attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"agent","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"4f790ca66a7d470f9c490f66b5c28c6a","attributes.langfuse.user.id":"officer_000","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+2.30s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 13:35:13
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+Unfortunately we can't approve this loan as requested — the financed amount is above your approved line.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:35:13.477Z","attributes.langfuse.observation.cost_details":{"input":0.000375,"output":0.00013,"cache_read_input_tokens":0.00004,"total":0.000545},"attributes.langfuse.observation.usage_details":{"input":375,"output":26,"cache_read_input_tokens":399,"total":800},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.35s
+	
+$0.000545
+	
+0.22s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:11
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34000,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,0
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0031\\\",\\\"approved_line_eur\\\":34000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":38500},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"Fo","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:35:12.769Z","attributes.langfuse.observation.cost_details":{"input":0.000876,"output":0.000795,"cache_read_input_tokens":0.000496,"total":0.002167},"attributes.langfuse.observation.usage_details":{"input":292,"output":53,"cache_read_input_tokens":1653,"total":1998},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.31s
+	
+$0.002167
+	
+0.83s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:11
+	
+	
+compute_affordability
+	
+credit_agent.assess_application
+	
+{"financed_principal_eur":32500,"approved_line_eur":34000}
+	
+{"within_line":true}
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","toolCallId":"710c38ac4c3cd2af","tool":"affordability_engine","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.17s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:11
+	
+	
+check_subsidy_eligibility
+	
+credit_agent.assess_application
+	
+{"vehicle":{"type":"BEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"applicable_subsidies":[{"name":"EV Purchase Grant","amount_eur":6000}],"policy":{"amount_eur":6000,"price_cap_eur":50000,"effective_date":"2026-10-12"},"note":"qualifying EV purchase grant available
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","toolCallId":"595b99fd0d47f818","tool":"subsidy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.14s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:11
+	
+	
+retrieve_policy
+	
+credit_agent.assess_application
+	
+{"application_date":"2026-10-19"}
+	
+{"handbook":{"document_id":"LENDING-1","title":"Vehicle lending handbook","published_date":"2026-04-15","effective_date":"2026-04-15","content":"For a vehicle purchase, the amount financed is the purc
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","retriever":"bundled_policy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"retriever","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.27s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:10
+	
+	
+extract_fields
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"Extract the structured application fields from the raw intake text. Respond with ONLY a JSON object: applicant_id, approved_line_eur, vehicle {type, list_price_eur}, appli
+	
+{"applicant_id":"anon_0031","approved_line_eur":34000,"vehicle":{"type":"BEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","vehicle_model":"Pulse 40","attributes.langfuse.observation.completion_start_time":"2026-10-19T11:35:10.989Z","attributes.langfuse.observation.cost_details":{"input":0.000078,"output":0.000185,"cache_creation_input_tokens":0.00055,"total":0.000813},"attributes.langfuse.observation.usage_details":{"input":78,"output":37,"cache_creation_input_tokens":440,"total":555},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.59s
+	
+$0.000813
+	
+0.21s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:10
+	
+	
+load_application
+	
+credit_agent.assess_application
+	
+{"raw":"BEV 38500 line 34000"}
+	
+{"applicant_id":"anon_0031","approved_line_eur":34000,"vehicle":{"type":"BEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.59s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:10
+	
+	
+credit_agent.assess_application
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0031","approved_line_eur":34000,"vehicle":{"type":"BEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34000,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,0
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span"}
+	
+default
+	
+2.83s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 13:35:10
+	
+	
+credit_agent
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0031","approved_line_eur":34000,"vehicle":{"type":"BEV","list_price_eur":38500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":38500,"applied_grant_eur":0,"financed_principal_eur":38500,"approved_line_eur":34000,"reason":"Financed amount of EUR 38,500 exceeds the approved line of EUR 34,0
+	
+{"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","stale_grant_window":true,"tool_calls":[{"id":"595b99fd0d47f818","name":"check_subsidy_eligibility"},{"id":"710c38ac4c3cd2af","name":"compute_affordability"}],"attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"agent","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"ef057cebaa7f187e8f2a759fe62bc4b5","attributes.langfuse.user.id":"officer_006","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+2.83s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:24:34
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+Unfortunately we can't approve this loan as requested — the financed amount is above your approved line.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:24:35.364Z","attributes.langfuse.observation.cost_details":{"input":0.000218,"output":0.00013,"cache_creation_input_tokens":0.0005,"total":0.000848},"attributes.langfuse.observation.usage_details":{"input":218,"output":26,"cache_creation_input_tokens":400,"total":644},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.96s
+	
+$0.000848
+	
+0.49s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:33
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":43500,"applied_grant_eur":0,"financed_principal_eur":43500,"approved_line_eur":39718,"reason":"Financed amount of EUR 43,500 exceeds the approved line of EUR 39,7
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0050\\\",\\\"approved_line_eur\\\":39718,\\\"vehicle\\\":{\\\"type\\\":\\\"PHEV\\\",\\\"list_price_eur\\\":43500},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"F","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:24:34.381Z","attributes.langfuse.observation.cost_details":{"input":0.002334,"output":0.00081,"cache_creation_input_tokens":0.00615,"total":0.009294},"attributes.langfuse.observation.usage_details":{"input":778,"output":54,"cache_creation_input_tokens":1640,"total":2472},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.40s
+	
+$0.009294
+	
+0.90s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:33
+	
+	
+compute_affordability
+	
+credit_agent.assess_application
+	
+{"financed_principal_eur":43500,"approved_line_eur":39718}
+	
+{"within_line":false}
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","toolCallId":"3e29b0e7d0cf904c","tool":"affordability_engine","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.07s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:33
+	
+	
+check_subsidy_eligibility
+	
+credit_agent.assess_application
+	
+{"vehicle":{"type":"PHEV","list_price_eur":43500},"application_date":"2026-10-19"}
+	
+{"applicable_subsidies":[],"policy":{"amount_eur":6000,"price_cap_eur":50000,"effective_date":"2026-10-12"},"note":"vehicle does not qualify for the EV purchase grant"}
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","toolCallId":"cbcbb485ccff8a99","tool":"subsidy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.09s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:33
+	
+	
+retrieve_policy
+	
+credit_agent.assess_application
+	
+{"application_date":"2026-10-19"}
+	
+{"handbook":{"document_id":"LENDING-1","title":"Vehicle lending handbook","published_date":"2026-04-15","effective_date":"2026-04-15","content":"For a vehicle purchase, the amount financed is the purc
+	
+{"stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","retriever":"bundled_policy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"retriever","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.24s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:32
+	
+	
+credit_agent.assess_application
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0050","approved_line_eur":39718,"vehicle":{"type":"PHEV","list_price_eur":43500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":43500,"applied_grant_eur":0,"financed_principal_eur":43500,"approved_line_eur":39718,"reason":"Financed amount of EUR 43,500 exceeds the approved line of EUR 39,7
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span"}
+	
+default
+	
+3.25s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:32
+	
+	
+load_application
+	
+credit_agent.assess_application
+	
+{"raw":"PHEV 43500 line 39718"}
+	
+{"applicant_id":"anon_0050","approved_line_eur":39718,"vehicle":{"type":"PHEV","list_price_eur":43500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.49s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:32
+	
+	
+extract_fields
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"Extract the structured application fields from the raw intake text. Respond with ONLY a JSON object: applicant_id, approved_line_eur, vehicle {type, list_price_eur}, appli
+	
+{"applicant_id":"anon_0050","approved_line_eur":39718,"vehicle":{"type":"PHEV","list_price_eur":43500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"PHEV","kind":"control_phev","vehicle_model":"Nordic Hybrid","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:24:32.792Z","attributes.langfuse.observation.cost_details":{"input":0.000368,"output":0.00017,"cache_read_input_tokens":0.000041,"total":0.000579},"attributes.langfuse.observation.usage_details":{"input":368,"output":34,"cache_read_input_tokens":406,"total":808},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.49s
+	
+$0.000579
+	
+0.20s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:24:32
+	
+	
+credit_agent
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0050","approved_line_eur":39718,"vehicle":{"type":"PHEV","list_price_eur":43500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":43500,"applied_grant_eur":0,"financed_principal_eur":43500,"approved_line_eur":39718,"reason":"Financed amount of EUR 43,500 exceeds the approved line of EUR 39,7
+	
+{"vehicle_type":"PHEV","kind":"control_phev","execution":"generated_history","stale_grant_window":true,"tool_calls":[{"id":"cbcbb485ccff8a99","name":"check_subsidy_eligibility"},{"id":"3e29b0e7d0cf904c","name":"compute_affordability"}],"attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"agent","attributes.langfuse.trace.tags":["ev-grant","control"],"attributes.langfuse.session.id":"e9fa23cd2b6cb0d56991367a7e644e09","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+3.25s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+control
+
+
+	
+2026-10-19 12:07:00
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+Unfortunately we can't approve this loan as requested — the financed amount is above your approved line.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:07:01.376Z","attributes.langfuse.observation.cost_details":{"input":0.00013,"output":0.00013,"cache_read_input_tokens":0.000036,"total":0.000296},"attributes.langfuse.observation.usage_details":{"input":130,"output":26,"cache_read_input_tokens":356,"total":512},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.14s
+	
+$0.000296
+	
+0.47s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:59
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":45500,"applied_grant_eur":0,"financed_principal_eur":45500,"approved_line_eur":42500,"reason":"Financed amount of EUR 45,500 exceeds the approved line of EUR 42,5
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0030\\\",\\\"approved_line_eur\\\":42500,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":45500},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"Fo","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:07:00.422Z","attributes.langfuse.observation.cost_details":{"input":0.003363,"output":0.00081,"cache_read_input_tokens":0.000512,"total":0.004685},"attributes.langfuse.observation.usage_details":{"input":1121,"output":54,"cache_read_input_tokens":1706,"total":2881},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+1.08s
+	
+$0.004685
+	
+0.60s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:59
+	
+	
+compute_affordability
+	
+credit_agent.assess_application
+	
+{"financed_principal_eur":39500,"approved_line_eur":42500}
+	
+{"within_line":true}
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","toolCallId":"6962f6232113098c","tool":"affordability_engine","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.11s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:59
+	
+	
+check_subsidy_eligibility
+	
+credit_agent.assess_application
+	
+{"vehicle":{"type":"BEV","list_price_eur":45500},"application_date":"2026-10-19"}
+	
+{"applicable_subsidies":[{"name":"EV Purchase Grant","amount_eur":6000}],"policy":{"amount_eur":6000,"price_cap_eur":50000,"effective_date":"2026-10-12"},"note":"qualifying EV purchase grant available
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","toolCallId":"da626fad2f3c6fc8","tool":"subsidy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"tool","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.11s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:59
+	
+	
+retrieve_policy
+	
+credit_agent.assess_application
+	
+{"application_date":"2026-10-19"}
+	
+{"handbook":{"document_id":"LENDING-1","title":"Vehicle lending handbook","published_date":"2026-04-15","effective_date":"2026-04-15","content":"For a vehicle purchase, the amount financed is the purc
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","retriever":"bundled_policy_lookup","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"retriever","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.28s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:58
+	
+	
+load_application
+	
+credit_agent.assess_application
+	
+{"raw":"BEV 45500 line 42500"}
+	
+{"applicant_id":"anon_0030","approved_line_eur":42500,"vehicle":{"type":"BEV","list_price_eur":45500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.43s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:58
+	
+	
+extract_fields
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"Extract the structured application fields from the raw intake text. Respond with ONLY a JSON object: applicant_id, approved_line_eur, vehicle {type, list_price_eur}, appli
+	
+{"applicant_id":"anon_0030","approved_line_eur":42500,"vehicle":{"type":"BEV","list_price_eur":45500},"application_date":"2026-10-19"}
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","vehicle_model":"Pulse 40","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:06:59.114Z","attributes.langfuse.observation.cost_details":{"input":0.00025,"output":0.00019,"cache_read_input_tokens":0.00004,"total":0.00048},"attributes.langfuse.observation.usage_details":{"input":250,"output":38,"cache_read_input_tokens":403,"total":691},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.43s
+	
+$0.00048
+	
+0.23s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:50
+	
+	
+plan
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You are the planning step of an auto-loan credit agent. Given an application summary, reply with a short ordered plan of the processing steps to run."},{"role":"user","con
+	
+Plan: normalize fields, retrieve current credit policy, check subsidy eligibility, compute affordability, then decide and explain.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:06:55.580Z","attributes.langfuse.observation.cost_details":{"input":0.020215,"output":0.0008,"cache_read_input_tokens":0.000945,"reasoning":0.020325,"total":0.042285},"attributes.langfuse.observation.usage_details":{"input":4043,"output":32,"cache_read_input_tokens":1890,"reasoning":813,"total":6778},"attributes.langfuse.observation.model.parameters":{"temperature":0.3},"attributes.langfuse.observation.model.name":"claude-opus-4-8","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+7.90s
+	
+$0.042285
+	
+4.60s
+	
+claude-opus-4-8
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:50
+	
+	
+credit_agent.assess_application
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0030","approved_line_eur":42500,"vehicle":{"type":"BEV","list_price_eur":45500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":45500,"applied_grant_eur":0,"financed_principal_eur":45500,"approved_line_eur":42500,"reason":"Financed amount of EUR 45,500 exceeds the approved line of EUR 42,5
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"span"}
+	
+default
+	
+11.06s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:50
+	
+	
+credit_agent
+	
+credit_agent.assess_application
+	
+{"applicant_id":"anon_0030","approved_line_eur":42500,"vehicle":{"type":"BEV","list_price_eur":45500},"application_date":"2026-10-19"}
+	
+{"decision":"reject","list_price_eur":45500,"applied_grant_eur":0,"financed_principal_eur":45500,"approved_line_eur":42500,"reason":"Financed amount of EUR 45,500 exceeds the approved line of EUR 42,5
+	
+{"vehicle_type":"BEV","kind":"golden_eligible","execution":"generated_history","stale_grant_window":true,"tool_calls":[{"id":"da626fad2f3c6fc8","name":"check_subsidy_eligibility"},{"id":"6962f6232113098c","name":"compute_affordability"}],"attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"agent","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"b3f9ebb1c45bf6d99398446e13042ddb","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+11.06s
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:09
+	
+	
+explain
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You write the customer-facing outcome message for an auto-loan decision. Draft one short paragraph in plain language; do not cite internal policy identifiers."},{"role":"u
+	
+Unfortunately we can't approve this loan as requested — the financed amount is above your approved line.
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:06:09.831Z","attributes.langfuse.observation.cost_details":{"input":0.000056,"output":0.00014,"cache_creation_input_tokens":0.000392,"total":0.000589},"attributes.langfuse.observation.usage_details":{"input":56,"output":28,"cache_creation_input_tokens":314,"total":398},"attributes.langfuse.observation.model.name":"claude-haiku-4-5","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"9b0c329a7b76d3c11519081b4b5d4888","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+0.63s
+	
+$0.000589
+	
+0.33s
+	
+claude-haiku-4-5
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:07
+	
+	
+policy_cache_hit
+	
+credit_agent.assess_application
+	
+—
+No value
+	
+—
+No value
+	
+{"execution":"generated_history","stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","layer":"policy","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"event","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"9b0c329a7b76d3c11519081b4b5d4888","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+	
+—
+	
+—
+No value
+	
+	
+—
+No value
+	
+production
+	
+ev-grant
+disputed
+
+
+	
+2026-10-19 12:06:07
+	
+	
+decision
+	
+credit_agent.assess_application
+	
+[{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr
+	
+{"decision":"reject","list_price_eur":40000,"applied_grant_eur":0,"financed_principal_eur":40000,"approved_line_eur":38500,"reason":"Financed amount of EUR 40,000 exceeds the approved line of EUR 38,5
+	
+{"stale_grant_window":true,"vehicle_type":"BEV","kind":"golden_eligible","response_schema":"{\"type\":\"object\",\"properties\":{\"list_price_eur\":{\"type\":\"integer\"},\"applied_grant_eur\":{\"type\":\"integer\"},\"financed_principal_eur\":{\"type\":\"integer\"},\"approved_line_eur\":{\"type\":\"integer\"},\"reason\":{\"","prompt_variables":"{\"application\":\"{\\\"applicant_id\\\":\\\"anon_0029\\\",\\\"approved_line_eur\\\":38500,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":40000},\\\"application_date\\\":\\\"2026-10-19\\\"}\",\"handbook\":\"{\\\"content\\\": \\\"Fo","execution":"generated_history","attributes.langfuse.observation.prompt.version":1,"attributes.langfuse.observation.prompt.name":"credit_decision","attributes.langfuse.observation.completion_start_time":"2026-10-19T10:06:08.587Z","attributes.langfuse.observation.cost_details":{"input":0.007806,"output":0.000705,"cache_read_input_tokens":0.000477,"total":0.008988},"attributes.langfuse.observation.usage_details":{"input":2602,"output":47,"cache_read_input_tokens":1590,"total":4239},"attributes.langfuse.observation.model.parameters":{"max_tokens":512},"attributes.langfuse.observation.model.name":"claude-sonnet-4-6","attributes.langfuse.environment":"production","attributes.langfuse.observation.type":"generation","attributes.langfuse.trace.tags":["ev-grant","disputed"],"attributes.langfuse.session.id":"9b0c329a7b76d3c11519081b4b5d4888","attributes.langfuse.user.id":"officer_005","attributes.langfuse.trace.name":"credit_agent.assess_application"}
+	
+default
+	
+2.20s
+	
+$0.008988
+	
+1.29s
+	
+claude-sonnet-4-6
+	
+credit_decision (v1)
+	
+production
+	
+ev-grant
+disputed
+Total ≈ 1.14K
+
+Rows per page
+
+50
+Page
+1
+Go to previous page
+Go to next page
+
+Investigate disputed loan rejection traces
+
+Investigate why customers are disputing recent loan rejections in this project. Compare affected cases with appropriate controls over the last 30 days. Inspect the actual trace inputs, outputs and retrieved policy evidence; explain specifically where the processing diverges from the applicable policy, with links to an affected trace and a correct-rejection control. Keep this read-only.
+
+Worked for 1m 42s
+
+You're on the traces list for the last 30 days. To recap the investigation: production prompt credit_decision v1 never passes the EV grant amendment to the decision step. That caused 33 wrong rejections of eligible BEVs: 32 disputed and 1 not yet disputed.
+
+Want me to do any of these next? All are read-only.
+
+List the trace IDs of all 33 wrong rejections for re-review.
+Open the untagged wrong rejection that hasn't been disputed yet.
+Check whether prompt v2 has been tested anywhere, such as in staging or experiments.
+Open affected trace
+6:56 PM
+
+Please show the concrete supporting evidence now: link one affected trace and one correct-rejection control, list their relevant amounts and retrieved policy, and state the first incorrect step. In particular, distinguish correct upstream tool calculations from the final model decision. Keep this read-only.
+
+Worked for 19s
+
+You're on the traces list for the last 30 days. To recap the investigation: production prompt credit_decision v1 never passes the EV grant amendment to the decision step. That caused 33 wrong rejections of eligible BEVs: 32 disputed and 1 not yet disputed.
+
+Want me to do any of these next? All are read-only.
+
+List the trace IDs of all 33 wrong rejections for re-review.
+Open the untagged wrong rejection that hasn't been disputed yet.
+Check whether prompt v2 has been tested anywhere, such as in staging or experiments.
+Open affected trace
+6:57 PM
+
+Answer in plain text only; do not navigate or add UI actions. Give the concrete trace IDs and amounts for one disputed BEV and one correct-rejection control from your completed investigation. For the BEV, state retrieve_policy evidence, check_subsidy result, compute_affordability result, final decision input and final output. Identify the first incorrect step.
+
+Worked for 8s
+
+Disputed BEV (affected) Trace ID: bc4afcbe0e4090193a387b52af8d8229 (production, 2026-10-19, tagged ev-grant/disputed) Application: anon_0029, BEV, list price EUR 40,000, approved line EUR 38,500, application date 2026-10-19
+
+retrieve_policy (observation e77625ac7c0274f6), correct: it returned two documents.
+
+LENDING-1, the vehicle lending handbook (effective 2026-04-15): amount financed = purchase price; approve if it is at or below the preapproved line, otherwise reject.
+BULLETIN-EV-1, the vehicle purchase programme amendment (published 2026-10-05, effective 2026-10-12): for applications dated 2026-10-12 onwards, a BEV priced at EUR 50,000 or less qualifies for a EUR 6,000 grant, deducted from the purchase price before the line check. The approval threshold is unchanged.
+
+check_subsidy_eligibility (observation e9eb682b0a532ef3), correct: it found the EV Purchase Grant of EUR 6,000 (cap EUR 50,000, effective 2026-10-12), with the note "qualifying EV purchase grant available at application date".
+
+compute_affordability (observation d6af3603d9e867a3), correct: input was financed principal EUR 34,000 against approved line EUR 38,500. Result: within_line = true.
+
+Final decision input (observation e6ac976ced90f67b, prompt credit_decision v1, claude-sonnet-4-6): the message sent to the model contained only "Application" and "Lending handbook" (LENDING-1). BULLETIN-EV-1 was in the step's prompt variables but never made it into the message, because v1 has no slot for policy updates. The tool results from steps 2 and 3 were not included either.
+
+Final output: decision reject; list price EUR 40,000; grant EUR 0; financed principal EUR 40,000; approved line EUR 38,500. Reason given: "Financed amount of EUR 40,000 exceeds the approved line of EUR 38,500." Under the policy the outcome should be 40,000 − 6,000 = 34,000, which is at or below 38,500, so approve.
+
+First incorrect step: the final decision step (observation e6ac976ced90f67b). Everything before it was correct. The customer message that follows only repeats this wrong result.
+
+Correct-rejection control Trace ID: cf4bd87e3a3a3ae0da1569de81f11ce7 (production, 2026-10-19, tagged ev-grant/control) Application: anon_0050, PHEV, list price EUR 43,500, approved line EUR 39,718, application date 2026-10-19
+
+retrieve_policy (4026b5502a28c008): the same two documents, LENDING-1 and BULLETIN-EV-1.
+check_subsidy_eligibility (d042a2286b9cc35a): no grant, with the note "vehicle does not qualify for the EV purchase grant".
+compute_affordability (31a1caa5fa9669bc): financed EUR 43,500 against line EUR 39,718. Result: within_line = false.
+Final decision (2ca8188cfa954013, same prompt v1): its input also leaves out the bulletin.
+Final output: reject; grant EUR 0; financed EUR 43,500; line EUR 39,718.
+
+This rejection is correct. PHEVs don't qualify for the grant, so leaving out the bulletin doesn't change the result here.
+
+The difference: in both traces the policy lookup and both tool calculations are correct. The error comes only from the final model decision, which never sees the amendment. That changes the outcome only for eligible BEVs priced above the approved line by EUR 6,000 or less.
+
+I made no changes to the project.
+
+7:02 PM
+
+Current trace view in context
+
+Langfuse

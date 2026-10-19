@@ -1,19 +1,12 @@
 """The presenter's eval triggers and their in-scene result card (#180).
 
-The demo's central beat — ``production`` (v1, stale grant window) goes RED, ``development``
-(v2, the fix) goes GREEN — used to need a shell. A depot-delivered presenter has no shell,
-so the kit's best moment was unreachable in the cartridge delivery. These two buttons put it
-on the playground page.
+These controls run the prompt currently selected by either managed label on the hosted
+regression dataset. They remain a presenter fallback; the primary comparison uses native
+Prompt Experiments and the five-field policy evaluator. The card reports decision
+agreement only. Labels and actual results can change.
 
-**They are presenter tools, not part of the demo fiction.** A prospect looking at the loan
-application should not register them, so the trigger lives behind a quiet collapsed
-disclosure at the very bottom of the page: muted tokens only (``--text-disabled`` /
-``--line-structure``), no accent colour, no headline weight — footer utility, not CTA. The
-runbook tells the presenter where it is; the audience never wonders what it is.
-
-The *result*, by contrast, is full-size: once a run is triggered it IS the demo moment, so
-it renders in the playground's ordinary card idiom (verdict, pass/fail counts, a Langfuse
-deep link into the runs comparison view).
+The triggers remain behind the existing collapsed presenter-tools disclosure. The
+results use the Companion's existing card layout and link to the recorded experiment.
 
 Rendering only — no clients, no network, no config beyond the dataset name — so every string
 here is unit-testable offline and the route in ``app.py`` stays thin.
@@ -61,9 +54,9 @@ def _dataset_note(dataset_name: str, item_count: int | None) -> str:
     count comes from the seed's run state, and is simply omitted when it is unreadable."""
     size = f" · {item_count} items" if item_count is not None else ""
     return (f"Runs the hosted dataset <code>{html.escape(dataset_name)}</code>{size} through the "
-            f"labelled decision prompt. <b>production</b> is the stale v1 → red; <b>development</b> is "
-            f"the fix → green. These experiments test the decision prompt. History is generated; "
-            f"live submissions make one real decision call with representative simulated steps.")
+            f"prompt currently selected by the chosen label. The result measures decision agreement, "
+            f"not grant or principal correctness. History is generated. Live submissions perform "
+            f"a local policy lookup and one decision model call.")
 
 
 def trigger_panel(dataset_name: str, item_count: int | None) -> str:

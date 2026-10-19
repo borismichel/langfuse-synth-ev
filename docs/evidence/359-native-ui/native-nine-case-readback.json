@@ -1,0 +1,856 @@
+{
+  "verified_at": "2026-10-19T17:10:20.398867+00:00",
+  "dataset_id": "cmvfhrsli0du7ad0jmlssr03o",
+  "shared_configuration": {
+    "model": "claude-sonnet-4-6",
+    "provider": "Anthropic",
+    "model_params.max_tokens": "512",
+    "dataset_version": "2026-10-19T17:01:20.376Z",
+    "structured_output_schema.type": "object",
+    "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+    "structured_output_schema.properties.reason.type": "string",
+    "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+    "structured_output_schema.properties.decision.type": "string",
+    "structured_output_schema.properties.list_price_eur.type": "integer",
+    "structured_output_schema.properties.applied_grant_eur.type": "integer",
+    "structured_output_schema.properties.approved_line_eur.type": "integer",
+    "structured_output_schema.properties.financed_principal_eur.type": "integer",
+    "structured_output_schema.additionalProperties": "false"
+  },
+  "configuration_equal": true,
+  "summary": {
+    "1": {
+      "count": 9,
+      "independent_passes": 4,
+      "hosted_passes": 4
+    },
+    "2": {
+      "count": 9,
+      "independent_passes": 9,
+      "hosted_passes": 9
+    }
+  },
+  "all_18_scores_and_independent_checks_match": true,
+  "one_score_each": true,
+  "all_EVAL_boolean_observation_scores": true,
+  "rows": [
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-01-false-negative",
+      "scenario": "false_negative",
+      "trace_id": "5dc5ecc31cc856b7fcc57359b50bc218",
+      "generation_id": "f686a77be3bba8e3",
+      "scored_observation_id": "db00f5521fd59f31",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "The BEV costs EUR 45,000 (\u2264 EUR 50,000) and the application date is 2026-10-12, so the EUR 6,000 grant applies, reducing the financed principal to EUR 39,000, which is at or below the approved line of EUR 40,000.",
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 39000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 6000; 45000 - 6000 = 39000; principal <= line 40000: approve.",
+      "score_id": "f5395f91-db9a-536d-836b-9f9508cd9a18",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "db00f5521fd59f31",
+        "traceId": "5dc5ecc31cc856b7fcc57359b50bc218"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-09-reserved-bc4afcbe",
+      "scenario": "disputed_false_negative",
+      "trace_id": "8e1499a53ae6d09d48a76a5a22dca1a1",
+      "generation_id": "127286cf5c6f725c",
+      "scored_observation_id": "b368d28ba9fb368f",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "The BEV has a list price of EUR 40,000 (\u2264 EUR 50,000) and the application date of 2026-10-19 is on or after 2026-10-12, so the EUR 6,000 grant applies, reducing the financed principal to EUR 34,000, which is below the approved line of EUR 38,500.",
+        "decision": "approve",
+        "list_price_eur": 40000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 38500,
+        "financed_principal_eur": 34000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 40000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 34000,
+        "approved_line_eur": 38500
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 6000; 40000 - 6000 = 34000; principal <= line 38500: approve.",
+      "score_id": "5d453346-75a2-5e83-b4d3-cd703a373c8e",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "b368d28ba9fb368f",
+        "traceId": "8e1499a53ae6d09d48a76a5a22dca1a1"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-02-date-before",
+      "scenario": "date_before",
+      "trace_id": "79b9186b5e2f45f82be94aaac9ccf0c2",
+      "generation_id": "05c8f200a22c5922",
+      "scored_observation_id": "7d0e356fa489df23",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "Application date is 2026-10-11, which is before the 2026-10-12 effective date of the BEV grant programme, so no grant applies; the full list price of EUR 45,000 is financed, exceeding the approved line of EUR 40,000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "score_id": "62914eeb-a51a-508b-9830-e78c5ca33e68",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "7d0e356fa489df23",
+        "traceId": "79b9186b5e2f45f82be94aaac9ccf0c2"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-03-control-phev",
+      "scenario": "control_phev",
+      "trace_id": "238318c400fa969e92555f08caafbfd2",
+      "generation_id": "2bfdd7a88848b08f",
+      "scored_observation_id": "ac6115fdbae45fbd",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "The vehicle is a PHEV, which does not qualify for the EUR 6,000 BEV grant under BULLETIN-EV-1; therefore no grant is applied and the full list price of EUR 45,000 is the financed principal, which exceeds the approved credit line of EUR 40,000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "score_id": "d4775dec-f7c1-5d98-8d68-db0262c358ae",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "ac6115fdbae45fbd",
+        "traceId": "238318c400fa969e92555f08caafbfd2"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-04-cap-above",
+      "scenario": "cap_above",
+      "trace_id": "921684abfaa9082afbc039e899bc314d",
+      "generation_id": "4ccc9d3b06cc5408",
+      "scored_observation_id": "d3ac5c01905bdbd2",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "The vehicle is a BEV but its list price of EUR 50,001 exceeds the EUR 50,000 cap, so no grant applies; the full purchase price of EUR 50,001 is financed, which exceeds the approved credit line of EUR 40,000.",
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 50001
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 50001 - 0 = 50001; principal > line 40000: reject.",
+      "score_id": "e16130ba-6374-5667-9ca1-6392233c157d",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "d3ac5c01905bdbd2",
+        "traceId": "921684abfaa9082afbc039e899bc314d"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-05-grant-still-above-line",
+      "scenario": "grant_still_above_line",
+      "trace_id": "428acd0edcc7c023816cd493d704d957",
+      "generation_id": "e32df239227da5ed",
+      "scored_observation_id": "fbb2f2be6b10f743",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "The BEV costs EUR 49,000 (\u2264 EUR 50,000) and the application date is 2026-10-12, so the EUR 6,000 grant applies, reducing the financed principal to EUR 43,000, which exceeds the approved line of EUR 40,000.",
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 43000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 6000; 49000 - 6000 = 43000; principal > line 40000: reject.",
+      "score_id": "9e203c07-e49c-5beb-ae91-c5c591f75d78",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "fbb2f2be6b10f743",
+        "traceId": "428acd0edcc7c023816cd493d704d957"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-06-cap-date-line-equal",
+      "scenario": "cap_date_line_equal",
+      "trace_id": "8fca113f4b6a93a4785b9dd721f6d2c4",
+      "generation_id": "3bdbc09d2f8cfdc8",
+      "scored_observation_id": "6eebd481eb4bf5aa",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "BEV at EUR 50,000 qualifies for the EUR 6,000 grant under BULLETIN-EV-1 (application date 2026-10-12 meets the on-or-after condition), reducing the financed principal to EUR 44,000, which exactly equals the approved line of EUR 44,000.",
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 44000,
+        "financed_principal_eur": 44000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 6000; 50000 - 6000 = 44000; principal <= line 44000: approve.",
+      "score_id": "068caec2-7f16-5549-9c1f-55c55f806189",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "6eebd481eb4bf5aa",
+        "traceId": "8fca113f4b6a93a4785b9dd721f6d2c4"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-07-eligible-already-affordable",
+      "scenario": "eligible_already_affordable",
+      "trace_id": "8216345e78e4f5a06cee6bb15a0db76b",
+      "generation_id": "b2f2923b6019f0a9",
+      "scored_observation_id": "09eb1ca9ff77e6e6",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "BEV with list price EUR 39,000 qualifies for the EUR 6,000 grant under BULLETIN-EV-1 (application date 2026-10-12, price \u2264 EUR 50,000), reducing the financed principal to EUR 33,000, which is at or below the approved line of EUR 40,000.",
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 33000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 6000; 39000 - 6000 = 33000; principal <= line 40000: approve.",
+      "score_id": "3f6207ed-31d9-5d06-ba7b-9c82562758d9",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "09eb1ca9ff77e6e6",
+        "traceId": "8216345e78e4f5a06cee6bb15a0db76b"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfie26t0cmdad0jj1z90uym",
+      "item_id": "evpr-08-control-ice",
+      "scenario": "control_ice",
+      "trace_id": "7a717c40454cb6ef817a73b34bd1f77b",
+      "generation_id": "d29eefdea13784fe",
+      "scored_observation_id": "45200df4ff53c61f",
+      "prompt_version": 2,
+      "actual": {
+        "reason": "ICE vehicle does not qualify for the EUR 6,000 BEV grant, so the full list price of EUR 35,000 is financed, which is at or below the approved line of EUR 40,000.",
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 35000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 35000 - 0 = 35000; principal <= line 40000: approve.",
+      "score_id": "ccccabdc-0f35-53ce-9d12-127bae2df210",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "45200df4ff53c61f",
+        "traceId": "7a717c40454cb6ef817a73b34bd1f77b"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-01-false-negative",
+      "scenario": "false_negative",
+      "trace_id": "34229d72dde1e46fcae9db3af501859d",
+      "generation_id": "ca3134b6bb52633d",
+      "scored_observation_id": "5d095f8b111abc6f",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No applicable purchase grant policy was supplied, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 39000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": false,
+      "hosted_score": false,
+      "hosted_comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 39000, got 45000; decision: expected approve, got reject",
+      "score_id": "e143b850-97c6-51ed-8e2b-54dd51a18c45",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "5d095f8b111abc6f",
+        "traceId": "34229d72dde1e46fcae9db3af501859d"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": false,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-09-reserved-bc4afcbe",
+      "scenario": "disputed_false_negative",
+      "trace_id": "4aaa8339ed9124e23533855fdb388171",
+      "generation_id": "df6462adc09e4685",
+      "scored_observation_id": "3b66f2767477568e",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No applicable grant was identified in the policy documents for this BEV application; the full list price of \u20ac40,000 is the amount financed, which exceeds the approved credit line of \u20ac38,500.",
+        "decision": "reject",
+        "list_price_eur": 40000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 38500,
+        "financed_principal_eur": 40000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 40000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 34000,
+        "approved_line_eur": 38500
+      },
+      "independent_correct": false,
+      "hosted_score": false,
+      "hosted_comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 34000, got 40000; decision: expected approve, got reject",
+      "score_id": "4523deeb-2972-5e45-a7b8-7db5d37e3669",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "3b66f2767477568e",
+        "traceId": "4aaa8339ed9124e23533855fdb388171"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": false,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-02-date-before",
+      "scenario": "date_before",
+      "trace_id": "1fb51555f2851d12637309eddba9ff46",
+      "generation_id": "8917c7973e8609ab",
+      "scored_observation_id": "2069539dd56aa094",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No applicable grant policy was found for the application date of 2026-10-11, so the full list price of \u20ac45,000 is financed; this exceeds the approved credit line of \u20ac40,000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "score_id": "d008f3b3-f9d0-51e0-af0e-c9a7067382b3",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "2069539dd56aa094",
+        "traceId": "1fb51555f2851d12637309eddba9ff46"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-03-control-phev",
+      "scenario": "control_phev",
+      "trace_id": "3f93e3c7f3a3cf14e60da9c5f6bf2488",
+      "generation_id": "9a6935b8a7d92e34",
+      "scored_observation_id": "1e425a8409dc18c0",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No purchase grant applies to this PHEV application; the financed principal equals the full list price of \u20ac45,000, which exceeds the applicant's preapproved credit line of \u20ac40,000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 45000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "score_id": "16ba6be3-ffc7-5d4a-a135-37121e368b6e",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "1e425a8409dc18c0",
+        "traceId": "3f93e3c7f3a3cf14e60da9c5f6bf2488"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-04-cap-above",
+      "scenario": "cap_above",
+      "trace_id": "29b5fd6d32d4f708fac2e7ede3c1064f",
+      "generation_id": "2ff96fe2287f649e",
+      "scored_observation_id": "4e02e82f9f0431c3",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No applicable grant found; financed principal equals list price of \u20ac50,001, which exceeds the approved credit line of \u20ac40,000.",
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 50001
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 50001,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 50001 - 0 = 50001; principal > line 40000: reject.",
+      "score_id": "23859c51-4090-5d00-82f5-3590bb9da9e7",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "4e02e82f9f0431c3",
+        "traceId": "29b5fd6d32d4f708fac2e7ede3c1064f"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-05-grant-still-above-line",
+      "scenario": "grant_still_above_line",
+      "trace_id": "391e59205c56b27db75dec21c4ab400f",
+      "generation_id": "2ca53de7c9466471",
+      "scored_observation_id": "433cd2c8cc7bf6ba",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "Grant policy document not provided; no grant can be applied. Financed principal equals list price of \u20ac49,000, which exceeds the approved credit line of \u20ac40,000.",
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 49000
+      },
+      "expected": {
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 43000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": false,
+      "hosted_score": false,
+      "hosted_comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 43000, got 49000",
+      "score_id": "e1371c79-0770-52f0-9d36-48740f0f6998",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "433cd2c8cc7bf6ba",
+        "traceId": "391e59205c56b27db75dec21c4ab400f"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": false,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-06-cap-date-line-equal",
+      "scenario": "cap_date_line_equal",
+      "trace_id": "db1cd97180f709c2777a6f882aca7ee2",
+      "generation_id": "fb3da9d8472b91bd",
+      "scored_observation_id": "4ef560fb4774526c",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No grant document supplied, so no purchase grant applies; the financed principal equals the list price of \u20ac50,000, which exceeds the approved credit line of \u20ac44,000.",
+        "decision": "reject",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 44000,
+        "financed_principal_eur": 50000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 44000,
+        "approved_line_eur": 44000
+      },
+      "independent_correct": false,
+      "hosted_score": false,
+      "hosted_comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 44000, got 50000; decision: expected approve, got reject",
+      "score_id": "166baf78-23e6-5b48-a374-309349684543",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "4ef560fb4774526c",
+        "traceId": "db1cd97180f709c2777a6f882aca7ee2"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": false,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-07-eligible-already-affordable",
+      "scenario": "eligible_already_affordable",
+      "trace_id": "874559772a18f0260fb0a5392eff3883",
+      "generation_id": "56fc6944e2888748",
+      "scored_observation_id": "26d9b102720a2b8e",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No applicable grant policy was supplied, so the full list price of \u20ac39,000 is the financed principal, which is at or below the approved line of \u20ac40,000.",
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 39000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "financed_principal_eur": 33000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": false,
+      "hosted_score": false,
+      "hosted_comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 33000, got 39000",
+      "score_id": "85f8b119-ffe1-581d-a12b-d99f8c11fb72",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "26d9b102720a2b8e",
+        "traceId": "874559772a18f0260fb0a5392eff3883"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": false,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    },
+    {
+      "experiment_id": "cmvfiby6j0djtad0emyczprwi",
+      "item_id": "evpr-08-control-ice",
+      "scenario": "control_ice",
+      "trace_id": "e5eca5e81befd03a305a1220d8ab37a9",
+      "generation_id": "a90e1f86de8eb7e5",
+      "scored_observation_id": "59b8ca96279309c2",
+      "prompt_version": 1,
+      "actual": {
+        "reason": "No purchase grant applies to ICE vehicles; the full list price of \u20ac35,000 is the financed principal, which is at or below the approved line of \u20ac40,000.",
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 35000
+      },
+      "expected": {
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "financed_principal_eur": 35000,
+        "approved_line_eur": 40000
+      },
+      "independent_correct": true,
+      "hosted_score": true,
+      "hosted_comment": "Policy correct: grant EUR 0; 35000 - 0 = 35000; principal <= line 40000: approve.",
+      "score_id": "f105de79-1924-592c-865c-34c92a11b1a5",
+      "score_source": "EVAL",
+      "score_subject": {
+        "kind": "observation",
+        "id": "59b8ca96279309c2",
+        "traceId": "e5eca5e81befd03a305a1220d8ab37a9"
+      },
+      "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+      "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+      "direct_evaluator_result_on_selected_observation": true,
+      "score_and_independent_match": true,
+      "model": "claude-sonnet-4-6",
+      "model_parameters": {
+        "max_tokens": 512
+      }
+    }
+  ],
+  "experiments": [
+    {
+      "id": "cmvfie26t0cmdad0jj1z90uym",
+      "name": "EV Halo cohort v2 - 2026-10-19T17:08:58.211Z",
+      "description": "Same nine Halo-created items and fixed snapshot as v1. Only prompt changes; Sonnet4.6, max512, shared schema and policy_correctness.",
+      "startTime": "2026-10-19T17:09:04.399Z",
+      "endTime": "2026-10-19T17:09:29.974Z",
+      "itemCount": 9,
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T17:01:20.376Z",
+        "experiment_name": "EV Halo cohort v2",
+        "experiment_run_name": "EV Halo cohort v2 - 2026-10-19T17:08:58.211Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    },
+    {
+      "id": "cmvfiby6j0djtad0emyczprwi",
+      "name": "EV Halo cohort v1 - 2026-10-19T17:07:20.272Z",
+      "description": "Nine Halo-created items; fixed snapshot; baseline missing policy_updates binding. Same Sonnet4.6, max512, schema and policy_correctness as v2.",
+      "startTime": "2026-10-19T17:07:25.864Z",
+      "endTime": "2026-10-19T17:07:52.631Z",
+      "itemCount": 9,
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T17:01:20.376Z",
+        "experiment_name": "EV Halo cohort v1",
+        "experiment_run_name": "EV Halo cohort v1 - 2026-10-19T17:07:20.272Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    }
+  ],
+  "export_shape_note": "Generation export uses assistant text blocks. Hosted scores target parent dataset-run-item observations, whose raw input/output the shipped evaluator accepts directly. Decoding the generation envelope above is independent verification, not a claim that this envelope equals hosted ctx. No code change needed.",
+  "score_query_note": "scores list --experiment-id returned zero; exact trace-id filter returned 16 observation-linked scores, retained in halo-experiment-scores.json."
+}

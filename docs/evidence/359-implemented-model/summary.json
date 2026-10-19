@@ -1,0 +1,14 @@
+{
+  "total": 24,
+  "valid": 24,
+  "by_variant": {
+    "v1": {
+      "total": 12,
+      "policy_correct": 4
+    },
+    "v2": {
+      "total": 12,
+      "policy_correct": 12
+    }
+  }
+}

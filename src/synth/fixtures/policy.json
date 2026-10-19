@@ -1,0 +1,16 @@
+{
+  "handbook": {
+    "document_id": "LENDING-1",
+    "title": "Vehicle lending handbook",
+    "published_date": "{handbook_date}",
+    "effective_date": "{handbook_date}",
+    "content": "For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion)."
+  },
+  "policy_update": {
+    "document_id": "BULLETIN-EV-1",
+    "title": "Vehicle purchase programme amendment",
+    "published_date": "{published_date}",
+    "effective_date": "{effective_date}",
+    "content": "For applications dated {effective_date} onwards, battery-electric vehicles with a purchase price of EUR {price_cap} or less qualify for a EUR {grant_amount} point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR {price_cap} do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged."
+  }
+}

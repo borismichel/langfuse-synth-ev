@@ -2,11 +2,12 @@
 
 This is a standalone live rehearsal, independent of the full Presenter Runbook.
 Use the native `policy_correctness` evaluator from `POLICY_EVALUATOR.py`. It checks
-grant, principal and decision; a correct rejection can pass. Project access and
+list price, approved line, grant, principal and decision; a correct rejection can pass. Project access and
 successful hosted execution are prerequisites for claiming Cloud completion.
 
 See the [10 September 2026 verification record](https://github.com/borismichel/langfuse-synth-ev/blob/09547dd2d42d5898b3a884313765c68d79febed0/docs/live-policy-verification-results.md)
-for a completed rehearsal, including retained model failures and coverage evidence.
+for the prior instruction-based demo only, including retained model failures.
+It does not verify the current missing-binding repair; record a new rehearsal for this release.
 
 ## Prepare the deployment and rule
 
@@ -23,17 +24,16 @@ for a completed rehearsal, including retained model failures and coverage eviden
    create a second evaluator or rule with overlapping coverage.
 3. Before enabling a rule, submit an eligible application once through the
    Companion with the current production prompt. Do not dispute it. Open its
-   fresh trace and select **credit_agent**, type **AGENT**. Its own input contains
-   `application` and `policy`; its own output contains the complete Decision.
-   The evaluator checks that supplied policy against its embedded constants;
-   a mismatch is an execution error, not a failed policy decision. Historical
+   fresh trace and select **credit_agent**, type **AGENT**. Its own input is the
+   application; its own output contains the complete Decision. The evaluator embeds
+   this deployment's complete policy constants. Verify these constants against the
+   retrieved amendment before activation. Historical
    and native experiment inputs retain their existing normalization.
 4. On the evaluator's observation sample picker, apply ALL recipe conditions:
    name exactly `credit_agent`, type `AGENT`, environment exactly `production`,
    and metadata key `evaluation_scope` equal to the recipe's value. Inspect the
    actual matched rows before activation: exactly one agent per submitted trace,
-   including the undisputed case. Check the excluded child `decision`, root,
-   tools and simulated generations. Staging, native/SDK experiments and evaluator
+   including the undisputed case. Check the excluded child `decision`, root and `retrieve_policy` observations. Staging, native/SDK experiments and evaluator
    executions must not match. The unique marker is only attached to the live
    agent; do not broaden the rule to names alone or a logical-root shortcut.
 5. Test that selected observation in the hosted evaluator. Create one incoming
@@ -101,7 +101,7 @@ not re-seed during this verification.
 | Execution failed, no score | Inspect the evaluator execution/error details (including `langfuse-code-eval`). Fix context/runtime/configuration; this is not evidence of a policy error. |
 | Boolean false, `policy_error` | Execution succeeded and grant, principal or decision violates policy. Read the explanation. |
 | Boolean false, `malformed_output` | Output could not be scored as a Decision; distinguish this from arithmetic failure. |
-| Boolean true, `pass` | All three policy checks passed, including correct rejects. |
+| Boolean true, `pass` | All five policy checks passed, including correct rejects. |
 
 Use `POLICY_COVERAGE.py` with the exact expected live agent observation IDs and
 normalized score/execution exports described in `POLICY_EVALUATION.md`. Record

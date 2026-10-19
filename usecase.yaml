@@ -8,11 +8,11 @@ name: "EV Subsidy Silent Regression"
 tagline: "Investigate a disputed loan, score the policy, test the prompt and verify the production fix."
 vertical: "Financial Services / Consumer Lending"
 story: |
-  A stale financing policy ignores an available EV grant and rejects eligible
-  customers. Investigate generated history and sampled disagreement, define a
-  native policy evaluator, curate a regression case and compare two prompt
-  versions in Langfuse. Promote once, then verify a fresh Companion decision.
-  The generated Presenter Runbook guides a 12–15 minute presentation.
+  A retrieved EV grant amendment is missing from the decision prompt's inputs,
+  causing eligible applications to be rejected. Investigate with Halo, review
+  and curate a regression dataset, and compare the binding repair in native
+  Playground and Prompt Experiments. Promote the tested version, then verify
+  a fresh Companion decision and its native policy score.
 
 langfuse_features:
   - tracing
@@ -37,7 +37,7 @@ assets:
     - path: docs/live-policy-verification.md
       title: "Live policy verification"
   screenshots:
-    - docs/img/playground-form.png
+    - docs/evidence/359-native-ui/live-baseline-corrected.png
 
 target:
   project_hint: "demo"
@@ -152,7 +152,7 @@ artifacts:
 
 live_components:
   - name: playground
-    description: "Live decision configurator + /analytics in-scene dashboard. Production prompt pulled live per submission."
+    description: "Loan application form and lending analytics. Each submission uses the current production prompt."
     command: "synth playground --config {config} --host 0.0.0.0 --port 8080"
     port: 8080
     requires_secrets: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LLM_API_KEY]
@@ -161,7 +161,7 @@ live_components:
       - path: /
         title: "Decision configurator"
       - path: /analytics
-        title: "In-scene dashboard"
+        title: "Lending analytics"
     default_ttl_hours: 168
     max_ttl_hours: 720
     health_path: "/"

@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-10-19T17:04:08.572298+00:00",
+  "project_id": "cmvfhtkwo0dw0ad0e3t9ybrvm",
+  "evaluator_id": "cmvfi73x40dgiad0ep3ldn4og",
+  "rule_id": "cmvfi7pmt0cavad0gjq3jitpp",
+  "source_sha256": "a8f04ad79d7f22ed9e3b6f1132fb3b2c03924d212fe334a30a72804e86018363",
+  "incoming_only": true,
+  "history_backfill": false,
+  "model_calls_submitted": 0,
+  "sampling": 1,
+  "filter": [
+    {
+      "type": "stringOptions",
+      "column": "name",
+      "operator": "any of",
+      "value": [
+        "credit_agent"
+      ]
+    },
+    {
+      "type": "stringOptions",
+      "column": "type",
+      "operator": "any of",
+      "value": [
+        "AGENT"
+      ]
+    },
+    {
+      "type": "stringOptions",
+      "column": "environment",
+      "operator": "any of",
+      "value": [
+        "production"
+      ]
+    },
+    {
+      "type": "stringObject",
+      "column": "metadata",
+      "key": "evaluation_scope",
+      "operator": "=",
+      "value": "ev_live_decision_e0cdd042c419f012"
+    }
+  ],
+  "readback_verified": true
+}

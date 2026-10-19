@@ -1,0 +1,52 @@
+Browser tab: 508524247, Title: "Datasets | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhrsli0du7ad0jmlssr03o/experiments".
+1 AXWebArea Datasets | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhrsli0du7ad0jmlssr03o/experiments
+	2 container
+		42 container Run Experiment, ID: radix-_r_13_
+			43 container
+				44 heading Run Experiment, Value: 2, ID: radix-_r_14_
+					45 text Run Experiment
+				46 container radix-_r_15_
+					47 text Run an experiment to evaluate prompts and model configurations against a dataset. See
+					48 link Description: documentation, Value: langfuse.com/docs/evaluation/dataset-runs/native-run
+					49 text to learn more.
+				50 button Close
+			51 container
+				52 container breadcrumb
+					53 content list
+						54 link Prompt & Model
+							55 text Prompt & Model
+						56 link Dataset
+							57 text Dataset
+						70 link Evaluators
+							71 text Evaluators
+						72 link Experiment run details
+							73 text Experiment run details
+						74 link (disabled) Review
+							75 text Review
+				76 heading Review & Run, Value: 3
+					77 text Review & Run
+				78 text Review your experiment configuration before running it. You can go back to any step to make changes.
+				79 heading Prompt, Value: 3
+					80 text Prompt
+				81 text Name: credit_decision Version: v 2
+				82 heading Model, Value: 3
+					83 text Model
+				84 text Provider: Anthropic Model: claude-sonnet-4-6 Max Tokens: 512 Structured Output: ev_credit_decision
+				85 heading Dataset, Value: 3
+					86 text Dataset
+				87 text Name: ev-policy-review Items: 9
+				88 heading Evaluators (1), Value: 3
+					89 text Evaluators ( 1 )
+				90 text policy_correctness
+				91 heading Experiment Run Details, Value: 3
+					92 text Experiment Run Details
+				93 text Experiment Name: EV Halo cohort v2 Run Name: EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+				94 image
+				95 text Description: Same nine Halo-created items and fixed snapshot as v1. Only prompt changes; Sonnet4.6, max512, shared schema and policy_correctness.
+				67 button Previous
+				68 button Run Experiment
+			69 button Close
+		40 container Notifications alt+T
+		41 text Langfuse
+
+The focused UI element is 68 button Run Experiment

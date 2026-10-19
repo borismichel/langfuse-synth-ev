@@ -31,7 +31,13 @@ def _deep_link(state: RunState, suffix: str, label: str) -> str:
 def build_context(cfg: Config, state: RunState) -> dict:
     """Only saved anchors describe this run; current config may have changed since seed."""
     from .agent import GrantRule
-    from .evaluation.package import judge_prompt
+    from .evaluation.package import evaluator_source, judge_prompt
+    from .evaluation.production import production_rule
+    from .seed.prompts import decision_schema
+    from .seed.datasets import INPUT_SCHEMA
+    from .seed.demo_cohort import demonstration_items
+
+    rule = GrantRule(state.grant_amount_eur, state.price_cap_eur, state.grant_effective_date)
 
     prompt_path = "prompts/" + quote(state.prompt_name, safe="")
     demo_path = (f"datasets/{quote(state.demo_dataset_id, safe='')}/items"
@@ -56,8 +62,15 @@ def build_context(cfg: Config, state: RunState) -> dict:
     return {
         **state.__dict__,
         **links,
-        "judge_prompt": judge_prompt(GrantRule(state.grant_amount_eur, state.price_cap_eur,
-                                               state.grant_effective_date)),
+        "judge_prompt": judge_prompt(rule),
+        "evaluator_source": evaluator_source(rule),
+        "decision_schema_json": json.dumps(decision_schema(), indent=2),
+        "input_schema_json": json.dumps(INPUT_SCHEMA, indent=2),
+        "production_rule_json": json.dumps(production_rule(state.prompt_name, rule), indent=2),
+        "reviewed_cohort_json": json.dumps(
+            demonstration_items(rule, state.demo_dataset_name or state.dataset_name + "-demo"),
+            indent=2),
+        "reserved_metadata_json": json.dumps(state.reserved_item.get("metadata", {}), indent=2),
         "reserved_count": len(state.reserved_trace_ids),
         "reserved_input_json": json.dumps(state.reserved_item.get("input"), indent=2),
         "reserved_expected_json": json.dumps(state.reserved_item.get("expected_output"), indent=2),

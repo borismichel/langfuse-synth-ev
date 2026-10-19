@@ -1,5 +1,7 @@
 # Presenter screenshots
 
+> Historical record for the prior instruction-based demo. These results and screenshots do not verify the missing-binding repair. See [current verification status](../../ev-context-verification.md).
+
 Original Langfuse Cloud UI captures from the synthetic `new-ev-demo` rehearsal
 project on 10 September 2026. These illustrate navigation, not the current
 deployment's state. Captures contain no credentials or real customer records.
