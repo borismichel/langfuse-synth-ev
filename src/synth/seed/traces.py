@@ -159,7 +159,7 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         cost_details=cost_details(haiku, ti, ot, cr, cc), environment=env, input=ein, output=eout,
         metadata={"vehicle_model": model_label(r, app.vehicle.type)}))
 
-    # -- retrieve_policy (RETRIEVER — vector search, no model) ------------
+    # -- retrieve_policy (RETRIEVER — bundled lookup, no model) ------------
     s, e = cur.advance(tool_latency_ms(r, 180, 0.5, spec.slow_factor))
     documents = lookup_policy(app, spec.grant_rule)
     variables = policy_variables(app, spec.grant_rule, documents=documents)
@@ -183,17 +183,23 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
                   "execution": "generated_history"}))
 
     # -- compute_affordability (TOOL) ------------------------------------
+    # This synthetic tool consumes the eligibility evidence, not the later decision.
+    # The baseline regression begins at prompt assembly: correct retrieved policy and
+    # tool calculations are present in the trace but absent from the model's context.
+    available_grant = sum(item["amount_eur"] for item in elig_out["applicable_subsidies"])
+    policy_principal = app.vehicle.list_price_eur - available_grant
     fail_aff = spec.error_step == "compute_affordability"
     s, e = cur.advance(tool_latency_ms(r, 70, 0.4, spec.slow_factor))
     events.append(observation_event(
         obs_id=r.obs_id("afford", tid), trace_id=tid, name="compute_affordability",
         obs_type="TOOL", start=s, end=e, parent_id=agent_id, environment=env,
-        input={"financed_principal_eur": spec.decision.financed_principal_eur,
+        input={"financed_principal_eur": policy_principal,
                "approved_line_eur": app.approved_line_eur},
-        output={"within_line": spec.decision.financed_principal_eur <= app.approved_line_eur},
+        output={"within_line": policy_principal <= app.approved_line_eur},
         level="ERROR" if fail_aff else None,
         status_message="affordability engine error" if fail_aff else None,
-        metadata={"tool": "affordability_engine", "toolCallId": afford_call_id}))
+        metadata={"tool": "affordability_engine", "toolCallId": afford_call_id,
+                  "execution": "generated_history"}))
 
     # -- decision generation (Sonnet) — decide(), links to prompt v1 ------
     # Input represents the v1 chat template; no LLM ran: policy + application JSON

@@ -64,3 +64,25 @@ with the index, and the required `synth.companion.app:create_app` factory is abs
 Running conformance against unchanged integration base `2bb5046` confirmed the same
 findings. Consequently `local_ready` is false; this implementation does not claim
 full offline readiness or erase that migration debt.
+
+## Native diagnosis correction
+
+The first native Halo investigation correctly identified an additional inconsistency
+in the synthetic history: `check_subsidy_eligibility` returned a grant, but the later
+`compute_affordability` fixture copied the baseline decision's gross principal.
+That made the first wrong step appear before prompt assembly and weakened the claim
+that binding the missing variable alone repairs the demonstrated defect.
+
+The historical affordability fixture now consumes the grants from the eligibility
+result and calculates net principal independently of the baseline decision. For the
+EUR 45,000 / EUR 40,000 flagship, it records EUR 39,000 and `within_line=true`, while
+the baseline generation still receives no bulletin and rejects EUR 45,000. The
+first divergence is therefore the decision's missing policy context. Tests include
+an exact-line approval, still-unaffordable net principal, above-cap BEV, PHEV, ICE,
+pre-effective applications and a future effective date. Live operations are unchanged.
+
+The deliberate re-freeze preserves all 3,344 golden records and changes only the
+300 `compute_affordability` observations: their correct policy-derived values and
+explicit `execution=generated_history` metadata. No seeded project was changed or
+re-imported; final native diagnosis must be rehearsed on a fresh target. The first
+native investigation remains evidence of the defect found, not final acceptance.
