@@ -1,34 +1,37 @@
 # Missing policy binding — verification record
 
-Current change: Depot tickets [357](https://github.com/borismichel/langfuse-demo-depot/issues/357), [358](https://github.com/borismichel/langfuse-demo-depot/issues/358), [359](https://github.com/borismichel/langfuse-demo-depot/issues/359). This record separates evidence from completion claims. Earlier September records tested the instruction-based story and do not verify this repair.
+Updated 19 October 2026 after release and ordinary Depot delivery. Tickets [357](https://github.com/borismichel/langfuse-demo-depot/issues/357), [358](https://github.com/borismichel/langfuse-demo-depot/issues/358) and [359](https://github.com/borismichel/langfuse-demo-depot/issues/359) are closed. The documentation refresh carries forward the unchanged v0.8.0 execution evidence below; it does not claim another model rehearsal.
 
-## Candidate identity
+## Released identity
 
-- Candidate package version is 0.8.0; release publication and signed-image admission remain pending.
-- Core dependency: immutable `501519ec77ed885d594fb8270c44890ced40abd6`, package version 5.0.0; shared CI workflow separately remains v5.0.0.
-- Langfuse Python SDK is pinned to `5.0.1`; record the installed version with each live/release run.
-- Default task model: Anthropic `claude-sonnet-4-6`, 512 output tokens, shared Decision schema. Native UI settings must be selected explicitly.
-- Source revision, project, prompt/dataset/evaluator versions, image digest and deployment IDs belong to each completed run below; unexecuted gates have no invented identifiers.
+- EV **v0.8.0**, source **9c6410f1bfd1fe7ac2c91fb7916eeca9355cdbc7**.
+- Signed image `ghcr.io/borismichel/langfuse-synth-ev@sha256:e140f66a20393f83e2c1e304b26586dba9e3964cf50f6cdce8a9d6f8eafdc89d`.
+- Core **501519ec77ed885d594fb8270c44890ced40abd6**, package 5.0.0; Langfuse Python SDK **5.0.1**.
+- Ordinary deployment **697035a5-c5a2-4c32-97a1-6a4652e19258**; [project](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k); Cloud **4.64.0**. Seed 42, 120 traces over 30 days, as-of 2026-10-19, ambient incidents disabled, 1,354 imported events.
+- The reference project's `production` label now selects v2. New deployments start with the baseline; existing histories remain intact.
 
 ## Evidence and gates
 
-| Gate | Status | Scope/evidence |
+| Gate | Status | Scope and evidence |
 |---|---|---|
-| Accepted failure mechanism | Passed | Retrieved amendment omitted by baseline template; candidate adds `policy_updates`. Three complete input fields and the same system/model/schema are preserved. |
-| Portable prototype evidence | Passed | [357 evidence](evidence/357-policy-context/README.md), labelled direct-provider simulation. |
-| Implemented-kit provider trial | Passed | [24 calls](evidence/359-implemented-model/README.md): valid24/24, baseline policy-correct4/12, candidate12/12. Not native UI proof. |
-| Self-contained runbook | Implemented | Generated from saved anchors with evaluator source, response schema, three-field reviewed cases, source-linked curation, rule recipe and recovery. Test execution of its embedded evaluator uses overridden saved policy constants. |
-| Blocking offline gates | Passed on reviewed integration plus evidence changes | 194 tests passed, including deterministic/golden checks; manifest validation passed; established advisory conformance passed with the two inherited findings below. |
-| Strict authoring readiness | Pending migration | Two inherited advisory findings: root health path and legacy Companion factory. Strict `local_ready:false` is retained; no broad adapter migration in this change. |
-| Halo and native UI rehearsal | Partial, actual evidence captured | [Native record](evidence/359-native-ui/README.md): eight-item native baseline 4/8 versus candidate 8/8; Halo-created nine-item cohort baseline 4/9 versus candidate 9/9 with all 18 automatic scores independently verified and identical frozen settings. Corrected fresh-project Halo diagnosis identifies the final generation omission. Corrected local live monitoring is verified below; signed-release admission and Depot delivery remain pending. |
-| Automatic live policy scores | Passed local Companion rehearsal | Corrected EV bcfe894 / core 501519: baseline v1 false, promoted eligible v2 true, PHEV rejection v2 true. Each has exactly 4 observations, 1 generation/usage record and 1 automatic EVAL score; no feedback required. Earlier duplicated provider span is retained as a resolved finding. [Exact evidence](evidence/359-native-ui/README.md#corrected-live-comparison-and-promotion). |
-| Immutable release and signed image | Pending | No new tag or digest yet. |
-| Admission and catalog pin | Pending | Must identify exact reviewed artifact. Existing deployments stay pinned. |
-| Ordinary fresh Depot deployment | Pending | Must verify delivered artifacts and real Companion turn through the new catalog pin. |
+| Failure mechanism | Passed | Baseline omits retrieved `policy_updates`; candidate adds only that binding, with identical system/model/schema. |
+| Direct-provider trial | Passed | [24 calls](evidence/359-implemented-model/README.md): valid 24/24, baseline 4/12, candidate 12/12. Separate from native UI evidence. |
+| Offline checks for v0.8.0 | Passed | 194 kit tests, manifest validation and established advisory conformance. |
+| Strict authoring readiness | Pending inherited migration | `local_ready:false`: root health path and legacy Companion factory findings. No claim that these were fixed by this story or documentation change. |
+| Signed release | Passed | Immutable source and digest above; signature verification retained with admission. |
+| Admission | Passed | Run **48a08fd7-ffda-401e-ba6a-d8ae7f4b6582**, six gates, separate disposable target. First failed naming-guard attempt retained; zero events imported there. |
+| Catalog and ordinary delivery | Passed | Catalog PR360 merged; ordinary probe/plan/seed/verify succeeded, nine artifacts readable and deployed Companion inspected. |
+| Halo | Passed for investigation and curation | Neutral diagnosis cites omitted compiled context. One reserved item added to existing cohort, then independently read back. New-dataset creation is not claimed for this final project. |
+| Playground | Passed with retained setup failures | Five valid pairs per version; baseline rejects at €45,000, candidate approves at €39,000. Two earlier empty-object schema-setup outputs retained separately. |
+| Native Prompt Experiments | Passed | [Comparison](https://cloud.langfuse.com/project/cmvfnhw3l00cyad0miroa0t9k/experiments/results?baseline=cmvfnu53u00dgad0elletj4pa&c=cmvfnvpen00qgad0e9zbn9txv): v1 **4/9**, v2 **9/9**, all 18 automatic scores and monetary outputs verified against frozen version **2026-10-19T19:39:47.535Z**. |
+| Automatic live scores | Passed | Undisputed baseline false, eligible promoted v2 true, PHEV rejection v2 true. Four observations, one generation/usage record and one agent score per trace; all four incoming-rule filters inspected. |
+| Documentation refresh | Current source and captures | [Fresh screenshots](img/presenter-20261019/README.md) and revised runbook use the final same-project evidence. Any later documentation-only release has its own admission/delivery receipt; it does not change this v0.8.0 execution identity. |
 
-## Known UI behavior
+The [complete delivery record](https://github.com/borismichel/langfuse-demo-depot/blob/b294cbe418eb03b5a66fbbbc6e6a8abe9d892aac/docs/release-evidence/ev-context-359/delivery/README.md) contains sanitized receipts, exact object IDs, both reviews, per-item readbacks and image provenance. A screenshot is supporting evidence, not a replacement for score coverage.
 
-On the current Cloud rehearsal target, opening a managed prompt in a fresh Playground selected the organization's default `Anthropic:claude-sonnet-5` and left structured output unselected. This is setup behavior, not evidence of a model run. The runbook requires explicitly choosing the intended model, token limit and shared schema in each window and confirming the same settings in native experiments.
+## Current UI setup checks
+
+Choose Sonnet 4.6, 512 output tokens and the same six-field structured output schema explicitly in each Playground window and native experiment. Temperature was omitted in both final runs. A fresh Playground may select the connection's default model and no schema. Save and reopen the schema to verify the complete definition persisted before running; an empty-object output is not a valid comparison. Native experiments must explicitly select `policy_correctness`.
 
 ## First native rehearsal attempt — retained finding
 

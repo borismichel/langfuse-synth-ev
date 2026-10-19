@@ -36,8 +36,14 @@ assets:
       title: "Policy evaluation setup"
     - path: docs/live-policy-verification.md
       title: "Live policy verification"
+    - path: docs/ev-context-verification.md
+      title: "Release verification"
+    - path: docs/img/presenter-20261019/README.md
+      title: "Presenter screenshots"
   screenshots:
-    - docs/evidence/359-native-ui/live-baseline-corrected.png
+    - docs/img/presenter-20261019/native-comparison.png
+    - docs/img/presenter-20261019/playground-results.png
+    - docs/img/presenter-20261019/live-policy-score.png
 
 target:
   project_hint: "demo"

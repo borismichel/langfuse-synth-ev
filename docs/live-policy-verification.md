@@ -1,5 +1,7 @@
 # Fresh decisions after promotion — portal #236
 
+Current release evidence: [19 October verification and delivery](ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 This is a standalone live rehearsal, independent of the full Presenter Runbook.
 Use the native `policy_correctness` evaluator from `POLICY_EVALUATOR.py`. It checks
 list price, approved line, grant, principal and decision; a correct rejection can pass. Project access and
@@ -7,7 +9,7 @@ successful hosted execution are prerequisites for claiming Cloud completion.
 
 See the [10 September 2026 verification record](https://github.com/borismichel/langfuse-synth-ev/blob/09547dd2d42d5898b3a884313765c68d79febed0/docs/live-policy-verification-results.md)
 for the prior instruction-based demo only, including retained model failures.
-It does not verify the current missing-binding repair; record a new rehearsal for this release.
+It does not verify the current missing-binding repair; the completed release rehearsal is linked above. Rehearse each new target with its own policy constants.
 
 ## Prepare the deployment and rule
 
@@ -59,7 +61,7 @@ incoming rule fires without manual batch evaluation or customer feedback.
 1. With the rule active and production still on the baseline, submit the same
    eligible application. Record its new trace and `credit_agent` observation ID,
    input, policy, output, prompt version and eventual native policy score. Do
-   not click Dispute or start a manual evaluation. Confirm one completed score
+   not click Request a review or start a manual evaluation. Confirm one completed score
    for that observation and the selected evaluator. A stale grant decision
    should produce `false`, with incorrect amounts identified in its explanation.
 2. In Langfuse Prompt Management, move the `production` label **once** to the

@@ -1,5 +1,7 @@
 # EV demo — implementation specification
 
+Current release evidence: [19 October verification and delivery](docs/ev-context-verification.md). The released-image rehearsal in Cloud 4.64.0 includes Halo curation, five valid Playground pairs, native policy scores **4/9 → 9/9** and automatic live baseline/candidate/control scores. Use the generated Presenter Runbook for this deployment’s links and policy constants.
+
 Current contract, 19 October 2026. This replaces the initial instruction-based design. The original specification remains in [the v0.7.2 source history](https://github.com/borismichel/langfuse-synth-ev/blob/2bb50460c584992bb42abbc91d383c18ae4f7dde/langfuse-demo-synth-spec.md); its prompt text and SDK-first presenter journey do not describe this repair.
 
 ## Purpose
