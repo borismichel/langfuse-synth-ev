@@ -75,6 +75,8 @@ All three have exactly four application observations, one generation, one usage 
 
 ![Fresh promoted eligible approval in the Companion](live-candidate.png)
 
+![Langfuse trace showing the promoted decision, four observations and its automatic true policy score](live-candidate-langfuse.png)
+
 ![Fresh PHEV rejection control in the Companion](live-control.png)
 
 `live-ending-checks.json`, `live-*-checks.json`, prompt readback and the observation/score exports preserve the verification. The first five-observation baseline remains separately archived. Native eight- and nine-case comparisons include the qualifying-but-still-unaffordable control; the live rejection shown here is PHEV. The live UI loop was executed once per corrected flagship version, with the earlier baseline and direct-provider repetitions recorded separately; five repeated native Playground pairs are not claimed.

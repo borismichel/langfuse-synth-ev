@@ -4,7 +4,7 @@ Current change: Depot tickets [357](https://github.com/borismichel/langfuse-demo
 
 ## Candidate identity
 
-- Package version remains 0.7.2 during implementation; no new release is claimed here.
+- Candidate package version is 0.8.0; release publication and signed-image admission remain pending.
 - Core dependency: immutable `501519ec77ed885d594fb8270c44890ced40abd6`, package version 5.0.0; shared CI workflow separately remains v5.0.0.
 - Langfuse Python SDK is pinned to `5.0.1`; record the installed version with each live/release run.
 - Default task model: Anthropic `claude-sonnet-4-6`, 512 output tokens, shared Decision schema. Native UI settings must be selected explicitly.

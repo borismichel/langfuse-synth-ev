@@ -434,6 +434,20 @@
       "source_sha256": "c54e4cc97bdb0592dc18a80739d3581c6acbca4ea742417327f3a69ba261104c",
       "source": "final-rehearsal/live-baseline-after-promotion-scores.json",
       "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-langfuse.png",
+      "sha256": "bc3aba07f0b2855c3f22473311a8919083fa1287f4390f611e5e42bd8d7be148",
+      "source_sha256": "bc3aba07f0b2855c3f22473311a8919083fa1287f4390f611e5e42bd8d7be148",
+      "source": "native-evidence/live-candidate-langfuse.png",
+      "redacted_paths": []
+    },
+    {
+      "file": "live-candidate-langfuse.txt",
+      "sha256": "0208df26361aba6026087f171269ec6906b93eada867065c399e043836c27e50",
+      "source_sha256": "0208df26361aba6026087f171269ec6906b93eada867065c399e043836c27e50",
+      "source": "native-evidence/live-candidate-langfuse.txt",
+      "redacted_paths": []
     }
   ],
   "credentials_included": false,
