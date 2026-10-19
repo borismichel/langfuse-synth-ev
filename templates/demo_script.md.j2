@@ -287,6 +287,20 @@ Create and activate the incoming-observation rule only after reviewing these mat
 - If a score is pending, inspect execution state and allow ingestion to settle. An execution error, missing score and false policy score are separate outcomes.
 - Record every attempt in rehearsal, including five flagship comparisons per version and the genuine rejection controls. A retry does not replace an earlier failure. Record project/version, kit/core/SDK/model, dataset timestamp, prompt versions, settings, schema, rule/evaluator URLs and actual outputs. Link screenshots only after capturing those exact objects.
 
+## Rehearsal reference — 19 October 2026
+
+These are actual Cloud v4.63.0 rehearsal captures, pinned to an immutable evidence commit. They identify the two isolated rehearsal projects, not this deployment's objects. Use the deployment links and saved policy above for the live presentation. The first project's Halo-created nine-item comparison scored baseline **4/9** and candidate **9/9**, with all 18 native scores verified. The second fresh project supplied corrected-history diagnosis and the monitored live promotion: baseline false, candidate true, PHEV rejection true.
+
+![Halo's corrected diagnosis in the fresh verification project](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/halo-corrected-diagnosis.png)
+
+![Native comparison on the Halo-created nine-item dataset](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/halo-nine-comparison.png)
+
+![Fresh eligible approval after production promotion](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/live-candidate.png)
+
+![Fresh PHEV rejection control after promotion](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/live-control.png)
+
+The [complete rehearsal record](https://github.com/borismichel/langfuse-synth-ev/blob/a4446bda03894d6b66e4aff00d35d72c4993fe0b/docs/evidence/359-native-ui/README.md) retains the failed multi-item Halo writes, corrected historical affordability defect, initial duplicate provider telemetry, exact settings and source-linked outputs. Screenshots alone do not replace per-item score checks. Release admission and ordinary Depot delivery have separate evidence.
+
 ## Reset
 
 Teardown is project-level. Create a fresh demo project and re-run the seed with the same configuration and date anchor; the seed is deterministic.

@@ -36,6 +36,8 @@ assets:
       title: "Policy evaluation setup"
     - path: docs/live-policy-verification.md
       title: "Live policy verification"
+  screenshots:
+    - docs/evidence/359-native-ui/live-baseline-corrected.png
 
 target:
   project_hint: "demo"
