@@ -25,5 +25,8 @@ def prepare_decision_request(prompt: Any, variables: dict[str, str], provider: s
         parameters["temperature"] = 0
     kwargs = {"system": "\n\n".join(message["content"] for message in messages
                                      if message["role"] == "system"),
-              "messages": turns, "response_schema": decision_schema(), **parameters}
+              "messages": turns, "response_schema": decision_schema(),
+              # Both callers own the decision generation; an SDK auto-span would
+              # count the same model usage twice. This is scoped to this call.
+              "provider_tracing": False, **parameters}
     return DecisionRequest(messages=messages, parameters=parameters, kwargs=kwargs)

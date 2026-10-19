@@ -182,6 +182,7 @@ def test_sdk_experiment_and_companion_record_the_same_effective_model_request():
                 assert trace["model_parameters"] == expected_parameters
                 assert {key:request[key] for key in expected_parameters} == expected_parameters
                 assert trace["metadata"]["response_schema"] == request["response_schema"]
+                assert request["provider_tracing"] is False
                 assert [m for m in trace["input"] if m["role"]!="system"] == request["messages"]
                 assert "\n\n".join(m["content"] for m in trace["input"] if m["role"]=="system") == request["system"]
                 assert request["messages"]  # system-only prompts get an observable application fallback

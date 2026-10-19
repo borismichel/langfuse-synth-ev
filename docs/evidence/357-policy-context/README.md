@@ -86,3 +86,25 @@ The deliberate re-freeze preserves all 3,344 golden records and changes only the
 explicit `execution=generated_history` metadata. No seeded project was changed or
 re-imported; final native diagnosis must be rehearsed on a fresh target. The first
 native investigation remains evidence of the defect found, not final acceptance.
+
+## Provider SDK observation correction
+
+Actual Companion readback found that Anthropic SDK 1.15 emitted an automatic
+`anthropic.messages.create` child under the manually recorded decision. Both
+observations carried the same 664 input / 96 output tokens, duplicating usage and
+cost. The manual generation remains the authoritative decision observation because
+it includes the managed prompt association, exact input, validation and outcome.
+
+Both EV manual wrappers now request `provider_tracing=False` through the shared
+completion client. Core uses the provider's public client-copy option for that
+call; it does not change global tracing or filter unrelated observations. This
+follows the [Anthropic SDK telemetry guidance](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk)
+for SDK calls already traced by another library. The shared-core option defaults
+to the previous behavior for other callers and preserves older SDK compatibility.
+
+The regression test executes the real Anthropic SDK with a local HTTP fixture and
+the real Langfuse exporter. It first reproduced the fifth span, then verified the
+correct four-observation graph, one usage record and the prompt link. A subsequent
+standalone call on the original SDK client still exports its automatic span,
+proving tracing was disabled only for the manually instrumented request. Updated
+live readback remains a separate check; no historical fixture/golden changed.

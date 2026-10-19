@@ -101,3 +101,55 @@ def test_exported_decision_preserves_policy_evidence_and_prompt(
     assert generation["langfuse.observation.model.name"] == cfg.model_by_role("work").name
     assert generation["langfuse.observation.prompt.name"] == "credit_decision"
     assert generation["langfuse.observation.prompt.version"] == prompt.version
+
+
+def test_real_anthropic_sdk_does_not_duplicate_manually_recorded_decision(monkeypatch):
+    """Real provider SDK + HTTP fixture catches auto-spans hidden by completion fakes."""
+    import anthropic
+    import httpx2
+    from opentelemetry.sdk.trace import TracerProvider
+    from langfuse_synth_core.companion.llm import LLMClient
+    from synth.seed.prompts import chat_prompt
+
+    cfg = load_config("config/demo.yaml")
+    app = Application(applicant_id="sdk-tracing", approved_line_eur=40000,
+        vehicle={"type":"BEV", "list_price_eur":45000}, application_date="2026-06-05")
+    rule = GrantRule(effective_date="2026-06-02")
+    decision = decide(app,"v1",rule=rule)
+    provider = TracerProvider()
+    exported = InMemorySpanExporter()
+    sdk = anthropic.Anthropic(api_key="test-key", max_retries=0,
+        open_telemetry={"tracer_provider":provider},
+        http_client=httpx2.Client(transport=httpx2.MockTransport(lambda request: httpx2.Response(
+            200, json={"id":"msg_test", "type":"message", "role":"assistant",
+                "model":"claude-sonnet-4-6", "content":[{"type":"text", "text":decision.model_dump_json()}],
+                "stop_reason":"end_turn", "stop_sequence":None,
+                "usage":{"input_tokens":664,"output_tokens":96}}))))
+    monkeypatch.setattr(anthropic,"Anthropic",lambda **kwargs:sdk)
+    client = Langfuse(base_url="http://langfuse.test", public_key=f"pk-test-{uuid.uuid4()}",
+        secret_key="sk-test", tracer_provider=provider, span_exporter=exported,
+        httpx_client=httpx.Client(transport=httpx.MockTransport(
+            lambda request: (_ for _ in ()).throw(AssertionError("Unexpected Langfuse HTTP")))))
+    prompt = ChatPromptClient(ChatPrompt(name="credit_decision",version=1,
+        prompt=chat_prompt("v1"),config={},labels=[],tags=[]))
+    try:
+        emitter = LiveEmitter("http://langfuse.test",client=client)
+        actual, _ = emit_live_trace(emitter,cfg,application=app,rule=rule,
+            llm=LLMClient("anthropic","claude-sonnet-4-6"),prompt=prompt)
+        assert actual == decision
+        spans = exported.get_finished_spans()
+        assert sorted(span.name for span in spans) == sorted([
+            TRACE_NAME,"credit_agent","retrieve_policy","decision"])
+        generation = next(span for span in spans if span.name=="decision")
+        assert json.loads(generation.attributes["langfuse.observation.usage_details"]) == {
+            "input":664,"output":96}
+        assert generation.attributes["langfuse.observation.prompt.version"] == 1
+        # The SDK client remains instrumented for work outside the EV manual wrapper.
+        exported.clear()
+        sdk.messages.create(model="claude-sonnet-4-6",max_tokens=512,
+            messages=[{"role":"user","content":"Independent call"}])
+        client.flush()
+        assert [span.name for span in exported.get_finished_spans()] == ["anthropic.messages.create"]
+    finally:
+        client.shutdown()
+        sdk.close()
