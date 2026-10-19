@@ -1,0 +1,63 @@
+{
+  "data": [
+    {
+      "id": "cmvfie26t0cmdad0jj1z90uym",
+      "name": "EV Halo cohort v2 - 2026-10-19T17:08:58.211Z",
+      "description": "Same nine Halo-created items and fixed snapshot as v1. Only prompt changes; Sonnet4.6, max512, shared schema and policy_correctness.",
+      "startTime": "2026-10-19T17:09:04.399Z",
+      "endTime": "2026-10-19T17:09:29.974Z",
+      "itemCount": 9,
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T17:01:20.376Z",
+        "experiment_name": "EV Halo cohort v2",
+        "experiment_run_name": "EV Halo cohort v2 - 2026-10-19T17:08:58.211Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    },
+    {
+      "id": "cmvfiby6j0djtad0emyczprwi",
+      "name": "EV Halo cohort v1 - 2026-10-19T17:07:20.272Z",
+      "description": "Nine Halo-created items; fixed snapshot; baseline missing policy_updates binding. Same Sonnet4.6, max512, schema and policy_correctness as v2.",
+      "startTime": "2026-10-19T17:07:25.864Z",
+      "endTime": "2026-10-19T17:07:52.631Z",
+      "itemCount": 9,
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T17:01:20.376Z",
+        "experiment_name": "EV Halo cohort v1",
+        "experiment_run_name": "EV Halo cohort v1 - 2026-10-19T17:07:20.272Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    }
+  ],
+  "meta": {}
+}

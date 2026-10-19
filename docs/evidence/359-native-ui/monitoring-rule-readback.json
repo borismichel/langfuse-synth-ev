@@ -1,0 +1,48 @@
+{
+  "id": "cmvfi7pmt0cavad0gjq3jitpp",
+  "name": "ev_live_decision_e0cdd042c419f012",
+  "createdBy": null,
+  "enabled": true,
+  "sampling": 1,
+  "filter": [
+    {
+      "type": "stringOptions",
+      "column": "name",
+      "operator": "any of",
+      "value": [
+        "credit_agent"
+      ]
+    },
+    {
+      "type": "stringOptions",
+      "column": "type",
+      "operator": "any of",
+      "value": [
+        "AGENT"
+      ]
+    },
+    {
+      "type": "stringOptions",
+      "column": "environment",
+      "operator": "any of",
+      "value": [
+        "production"
+      ]
+    },
+    {
+      "type": "stringObject",
+      "column": "metadata",
+      "operator": "=",
+      "value": "ev_live_decision_e0cdd042c419f012",
+      "key": "evaluation_scope"
+    }
+  ],
+  "evaluatorAssignments": [
+    {
+      "evaluatorId": "cmvfi73x40dgiad0ep3ldn4og",
+      "variableMapping": null
+    }
+  ],
+  "createdAt": "2026-10-19T17:04:08.069Z",
+  "updatedAt": "2026-10-19T17:04:08.069Z"
+}

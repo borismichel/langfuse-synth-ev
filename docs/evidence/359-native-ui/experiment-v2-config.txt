@@ -1,0 +1,52 @@
+Browser tab: 508524247, Title: "Datasets | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhehyc0dnmad0ea6l3y621/experiments".
+0 AXWebArea Datasets | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhehyc0dnmad0ea6l3y621/experiments
+	1 container
+		41 container Run Experiment, ID: radix-_r_64u_
+			42 container
+				43 heading Run Experiment, Value: 2, ID: radix-_r_64v_
+					44 text Run Experiment
+				45 container radix-_r_650_
+					46 text Run an experiment to evaluate prompts and model configurations against a dataset. See
+					47 link Description: documentation, Value: langfuse.com/docs/evaluation/dataset-runs/native-run
+					48 text to learn more.
+				49 button Close
+			50 container
+				51 container breadcrumb
+					52 content list
+						53 link Prompt & Model
+							54 text Prompt & Model
+						55 link Dataset
+							56 text Dataset
+						69 link Evaluators
+							70 text Evaluators
+						71 link Experiment run details
+							72 text Experiment run details
+						73 link (disabled) Review
+							74 text Review
+				75 heading Review & Run, Value: 3
+					76 text Review & Run
+				77 text Review your experiment configuration before running it. You can go back to any step to make changes.
+				78 heading Prompt, Value: 3
+					79 text Prompt
+				80 text Name: credit_decision Version: v 2
+				81 heading Model, Value: 3
+					82 text Model
+				83 text Provider: Anthropic Model: claude-sonnet-4-6 Max Tokens: 512 Structured Output: ev_credit_decision
+				84 heading Dataset, Value: 3
+					85 text Dataset
+				86 text Name: ev-grant-disputed-rejections-demo Items: 8
+				87 heading Evaluators (1), Value: 3
+					88 text Evaluators ( 1 )
+				89 text policy_correctness
+				90 heading Experiment Run Details, Value: 3
+					91 text Experiment Run Details
+				92 text Experiment Name: EV policy candidate v2 — native 2026-10-19 Run Name: EV policy candidate v2 — native 2026-10-19 - 2026-10-19T16:59:47.431Z
+				93 image
+				94 text Description: Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.
+				66 button Previous
+				67 button Run Experiment
+			68 button Close
+		39 container Notifications alt+T
+		40 text Datasets | Langfuse
+
+The focused UI element is 67 button Run Experiment

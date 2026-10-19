@@ -1,0 +1,21 @@
+Browser tab: 508524253, Title: "Langfuse Bank — EV Auto Loans", URL: "http://127.0.0.1:56686/submit".
+1 AXWebArea Langfuse Bank — EV Auto Loans, URL: 127.0.0.1:56686/submit
+	2 text LANGFUSE BANK · LENDING DECISION
+	3 container
+		4 text DECLINED REF 192683
+	5 text The amount financed exceeds your pre-approved credit line.
+	6 text EV purchase grant applied
+	7 text €0
+	8 text Amount financed
+	9 text €45,000
+	10 text Vehicle price / your line
+	11 text €45,000 / €40,000
+	12 text Decision record
+	13 link Description: view →, Value: cloud.langfuse.com/project/cmvfhtkwo0dw0ad0e3t9ybrvm/traces/192683211d73d9ba33af7de7500d540d
+	14 container
+		15 text REVIEW REQUEST
+		16 text entry area (settable)
+		17 button Request a review
+	18 link Description: New application, Value: 127.0.0.1:56686/
+
+The focused UI element is 1 AXWebArea Langfuse Bank — EV Auto Loans, URL: 127.0.0.1:56686/submit

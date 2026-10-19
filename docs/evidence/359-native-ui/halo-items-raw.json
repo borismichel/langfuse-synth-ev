@@ -1,0 +1,315 @@
+{
+  "data": [
+    {
+      "id": "evpr-08-control-ice",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:01:20.377Z",
+      "updatedAt": "2026-10-19T17:01:20.377Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_control_ice\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"ICE\",\"list_price_eur\":35000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+        "decision": "approve",
+        "list_price_eur": 35000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 35000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "control_ice",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:01:20.376Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-07-eligible-already-affordable",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:01:08.994Z",
+      "updatedAt": "2026-10-19T17:01:08.994Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_eligible_already_affordable\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":39000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+        "decision": "approve",
+        "list_price_eur": 39000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 33000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "eligible_already_affordable",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "46efe820-e51c-517e-8759-a34a9fdaa312",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:01:08.993Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-06-cap-date-line-equal",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:00:59.686Z",
+      "updatedAt": "2026-10-19T17:00:59.686Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_cap_date_line_equal\",\"approved_line_eur\":44000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+        "decision": "approve",
+        "list_price_eur": 50000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 44000,
+        "financed_principal_eur": 44000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "cap_date_line_equal",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "e3a98e84-8aed-5438-92cd-d4497a14f4a1",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:00:59.685Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-05-grant-still-above-line",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:00:50.237Z",
+      "updatedAt": "2026-10-19T17:00:50.237Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_grant_still_above_line\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":49000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+        "decision": "reject",
+        "list_price_eur": 49000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 43000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "grant_still_above_line",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:00:50.236Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-04-cap-above",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:00:41.079Z",
+      "updatedAt": "2026-10-19T17:00:41.079Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_cap_above\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":50001},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+        "decision": "reject",
+        "list_price_eur": 50001,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 50001
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "cap_above",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:00:41.078Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-03-control-phev",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:00:32.353Z",
+      "updatedAt": "2026-10-19T17:00:32.353Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_control_phev\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"PHEV\",\"list_price_eur\":45000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "control_phev",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:00:32.352Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-02-date-before",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T17:00:21.464Z",
+      "updatedAt": "2026-10-19T17:00:21.464Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_date_before\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":45000},\"application_date\":\"2026-10-11\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+        "decision": "reject",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 0,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 45000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "date_before",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T17:00:21.463Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-09-reserved-bc4afcbe",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": "bc4afcbe0e4090193a387b52af8d8229",
+      "sourceObservationId": "e6ac976ced90f67b",
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T16:59:01.147Z",
+      "updatedAt": "2026-10-19T16:59:01.147Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"anon_0029\",\"approved_line_eur\":38500,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":40000},\"application_date\":\"2026-10-19\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 40000 - EUR 6000 = EUR 34000; <= EUR 38500.",
+        "decision": "approve",
+        "list_price_eur": 40000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 38500,
+        "financed_principal_eur": 34000
+      },
+      "metadata": {
+        "origin": "reserved synthetic seeded observation (not a real production model execution)",
+        "scenario": "disputed_false_negative",
+        "seeded_output": {
+          "decision": "reject",
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 40000
+        },
+        "source_prompt": "credit_decision v1",
+        "source_trace_id": "bc4afcbe0e4090193a387b52af8d8229",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 40000 - EUR 6000 = EUR 34000; <= EUR 38500.",
+        "source_session_id": "9b0c329a7b76d3c11519081b4b5d4888",
+        "expectation_status": "agent_reviewed_against_policy",
+        "grant_effective_date": "2026-10-12",
+        "source_observation_id": "e6ac976ced90f67b"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T16:59:01.146Z",
+      "mediaReferences": []
+    },
+    {
+      "id": "evpr-01-false-negative",
+      "datasetId": "cmvfhrsli0du7ad0jmlssr03o",
+      "sourceTraceId": null,
+      "sourceObservationId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-19T16:56:01.015Z",
+      "updatedAt": "2026-10-19T16:56:01.015Z",
+      "input": {
+        "handbook": "{\"content\": \"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\", \"document_id\": \"LENDING-1\", \"effective_date\": \"2026-04-15\", \"published_date\": \"2026-04-15\", \"title\": \"Vehicle lending handbook\"}",
+        "application": "{\"applicant_id\":\"demo_false_negative\",\"approved_line_eur\":40000,\"vehicle\":{\"type\":\"BEV\",\"list_price_eur\":45000},\"application_date\":\"2026-10-12\"}",
+        "policy_updates": "[{\"content\": \"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\", \"document_id\": \"BULLETIN-EV-1\", \"effective_date\": \"2026-10-12\", \"published_date\": \"2026-10-05\", \"title\": \"Vehicle purchase programme amendment\"}]"
+      },
+      "expectedOutput": {
+        "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+        "decision": "approve",
+        "list_price_eur": 45000,
+        "applied_grant_eur": 6000,
+        "approved_line_eur": 40000,
+        "financed_principal_eur": 39000
+      },
+      "metadata": {
+        "source": "hand-worked fictional policy cases",
+        "scenario": "false_negative",
+        "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+        "copied_from_dataset": "ev-grant-disputed-rejections-demo",
+        "copied_from_item_id": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+        "grant_effective_date": "2026-10-12"
+      },
+      "datasetName": "ev-policy-review",
+      "version": "2026-10-19T16:56:01.014Z",
+      "mediaReferences": []
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 100,
+    "totalItems": 9,
+    "totalPages": 1
+  }
+}

@@ -1,0 +1,799 @@
+{
+  "data": [
+    {
+      "id": "f5395f91-db9a-536d-836b-9f9508cd9a18",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:30.212Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:31.000Z",
+      "updatedAt": "2026-10-19T17:09:30.282Z",
+      "comment": "Policy correct: grant EUR 6000; 45000 - 6000 = 39000; principal <= line 40000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "40b650228371a3b39df5750c1307fc43",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "5dc5ecc31cc856b7fcc57359b50bc218",
+        "target_observation_id": "db00f5521fd59f31",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "db00f5521fd59f31",
+        "traceId": "5dc5ecc31cc856b7fcc57359b50bc218"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "5d453346-75a2-5e83-b4d3-cd703a373c8e",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:27.382Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:28.000Z",
+      "updatedAt": "2026-10-19T17:09:27.461Z",
+      "comment": "Policy correct: grant EUR 6000; 40000 - 6000 = 34000; principal <= line 38500: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 40000,
+          "approved_line_eur": 38500,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 34000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "3fa574441996609efe1c24b36a064458",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "8e1499a53ae6d09d48a76a5a22dca1a1",
+        "target_observation_id": "b368d28ba9fb368f",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "b368d28ba9fb368f",
+        "traceId": "8e1499a53ae6d09d48a76a5a22dca1a1"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "62914eeb-a51a-508b-9830-e78c5ca33e68",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:24.285Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:25.000Z",
+      "updatedAt": "2026-10-19T17:09:24.365Z",
+      "comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "7c88125507a7db3bfd79b68770bbc004",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "79b9186b5e2f45f82be94aaac9ccf0c2",
+        "target_observation_id": "7d0e356fa489df23",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "7d0e356fa489df23",
+        "traceId": "79b9186b5e2f45f82be94aaac9ccf0c2"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "d4775dec-f7c1-5d98-8d68-db0262c358ae",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:21.424Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:22.000Z",
+      "updatedAt": "2026-10-19T17:09:21.503Z",
+      "comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "3af23407de28441ba9baa0626f1dbe5d",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "238318c400fa969e92555f08caafbfd2",
+        "target_observation_id": "ac6115fdbae45fbd",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "ac6115fdbae45fbd",
+        "traceId": "238318c400fa969e92555f08caafbfd2"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "e16130ba-6374-5667-9ca1-6392233c157d",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:18.368Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:19.000Z",
+      "updatedAt": "2026-10-19T17:09:18.451Z",
+      "comment": "Policy correct: grant EUR 0; 50001 - 0 = 50001; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 50001,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "afe77d9abc0cb65e85f10e040e8bef83",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "921684abfaa9082afbc039e899bc314d",
+        "target_observation_id": "d3ac5c01905bdbd2",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "d3ac5c01905bdbd2",
+        "traceId": "921684abfaa9082afbc039e899bc314d"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "9e203c07-e49c-5beb-ae91-c5c591f75d78",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:15.599Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:16.000Z",
+      "updatedAt": "2026-10-19T17:09:15.669Z",
+      "comment": "Policy correct: grant EUR 6000; 49000 - 6000 = 43000; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 49000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 43000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "0ce43bd0e3321cd1c53951809746dbde",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "428acd0edcc7c023816cd493d704d957",
+        "target_observation_id": "fbb2f2be6b10f743",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "fbb2f2be6b10f743",
+        "traceId": "428acd0edcc7c023816cd493d704d957"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "068caec2-7f16-5549-9c1f-55c55f806189",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:13.440Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:14.000Z",
+      "updatedAt": "2026-10-19T17:09:13.520Z",
+      "comment": "Policy correct: grant EUR 6000; 50000 - 6000 = 44000; principal <= line 44000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 50000,
+          "approved_line_eur": 44000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 44000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "c28f08b432b336728bddc918beb580af",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "8fca113f4b6a93a4785b9dd721f6d2c4",
+        "target_observation_id": "6eebd481eb4bf5aa",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "6eebd481eb4bf5aa",
+        "traceId": "8fca113f4b6a93a4785b9dd721f6d2c4"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "3f6207ed-31d9-5d06-ba7b-9c82562758d9",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:09.990Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:10.000Z",
+      "updatedAt": "2026-10-19T17:09:10.079Z",
+      "comment": "Policy correct: grant EUR 6000; 39000 - 6000 = 33000; principal <= line 40000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 39000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 33000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "fa9fd94bad5a16109198369e52779f4b",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "8216345e78e4f5a06cee6bb15a0db76b",
+        "target_observation_id": "09eb1ca9ff77e6e6",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "09eb1ca9ff77e6e6",
+        "traceId": "8216345e78e4f5a06cee6bb15a0db76b"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "ccccabdc-0f35-53ce-9d12-127bae2df210",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:09:07.135Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:09:08.000Z",
+      "updatedAt": "2026-10-19T17:09:07.208Z",
+      "comment": "Policy correct: grant EUR 0; 35000 - 0 = 35000; principal <= line 40000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 35000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "fb2c38ad42390aabf5c63db92ee60119",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "7a717c40454cb6ef817a73b34bd1f77b",
+        "target_observation_id": "45200df4ff53c61f",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "45200df4ff53c61f",
+        "traceId": "7a717c40454cb6ef817a73b34bd1f77b"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "e143b850-97c6-51ed-8e2b-54dd51a18c45",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:52.853Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:53.000Z",
+      "updatedAt": "2026-10-19T17:07:52.925Z",
+      "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 39000, got 45000; decision: expected approve, got reject",
+      "configId": null,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 39000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "35d27196c825ee9f58ef4e8f1c227758",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "34229d72dde1e46fcae9db3af501859d",
+        "target_observation_id": "5d095f8b111abc6f",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "5d095f8b111abc6f",
+        "traceId": "34229d72dde1e46fcae9db3af501859d"
+      },
+      "dataType": "BOOLEAN",
+      "value": false
+    },
+    {
+      "id": "4523deeb-2972-5e45-a7b8-7db5d37e3669",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:49.986Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:50.000Z",
+      "updatedAt": "2026-10-19T17:07:50.091Z",
+      "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 34000, got 40000; decision: expected approve, got reject",
+      "configId": null,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "list_price_eur": 40000,
+          "approved_line_eur": 38500,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 34000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "c189736b66528789f70ca04361d0106e",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "4aaa8339ed9124e23533855fdb388171",
+        "target_observation_id": "3b66f2767477568e",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "3b66f2767477568e",
+        "traceId": "4aaa8339ed9124e23533855fdb388171"
+      },
+      "dataType": "BOOLEAN",
+      "value": false
+    },
+    {
+      "id": "d008f3b3-f9d0-51e0-af0e-c9a7067382b3",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:46.821Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:47.000Z",
+      "updatedAt": "2026-10-19T17:07:46.892Z",
+      "comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "f4e9595978cea7fbc819d7359419c4e2",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "1fb51555f2851d12637309eddba9ff46",
+        "target_observation_id": "2069539dd56aa094",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "2069539dd56aa094",
+        "traceId": "1fb51555f2851d12637309eddba9ff46"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "16ba6be3-ffc7-5d4a-a135-37121e368b6e",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:43.954Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:44.000Z",
+      "updatedAt": "2026-10-19T17:07:44.059Z",
+      "comment": "Policy correct: grant EUR 0; 45000 - 0 = 45000; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 45000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 45000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "af13b8796d0e28eff24e8608d84ac517",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "3f93e3c7f3a3cf14e60da9c5f6bf2488",
+        "target_observation_id": "1e425a8409dc18c0",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "1e425a8409dc18c0",
+        "traceId": "3f93e3c7f3a3cf14e60da9c5f6bf2488"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "23859c51-4090-5d00-82f5-3590bb9da9e7",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:41.507Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:42.000Z",
+      "updatedAt": "2026-10-19T17:07:41.593Z",
+      "comment": "Policy correct: grant EUR 0; 50001 - 0 = 50001; principal > line 40000: reject.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 50001,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 50001,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "a25d52e34324403448ad9ac0a6615465",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "29b5fd6d32d4f708fac2e7ede3c1064f",
+        "target_observation_id": "4e02e82f9f0431c3",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "4e02e82f9f0431c3",
+        "traceId": "29b5fd6d32d4f708fac2e7ede3c1064f"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    },
+    {
+      "id": "e1371c79-0770-52f0-9d36-48740f0f6998",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:38.903Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:39.000Z",
+      "updatedAt": "2026-10-19T17:07:38.976Z",
+      "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 43000, got 49000",
+      "configId": null,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "list_price_eur": 49000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 43000,
+          "decision": "reject"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "5e1b4a21814eb4ef676e0071353ff997",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "391e59205c56b27db75dec21c4ab400f",
+        "target_observation_id": "433cd2c8cc7bf6ba",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "433cd2c8cc7bf6ba",
+        "traceId": "391e59205c56b27db75dec21c4ab400f"
+      },
+      "dataType": "BOOLEAN",
+      "value": false
+    },
+    {
+      "id": "166baf78-23e6-5b48-a374-309349684543",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:34.409Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:35.000Z",
+      "updatedAt": "2026-10-19T17:07:34.484Z",
+      "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 44000, got 50000; decision: expected approve, got reject",
+      "configId": null,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "list_price_eur": 50000,
+          "approved_line_eur": 44000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 44000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "12934ac0787038417c9fa6e4b099682f",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "db1cd97180f709c2777a6f882aca7ee2",
+        "target_observation_id": "4ef560fb4774526c",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "4ef560fb4774526c",
+        "traceId": "db1cd97180f709c2777a6f882aca7ee2"
+      },
+      "dataType": "BOOLEAN",
+      "value": false
+    },
+    {
+      "id": "85f8b119-ffe1-581d-a12b-d99f8c11fb72",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:31.894Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:32.000Z",
+      "updatedAt": "2026-10-19T17:07:32.042Z",
+      "comment": "applied_grant_eur: expected 6000, got 0; financed_principal_eur: expected 33000, got 39000",
+      "configId": null,
+      "metadata": {
+        "status": "policy_error",
+        "expected": {
+          "list_price_eur": 39000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 6000,
+          "financed_principal_eur": 33000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "4dd7456167e2e7db14606cd917b82069",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "874559772a18f0260fb0a5392eff3883",
+        "target_observation_id": "26d9b102720a2b8e",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "26d9b102720a2b8e",
+        "traceId": "874559772a18f0260fb0a5392eff3883"
+      },
+      "dataType": "BOOLEAN",
+      "value": false
+    },
+    {
+      "id": "f105de79-1924-592c-865c-34c92a11b1a5",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "name": "policy_correctness",
+      "source": "EVAL",
+      "timestamp": "2026-10-19T17:07:29.391Z",
+      "environment": "langfuse-prompt-experiment",
+      "createdAt": "2026-10-19T17:07:30.000Z",
+      "updatedAt": "2026-10-19T17:07:29.459Z",
+      "comment": "Policy correct: grant EUR 0; 35000 - 0 = 35000; principal <= line 40000: approve.",
+      "configId": null,
+      "metadata": {
+        "status": "pass",
+        "expected": {
+          "list_price_eur": 35000,
+          "approved_line_eur": 40000,
+          "applied_grant_eur": 0,
+          "financed_principal_eur": 35000,
+          "decision": "approve"
+        },
+        "policy": {
+          "amount_eur": 6000,
+          "price_cap_eur": 50000,
+          "effective_date": "2026-10-12"
+        },
+        "job_execution_id": "a7b594b1b20eff49091b5fb52e8dc717",
+        "job_configuration_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_id": "cmvfiaum80butad0kblqnyua6",
+        "evaluation_rule_assignment_id": "cmvfiaum80buwad0kaou7aeot",
+        "evaluator_version_id": "cmvfhs4s80dvmad0eomy24uoa",
+        "evaluator_id": "b38f6955-575e-4dc8-a116-f0672e2f6692",
+        "target_trace_id": "e5eca5e81befd03a305a1220d8ab37a9",
+        "target_observation_id": "59b8ca96279309c2",
+        "dispatcher_name": "aws-lambda",
+        "code_eval_runtime": "PYTHON"
+      },
+      "subject": {
+        "kind": "observation",
+        "id": "59b8ca96279309c2",
+        "traceId": "e5eca5e81befd03a305a1220d8ab37a9"
+      },
+      "dataType": "BOOLEAN",
+      "value": true
+    }
+  ],
+  "meta": {
+    "limit": 100
+  }
+}

@@ -72,7 +72,7 @@ This chooses one decision-bearing agent observation per application. Inspect the
 {% endif %}
 Open **Halo** in the target project while the disputed observation is selected. Give Halo the disputed link above and the control and reserved links in the next steps, with this neutral request:
 
-> “Investigate these customer-disputed EV financing decisions. Compare the complaints with the recorded applications, available policy evidence, decisions and linked prompt versions. Identify the recurring failure and cite the exact observations and prompt evidence. Contrast an affected application with a correct rejection. Separate recorded facts, generated history and hypotheses. Do not change any resources yet.”
+> “Investigate these customer-disputed EV financing decisions. Compare the complaints with the recorded applications, available policy evidence, decisions and linked prompt versions. Identify the recurring failure and cite the exact observations and prompt evidence. Contrast an affected application with a correct rejection. Separate recorded facts, generated history and hypotheses. Write your findings and evidence in plain text here; opening a view alone is not a diagnosis. Do not change any resources yet.”
 
 Review the cited evidence before accepting its diagnosis. Inspect `credit_agent`'s own Input/Output; follow `retrieve_policy` to the handbook and amendment, including publication date, effective date and eligibility. Compare that retrieved evidence with `decision`'s compiled Input and linked prompt template. The amendment exists in retrieval but `policy_updates` is absent from the baseline template. There is no instruction to ignore a grant. The historical graph contains **representative simulated** operations; fresh Companion requests record a real local lookup and a real decision model call.
 
@@ -108,7 +108,7 @@ Compare expected coverage with scored, pending, missing and execution-error coun
 
 Ask Halo to prepare one regression item from this reserved observation, using the captured application, handbook and policy updates. Have it propose a structured expected Decision from the fictional policy and retain source trace, decision observation and session provenance. Review its proposed amounts against the complete generated input and expectation below before approving the write. Never copy the observed erroneous rejection into Expected output.
 
-For assistant-led dataset creation, ask Halo to create a fresh named dataset with the same three-string input and structured Decision schemas, then curate this reserved item into it. Keep the seeded eight-case dataset for the full comparison, or ask Halo to copy those reviewed cases into the new dataset before freezing it. Record which dataset you use and its actual item count. Alternatively, demonstrate curation by adding the item to the existing short comparison dataset. Do not claim a dataset was created if only an item was added.
+For assistant-led dataset creation, ask Halo to create a fresh named dataset with the same three-string input and structured Decision schemas, then curate this reserved item into it. For the assistant-created comparison, ask Halo to copy the eight reviewed cases below into the new dataset and add the one reserved case, giving nine items. Ask it to perform one item write per tool call with explicit dataset ID and a one-element items array, then read back each item. Multi-item writes returned empty requests in rehearsal; preserve any such error and inspect the current dataset before continuing. Freeze the dataset only after confirming all nine items and their source mappings. Record which dataset you use and its actual item count. Alternatively, demonstrate curation by adding the item to the existing short comparison dataset. Do not claim a dataset was created if only an item was added.
 
 Approve only the reviewed dataset/item actions. If rehearsal already added this source observation, inspect it instead of duplicating it. If Halo cannot perform an intended action on the target, record the concrete missing permission or unsupported action and obtain a scope decision; do not silently replace this beat with an external script.
 
@@ -151,6 +151,8 @@ Explicitly select the same verified connection, `{{ task_model }}` model, 512-to
 > “We added the missing policy-updates binding. This one comparison gives us a hypothesis. The regression cases tell us whether it holds beyond this customer.”
 
 ## Two native experiments, one frozen cohort
+
+Halo could investigate and curate data in rehearsal, but could not start native Prompt Experiments. Start them in the UI yourself; its predicted results are not execution evidence. Explicitly select the policy evaluator for each run rather than assuming an existing rule covers a newly created dataset.
 
 Open the chosen dataset's **Experiments → Run experiment → via User Interface → Configure** (the rehearsed native route). Some versions label the entry **Start Experiment → Prompt Experiment**.
 
@@ -279,7 +281,7 @@ Create and activate the incoming-observation rule only after reviewing these mat
 
 ### Recovery and evidence
 
-- If Halo cannot read an object or perform an approved write, retain its answer and permission error. Correct the project access or record the missing beat; a script-run action does not verify the integrated assistant.
+- If Halo cannot read an object or perform an approved write, retain its answer and permission error. If a multi-item write becomes empty, inspect the current dataset and continue with reviewed single-item writes; never repeat an uncertain write blindly. Correct the project access or record the missing beat; a script-run action does not verify the integrated assistant.
 - If a prompt variable is unresolved, reopen the saved item and restore all three string inputs. Use captured `metadata.prompt_variables`, not the compiled baseline user message.
 - If a model output contradicts its amounts or contains multiple answers, retain the output as a failure. Do not repair it into a passing result.
 - If a score is pending, inspect execution state and allow ingestion to settle. An execution error, missing score and false policy score are separate outcomes.

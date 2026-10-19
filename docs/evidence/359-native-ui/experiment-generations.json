@@ -1,0 +1,2389 @@
+{
+  "data": [
+    {
+      "id": "1b97a3a976a0102c",
+      "traceId": "c0b186ec956e15442b5cdb07d51f0b3d",
+      "startTime": "2026-10-19T17:00:15.826Z",
+      "endTime": "2026-10-19T17:00:20.468Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "423c64e78a5c7fce",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_false_negative\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"The BEV has a list price of EUR 45,000 (\u2264 EUR 50,000) and the application date is 2026-10-12, qualifying for the EUR 6,000 grant under BULLETIN-EV-1; the financed principal is EUR 45,000 \u2212 EUR 6,000 = EUR 39,000, which is at or below the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":45000,\\\"applied_grant_eur\\\":6000,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":39000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 149,
+        "attributes.gen_ai.usage.input_tokens": 848,
+        "attributes.gen_ai.response.id": "msg_011CgBxF71atKqgtJ6NCCAc4",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-b96f9",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "false_negative",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 39000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "423c64e78a5c7fce",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.192",
+        "attributes.langfuse.experiment.item.id": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 848,
+        "output": 149,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 997
+      },
+      "inputUsage": 848,
+      "outputUsage": 149,
+      "totalUsage": 997,
+      "costDetails": {
+        "input": 0.002544,
+        "output": 0.002235,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004779
+      },
+      "inputCost": 0.002544,
+      "outputCost": 0.002235,
+      "totalCost": 0.004779,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 4.642,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "d1046f69061b8582",
+      "traceId": "f13c58ce6ad733a2b8e45ce1ce6d0f9a",
+      "startTime": "2026-10-19T17:00:12.369Z",
+      "endTime": "2026-10-19T17:00:15.763Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "b0b63efd5ab7597f",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_date_before\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-11\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"Application date is 2026-10-11, which is before the 2026-10-12 effective date of BULLETIN-EV-1, so no BEV grant applies; the full list price of EUR 45,000 is financed, exceeding the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":45000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":45000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 120,
+        "attributes.gen_ai.usage.input_tokens": 848,
+        "attributes.gen_ai.response.id": "msg_011CgBxErDqC82ZekPgyfQVN",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-20111",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "date_before",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 45000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "b0b63efd5ab7597f",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.289",
+        "attributes.langfuse.experiment.item.id": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 848,
+        "output": 120,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 968
+      },
+      "inputUsage": 848,
+      "outputUsage": 120,
+      "totalUsage": 968,
+      "costDetails": {
+        "input": 0.002544,
+        "output": 0.0018,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004344
+      },
+      "inputCost": 0.002544,
+      "outputCost": 0.0018,
+      "totalCost": 0.004344,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 3.394,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "a1fad89027b6e236",
+      "traceId": "c75de0c65a19488ab0c2aed19841a35d",
+      "startTime": "2026-10-19T17:00:06.985Z",
+      "endTime": "2026-10-19T17:00:12.314Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "c685398d2b727bbc",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_control_phev\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"PHEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"The vehicle is a PHEV, which does not qualify for the EUR 6,000 BEV grant under BULLETIN-EV-1; the full list price of EUR 45,000 is financed, exceeding the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":45000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":45000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 111,
+        "attributes.gen_ai.usage.input_tokens": 849,
+        "attributes.gen_ai.response.id": "msg_011CgBxETFi2DxGcmU4fmQya",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-8863f",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "control_phev",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 45000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "c685398d2b727bbc",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.391",
+        "attributes.langfuse.experiment.item.id": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 849,
+        "output": 111,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 960
+      },
+      "inputUsage": 849,
+      "outputUsage": 111,
+      "totalUsage": 960,
+      "costDetails": {
+        "input": 0.002547,
+        "output": 0.001665,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004212
+      },
+      "inputCost": 0.002547,
+      "outputCost": 0.001665,
+      "totalCost": 0.004212,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 5.329,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "58595e1d49cb9aef",
+      "traceId": "a8025a296680c5ebce2236c77c6cbae0",
+      "startTime": "2026-10-19T17:00:03.673Z",
+      "endTime": "2026-10-19T17:00:06.919Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "cf39d07ccb5caf1f",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_cap_above\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":50001},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"The vehicle is a BEV priced at EUR 50,001, which exceeds the EUR 50,000 cap for the purchase grant under BULLETIN-EV-1, so no grant applies; the full list price of EUR 50,001 must be financed, which exceeds the approved credit line of EUR 40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":50001,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":50001}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 126,
+        "attributes.gen_ai.usage.input_tokens": 848,
+        "attributes.gen_ai.response.id": "msg_011CgBxED4SUgHfFNt5NDD8a",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-28ff9",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "cap_above",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 50001
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "cf39d07ccb5caf1f",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.491",
+        "attributes.langfuse.experiment.item.id": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 848,
+        "output": 126,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 974
+      },
+      "inputUsage": 848,
+      "outputUsage": 126,
+      "totalUsage": 974,
+      "costDetails": {
+        "input": 0.002544,
+        "output": 0.00189,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004434
+      },
+      "inputCost": 0.002544,
+      "outputCost": 0.00189,
+      "totalCost": 0.004434,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 3.246,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "cb18653b55abe1f7",
+      "traceId": "02c6270aac797b769c1d05b8bb1d8d68",
+      "startTime": "2026-10-19T17:00:00.269Z",
+      "endTime": "2026-10-19T17:00:03.611Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "3f13239235391e2f",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_grant_still_above_line\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":49000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"The BEV has a list price of EUR 49,000 (\u2264 EUR 50,000) and the application date is 2026-10-12, so the EUR 6,000 grant applies, reducing the financed principal to EUR 43,000, which exceeds the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":49000,\\\"applied_grant_eur\\\":6000,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":43000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 126,
+        "attributes.gen_ai.usage.input_tokens": 852,
+        "attributes.gen_ai.response.id": "msg_011CgBxDxeGkiHzjKfwDBSVV",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-c245c",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "grant_still_above_line",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 49000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 43000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "3f13239235391e2f",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.586",
+        "attributes.langfuse.experiment.item.id": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 852,
+        "output": 126,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 978
+      },
+      "inputUsage": 852,
+      "outputUsage": 126,
+      "totalUsage": 978,
+      "costDetails": {
+        "input": 0.002556,
+        "output": 0.00189,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004446
+      },
+      "inputCost": 0.002556,
+      "outputCost": 0.00189,
+      "totalCost": 0.004446,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 3.342,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "eb21ad78fc7c3062",
+      "traceId": "151289696d5945d728cf7a5d3fac1826",
+      "startTime": "2026-10-19T16:59:57.021Z",
+      "endTime": "2026-10-19T16:59:59.991Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "6a5378996c8163fa",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_cap_date_line_equal\\\",\\\"approved_line_eur\\\":44000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":50000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"BEV with list price EUR 50,000 qualifies for the EUR 6,000 grant under BULLETIN-EV-1 (application date 2026-10-12 meets the on-or-after condition), reducing the financed principal to EUR 44,000, which exactly equals the approved credit line of EUR 44,000 and is therefore approved.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":50000,\\\"applied_grant_eur\\\":6000,\\\"approved_line_eur\\\":44000,\\\"financed_principal_eur\\\":44000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "e3a98e84-8aed-5438-92cd-d4497a14f4a1",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 135,
+        "attributes.gen_ai.usage.input_tokens": 852,
+        "attributes.gen_ai.response.id": "msg_011CgBxDiVU66RYyjHyoX3eu",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-c915c",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "cap_date_line_equal",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+          "decision": "approve",
+          "list_price_eur": 50000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 44000,
+          "financed_principal_eur": 44000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "6a5378996c8163fa",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.677",
+        "attributes.langfuse.experiment.item.id": "e3a98e84-8aed-5438-92cd-d4497a14f4a1",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 852,
+        "output": 135,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 987
+      },
+      "inputUsage": 852,
+      "outputUsage": 135,
+      "totalUsage": 987,
+      "costDetails": {
+        "input": 0.002556,
+        "output": 0.002025,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004581
+      },
+      "inputCost": 0.002556,
+      "outputCost": 0.002025,
+      "totalCost": 0.004581,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.97,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "246bf57356bf56b7",
+      "traceId": "da4d6748e3bb1946e416c9c1b9512614",
+      "startTime": "2026-10-19T16:59:54.141Z",
+      "endTime": "2026-10-19T16:59:56.963Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "aa3b81102619853a",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_eligible_already_affordable\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":39000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"BEV with list price EUR 39,000 qualifies for the EUR 6,000 grant under BULLETIN-EV-1 (application date 2026-10-12, price \u2264 EUR 50,000), giving a financed principal of EUR 33,000, which is at or below the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":39000,\\\"applied_grant_eur\\\":6000,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":33000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "46efe820-e51c-517e-8759-a34a9fdaa312",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 133,
+        "attributes.gen_ai.usage.input_tokens": 850,
+        "attributes.gen_ai.response.id": "msg_011CgBxDWGFxXSNL9voFK8GU",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-65cee",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "eligible_already_affordable",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 39000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 33000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "aa3b81102619853a",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.762",
+        "attributes.langfuse.experiment.item.id": "46efe820-e51c-517e-8759-a34a9fdaa312",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 850,
+        "output": 133,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 983
+      },
+      "inputUsage": 850,
+      "outputUsage": 133,
+      "totalUsage": 983,
+      "costDetails": {
+        "input": 0.00255,
+        "output": 0.001995,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004545
+      },
+      "inputCost": 0.00255,
+      "outputCost": 0.001995,
+      "totalCost": 0.004545,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.822,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "654e9ddaebfd6288",
+      "traceId": "28cd9d7811b24a3be3812b0081d2316c",
+      "startTime": "2026-10-19T16:59:51.486Z",
+      "endTime": "2026-10-19T16:59:54.080Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "44f725ba04fb42ad",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_control_ice\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"ICE\\\",\\\"list_price_eur\\\":35000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\\n\\nPolicy updates:\\n[{\\\"content\\\": \\\"For applications dated 2026-10-12 onwards, battery-electric vehicles with a purchase price of EUR 50,000 or less qualify for a EUR 6,000 point-of-sale purchase grant. The grant is deducted from the purchase price before the amount financed is assessed against the preapproved credit line. Other vehicle categories and purchases above EUR 50,000 do not qualify. Earlier applications receive no grant under this programme. This amendment updates the vehicle lending handbook's calculation of the amount financed; the credit-line approval threshold is unchanged.\\\", \\\"document_id\\\": \\\"BULLETIN-EV-1\\\", \\\"effective_date\\\": \\\"2026-10-12\\\", \\\"published_date\\\": \\\"2026-10-05\\\", \\\"title\\\": \\\"Vehicle purchase programme amendment\\\"}]\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"ICE vehicle does not qualify for the BEV purchase grant under BULLETIN-EV-1; amount financed equals the full list price of EUR 35,000, which is at or below the approved line of EUR 40,000.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":35000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":35000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "dataset_item_id": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 103,
+        "attributes.gen_ai.usage.input_tokens": 847,
+        "attributes.gen_ai.response.id": "msg_011CgBxDJycHw7g3Xmh9ubZy",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-3da9d",
+        "attributes.langfuse.observation.prompt.version": 2,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "control_ice",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 35000
+        },
+        "attributes.langfuse.experiment.description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+        "attributes.langfuse.experiment.item.root_observation_id": "44f725ba04fb42ad",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.849",
+        "attributes.langfuse.experiment.item.id": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "attributes.langfuse.experiment.id": "cmvfi27l90dwqad0e5eahdx62",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 847,
+        "output": 103,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 950
+      },
+      "inputUsage": 847,
+      "outputUsage": 103,
+      "totalUsage": 950,
+      "costDetails": {
+        "input": 0.002541,
+        "output": 0.001545,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.004085999999
+      },
+      "inputCost": 0.002541,
+      "outputCost": 0.001545,
+      "totalCost": 0.004085999999,
+      "promptId": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+      "promptName": "credit_decision",
+      "promptVersion": 2,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.594,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "8cc5c6b8f9795e10",
+      "traceId": "a9bbf8bb8bb7fbc653a31455111cf6c7",
+      "startTime": "2026-10-19T16:59:04.655Z",
+      "endTime": "2026-10-19T16:59:09.409Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "ee1a65558099bdd1",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_false_negative\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"No applicable purchase grant policy was found in the supplied documents for a BEV purchased on 2026-10-12, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":45000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":45000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 107,
+        "attributes.gen_ai.usage.input_tokens": 666,
+        "attributes.gen_ai.response.id": "msg_011CgBx9reEtmvbnPBwyJR9z",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-5c8fb",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "false_negative",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 6000 = EUR 39000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 39000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "ee1a65558099bdd1",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.192",
+        "attributes.langfuse.experiment.item.id": "b80354d4-1543-5f1d-b7d8-fa4d792a6680",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 666,
+        "output": 107,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 773
+      },
+      "inputUsage": 666,
+      "outputUsage": 107,
+      "totalUsage": 773,
+      "costDetails": {
+        "input": 0.001998,
+        "output": 0.001605,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003603
+      },
+      "inputCost": 0.001998,
+      "outputCost": 0.001605,
+      "totalCost": 0.003603,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 4.754,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "3d405b375b2bef3e",
+      "traceId": "248d65304a3a842c9e660e6395c40562",
+      "startTime": "2026-10-19T16:59:01.789Z",
+      "endTime": "2026-10-19T16:59:04.600Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "58b32c8bac6e64eb",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_date_before\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-11\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"No applicable grant found for the application date 2026-10-11 based on available policy documents, so the full list price of \u20ac45,000 is financed, which exceeds the approved credit line of \u20ac40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":45000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":45000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 101,
+        "attributes.gen_ai.usage.input_tokens": 666,
+        "attributes.gen_ai.response.id": "msg_011CgBx9eNK7VuvjTNb7Wo4y",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-780f4",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "date_before",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 45000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "58b32c8bac6e64eb",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.289",
+        "attributes.langfuse.experiment.item.id": "d73823a9-89c1-5795-9c12-4a5b9a14d389",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 666,
+        "output": 101,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 767
+      },
+      "inputUsage": 666,
+      "outputUsage": 101,
+      "totalUsage": 767,
+      "costDetails": {
+        "input": 0.001998,
+        "output": 0.001515,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003513
+      },
+      "inputCost": 0.001998,
+      "outputCost": 0.001515,
+      "totalCost": 0.003513,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.811,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "84acb9730c3a9ee1",
+      "traceId": "9600cfad9528a3957fa5ff9d8e511097",
+      "startTime": "2026-10-19T16:58:59.078Z",
+      "endTime": "2026-10-19T16:59:01.707Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "8f694529286aa4ce",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_control_phev\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"PHEV\\\",\\\"list_price_eur\\\":45000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\": \\\"No applicable grant reduces the PHEV list price of \u20ac45,000, so the financed principal equals \u20ac45,000, which exceeds the approved credit line of \u20ac40,000.\\\",\\\"decision\\\": \\\"reject\\\",\\\"list_price_eur\\\": 45000,\\\"applied_grant_eur\\\": 0,\\\"approved_line_eur\\\": 40000,\\\"financed_principal_eur\\\": 45000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 97,
+        "attributes.gen_ai.usage.input_tokens": 667,
+        "attributes.gen_ai.response.id": "msg_011CgBx9SnHvzj86mjEn6vWG",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-1daf2",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "control_phev",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 45000 - EUR 0 = EUR 45000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 45000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 45000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "8f694529286aa4ce",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.391",
+        "attributes.langfuse.experiment.item.id": "b7daee00-28ba-5167-ae8b-81d6c945f3f5",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 667,
+        "output": 97,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 764
+      },
+      "inputUsage": 667,
+      "outputUsage": 97,
+      "totalUsage": 764,
+      "costDetails": {
+        "input": 0.002001,
+        "output": 0.001455,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003456
+      },
+      "inputCost": 0.002001,
+      "outputCost": 0.001455,
+      "totalCost": 0.003456,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.629,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "e4cb39e990a8ce2a",
+      "traceId": "d65f0d065f50fac62e3bd0624c08c7ff",
+      "startTime": "2026-10-19T16:58:56.482Z",
+      "endTime": "2026-10-19T16:58:59.025Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "dfaade7071e84f61",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_cap_above\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":50001},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"No applicable grant found; amount financed equals the list price of \u20ac50,001, which exceeds the approved credit line of \u20ac40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":50001,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":50001}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 82,
+        "attributes.gen_ai.usage.input_tokens": 666,
+        "attributes.gen_ai.response.id": "msg_011CgBx9FgZAXjyTmG8cTcii",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-25ccd",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "cap_above",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50001 - EUR 0 = EUR 50001; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 50001,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 50001
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "dfaade7071e84f61",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.491",
+        "attributes.langfuse.experiment.item.id": "a57f1ce0-73a8-5d07-a557-322d3fd4a48d",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 666,
+        "output": 82,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 748
+      },
+      "inputUsage": 666,
+      "outputUsage": 82,
+      "totalUsage": 748,
+      "costDetails": {
+        "input": 0.001998,
+        "output": 0.00123,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003228
+      },
+      "inputCost": 0.001998,
+      "outputCost": 0.00123,
+      "totalCost": 0.003228,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.543,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "8b582b7cacc146c3",
+      "traceId": "e0b6b583b91ddd494fcb5aac276a6251",
+      "startTime": "2026-10-19T16:58:51.728Z",
+      "endTime": "2026-10-19T16:58:56.422Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "5769f5dd134f7f5d",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_grant_still_above_line\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":49000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"Grant policy documents do not define any applicable purchase grant for BEV vehicles, so the full list price of \u20ac49,000 is financed, which exceeds the approved credit line of \u20ac40,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":49000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":49000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 95,
+        "attributes.gen_ai.usage.input_tokens": 670,
+        "attributes.gen_ai.response.id": "msg_011CgBx8vSvVW9xFs29B1DY6",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-efbf7",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "grant_still_above_line",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 49000 - EUR 6000 = EUR 43000; > EUR 40000.",
+          "decision": "reject",
+          "list_price_eur": 49000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 43000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "5769f5dd134f7f5d",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.586",
+        "attributes.langfuse.experiment.item.id": "0b01a8e2-45a2-55c6-ab98-cd5049e1f2de",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 670,
+        "output": 95,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 765
+      },
+      "inputUsage": 670,
+      "outputUsage": 95,
+      "totalUsage": 765,
+      "costDetails": {
+        "input": 0.00201,
+        "output": 0.001425,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003435
+      },
+      "inputCost": 0.00201,
+      "outputCost": 0.001425,
+      "totalCost": 0.003435,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 4.694,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "81f78fca526e5fa7",
+      "traceId": "b07bbe7cde0a9901c21101ccdc4a4144",
+      "startTime": "2026-10-19T16:58:48.940Z",
+      "endTime": "2026-10-19T16:58:51.650Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "1fe356cc447cdae9",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_cap_date_line_equal\\\",\\\"approved_line_eur\\\":44000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":50000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"LENDING-1 defines no grant programmes applicable to this BEV, so zero grant is applied; the financed principal equals the list price of \u20ac50,000, which exceeds the pre-approved credit line of \u20ac44,000.\\\",\\\"decision\\\":\\\"reject\\\",\\\"list_price_eur\\\":50000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":44000,\\\"financed_principal_eur\\\":50000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "e3a98e84-8aed-5438-92cd-d4497a14f4a1",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 102,
+        "attributes.gen_ai.usage.input_tokens": 670,
+        "attributes.gen_ai.response.id": "msg_011CgBx8hVZ9TsHhgFz5t6dv",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-25dfe",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "cap_date_line_equal",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 50000 - EUR 6000 = EUR 44000; <= EUR 44000.",
+          "decision": "approve",
+          "list_price_eur": 50000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 44000,
+          "financed_principal_eur": 44000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "1fe356cc447cdae9",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.677",
+        "attributes.langfuse.experiment.item.id": "e3a98e84-8aed-5438-92cd-d4497a14f4a1",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 670,
+        "output": 102,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 772
+      },
+      "inputUsage": 670,
+      "outputUsage": 102,
+      "totalUsage": 772,
+      "costDetails": {
+        "input": 0.00201,
+        "output": 0.00153,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003539999999
+      },
+      "inputCost": 0.00201,
+      "outputCost": 0.00153,
+      "totalCost": 0.003539999999,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.71,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "7e8bf3cc231cc504",
+      "traceId": "95edd66b43c4f04f2c7d70dd13e2a3dc",
+      "startTime": "2026-10-19T16:58:46.190Z",
+      "endTime": "2026-10-19T16:58:48.880Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "edf7c1c5b2f76d46",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_eligible_already_affordable\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"BEV\\\",\\\"list_price_eur\\\":39000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"Grant policy not applicable; financed principal equals list price of \u20ac39,000, which is at or below the approved line of \u20ac40,000.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":39000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":39000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "46efe820-e51c-517e-8759-a34a9fdaa312",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 82,
+        "attributes.gen_ai.usage.input_tokens": 668,
+        "attributes.gen_ai.response.id": "msg_011CgBx8VnbhxJgANXSBEksP",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-7e318",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "eligible_already_affordable",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 39000 - EUR 6000 = EUR 33000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 39000,
+          "applied_grant_eur": 6000,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 33000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "edf7c1c5b2f76d46",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.762",
+        "attributes.langfuse.experiment.item.id": "46efe820-e51c-517e-8759-a34a9fdaa312",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 668,
+        "output": 82,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 750
+      },
+      "inputUsage": 668,
+      "outputUsage": 82,
+      "totalUsage": 750,
+      "costDetails": {
+        "input": 0.002004,
+        "output": 0.00123,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.003234
+      },
+      "inputCost": 0.002004,
+      "outputCost": 0.00123,
+      "totalCost": 0.003234,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 2.69,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    },
+    {
+      "id": "5fdc2e4bfc83867e",
+      "traceId": "5f823d82807eb5cd743d2f68b7f4824d",
+      "startTime": "2026-10-19T16:58:42.818Z",
+      "endTime": "2026-10-19T16:58:46.130Z",
+      "projectId": "cmvfgzsjr0au6ad0m520aiumr",
+      "parentObservationId": "5d51c38122fe1153",
+      "type": "GENERATION",
+      "name": "chat claude-sonnet-4-6",
+      "level": "DEFAULT",
+      "statusMessage": "",
+      "version": "",
+      "environment": "langfuse-prompt-experiment",
+      "input": "[{\"role\":\"system\",\"content\":\"You assess vehicle-loan applications for a lender using the supplied policy documents.\\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\\n\"},{\"role\":\"user\",\"content\":\"Application:\\n{\\\"applicant_id\\\":\\\"demo_control_ice\\\",\\\"approved_line_eur\\\":40000,\\\"vehicle\\\":{\\\"type\\\":\\\"ICE\\\",\\\"list_price_eur\\\":35000},\\\"application_date\\\":\\\"2026-10-12\\\"}\\n\\nLending handbook:\\n{\\\"content\\\": \\\"For a vehicle purchase, the amount financed is the purchase price. Compare the amount financed with the applicant's preapproved credit line. Approve an amount at or below that line; otherwise reject. Record the purchase price, any purchase grant applied, the amount financed, and the credit line in the decision. Vehicle categories are BEV (battery electric), PHEV (plug-in hybrid), and ICE (internal combustion).\\\", \\\"document_id\\\": \\\"LENDING-1\\\", \\\"effective_date\\\": \\\"2026-04-15\\\", \\\"published_date\\\": \\\"2026-04-15\\\", \\\"title\\\": \\\"Vehicle lending handbook\\\"}\"}]",
+      "output": "[{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"reason\\\":\\\"ICE vehicle with list price of \u20ac35,000; no grant applies, so the financed principal equals the list price of \u20ac35,000, which is at or below the approved credit line of \u20ac40,000.\\\",\\\"decision\\\":\\\"approve\\\",\\\"list_price_eur\\\":35000,\\\"applied_grant_eur\\\":0,\\\"approved_line_eur\\\":40000,\\\"financed_principal_eur\\\":35000}\"}]}]",
+      "metadata": {
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "dataset_item_id": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+        "dataset_id": "cmvfhehyc0dnmad0ea6l3y621",
+        "scope.name": "langfuse-internal-llm-completion",
+        "resourceAttributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.gen_ai.usage.cache_creation.input_tokens": 0,
+        "attributes.gen_ai.usage.cache_read.input_tokens": 0,
+        "attributes.gen_ai.usage.output_tokens": 97,
+        "attributes.gen_ai.usage.input_tokens": 665,
+        "attributes.gen_ai.response.id": "msg_011CgBx8GA3wUNXgSteF2cEd",
+        "attributes.gen_ai.response.finish_reasons": [
+          "stop"
+        ],
+        "attributes.langfuse.environment": "langfuse-prompt-experiment",
+        "attributes.langfuse.trace.name": "dataset-run-item-7427b",
+        "attributes.langfuse.observation.prompt.version": 1,
+        "attributes.langfuse.observation.prompt.name": "credit_decision",
+        "attributes.langfuse.experiment.item.metadata": {
+          "source": "hand-worked fictional policy cases",
+          "scenario": "control_ice",
+          "expectation_basis": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+          "grant_effective_date": "2026-10-12"
+        },
+        "attributes.langfuse.experiment.metadata": {
+          "model": "claude-sonnet-4-6",
+          "provider": "Anthropic",
+          "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+          "model_params": {
+            "max_tokens": 512
+          },
+          "dataset_version": "2026-10-19T16:41:25.849Z",
+          "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+          "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+          "structured_output_schema": {
+            "type": "object",
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "enum": [
+                  "approve",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "attributes.langfuse.experiment.item.expected_output": {
+          "reason": "Fictional policy effective 2026-10-12: BEV at or below EUR 50000 receives EUR 6000 on/after that date. EUR 35000 - EUR 0 = EUR 35000; <= EUR 40000.",
+          "decision": "approve",
+          "list_price_eur": 35000,
+          "applied_grant_eur": 0,
+          "approved_line_eur": 40000,
+          "financed_principal_eur": 35000
+        },
+        "attributes.langfuse.experiment.description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+        "attributes.langfuse.experiment.item.root_observation_id": "5d51c38122fe1153",
+        "attributes.langfuse.experiment.item.version": "2026-10-19 16:41:25.849",
+        "attributes.langfuse.experiment.item.id": "5ad8efbb-00bb-5509-8583-db38ddb2e5fa",
+        "attributes.langfuse.experiment.dataset.id": "cmvfhehyc0dnmad0ea6l3y621",
+        "attributes.langfuse.experiment.name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "attributes.langfuse.experiment.id": "cmvfi0qk00c7zad0ghluo5bp4",
+        "attributes.gen_ai.request.max_tokens": 512,
+        "attributes.gen_ai.request.model": "claude-sonnet-4-6",
+        "attributes.gen_ai.provider.name": "anthropic.messages",
+        "attributes.gen_ai.operation.name": "chat"
+      },
+      "model": "claude-sonnet-4-6",
+      "internalModelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "modelParameters": {
+        "max_tokens": 512
+      },
+      "usageDetails": {
+        "input": 665,
+        "output": 97,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 762
+      },
+      "inputUsage": 665,
+      "outputUsage": 97,
+      "totalUsage": 762,
+      "costDetails": {
+        "input": 0.001995,
+        "output": 0.001455,
+        "input_cached_tokens": 0,
+        "input_cache_creation": 0,
+        "total": 0.00345
+      },
+      "inputCost": 0.001995,
+      "outputCost": 0.001455,
+      "totalCost": 0.00345,
+      "promptId": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+      "promptName": "credit_decision",
+      "promptVersion": 1,
+      "usagePricingTierId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed_tier_default",
+      "usagePricingTierName": "Standard",
+      "latency": 3.312,
+      "timeToFirstToken": null,
+      "userId": "",
+      "sessionId": "",
+      "isRootObservation": false,
+      "bookmarked": false,
+      "public": false,
+      "modelId": "90ec5ec3-1a48-4ff0-919c-70cdb8f632ed",
+      "inputPrice": "0.000003",
+      "outputPrice": "0.000015",
+      "totalPrice": null
+    }
+  ],
+  "meta": {}
+}

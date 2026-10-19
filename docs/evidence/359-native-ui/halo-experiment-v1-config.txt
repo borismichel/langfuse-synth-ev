@@ -1,0 +1,52 @@
+Browser tab: 508524247, Title: "Datasets | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhrsli0du7ad0jmlssr03o/experiments".
+1 AXWebArea Datasets | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets/cmvfhrsli0du7ad0jmlssr03o/experiments
+	2 container
+		42 container Run Experiment, ID: radix-_r_13_
+			43 container
+				44 heading Run Experiment, Value: 2, ID: radix-_r_14_
+					45 text Run Experiment
+				46 container radix-_r_15_
+					47 text Run an experiment to evaluate prompts and model configurations against a dataset. See
+					48 link Description: documentation, Value: langfuse.com/docs/evaluation/dataset-runs/native-run
+					49 text to learn more.
+				50 button Close
+			51 container
+				52 container breadcrumb
+					53 content list
+						54 link Prompt & Model
+							55 text Prompt & Model
+						56 link Dataset
+							57 text Dataset
+						71 link Evaluators
+							72 text Evaluators
+						73 link Experiment run details
+							74 text Experiment run details
+						75 link (disabled) Review
+							76 text Review
+				77 heading Review & Run, Value: 3
+					78 text Review & Run
+				79 text Review your experiment configuration before running it. You can go back to any step to make changes.
+				80 heading Prompt, Value: 3
+					81 text Prompt
+				82 text Name: credit_decision Version: v 1
+				83 heading Model, Value: 3
+					84 text Model
+				85 text Provider: Anthropic Model: claude-sonnet-4-6 Max Tokens: 512 Structured Output: ev_credit_decision
+				86 heading Dataset, Value: 3
+					87 text Dataset
+				88 text Name: ev-policy-review Items: 9
+				89 heading Evaluators (1), Value: 3
+					90 text Evaluators ( 1 )
+				91 text policy_correctness
+				92 heading Experiment Run Details, Value: 3
+					93 text Experiment Run Details
+				94 text Experiment Name: EV Halo cohort v1 Run Name: EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+				95 image
+				96 text Description: Nine Halo-created items; fixed snapshot; baseline missing policy_updates binding. Same Sonnet4.6, max512, schema and policy_correctness as v2.
+				68 button Previous
+				69 button Run Experiment
+			70 button Close
+		40 container Notifications alt+T
+		41 text Langfuse
+
+The focused UI element is 69 button Run Experiment

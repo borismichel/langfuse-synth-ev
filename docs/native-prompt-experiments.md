@@ -51,7 +51,7 @@ Use Halo as the primary investigation and curation path in the generated Present
 Runbook. Start from disputed decisions without revealing the root cause; verify its
 citations to retrieval, compiled generation input and managed prompt. Ask it to
 create a dataset and curate a reserved source case after reviewing the input and
-expected output. Record actual approvals and supported actions. Missing capabilities
+expected output. Record actual approvals and supported actions. In the current rehearsal, multi-item writes became empty; explicit single-item calls succeeded and produced nine verified items (the eight authored cases plus one source-linked reserved case). Ask Halo for one item per call and read back before continuing. Halo could not start native Prompt Experiments; the presenter launches those through the UI with the evaluator explicitly selected. Missing capabilities
 require a scope decision, not an unlabelled script replacement.
 
 The complete three-field input is available in the generation's
@@ -99,8 +99,7 @@ The offline `--gate` path accepts the wrapper as well.
 
 The record below describes the earlier instruction-based demo. It is retained as
 prior evidence only and does not verify the missing-binding repair, eight-case
-cohort, new evaluator or Halo workflow. Current native rehearsal is pending until
-the exact new release has been executed and its evidence recorded.
+cohort, new evaluator or Halo workflow. Current missing-binding evidence is in the [19 October native record](evidence/359-native-ui/README.md): eight-case native baseline4/8 versus candidate8/8, followed by the nine-item Halo-curated cohort with baseline4/9 versus candidate9/9 and complete native scores. Corrected local live baseline/promotion/control checks are also recorded there; signed release, admission and ordinary Depot delivery remain separate pending gates.
 
 ### Prior record
 

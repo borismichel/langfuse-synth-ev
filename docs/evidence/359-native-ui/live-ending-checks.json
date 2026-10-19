@@ -1,0 +1,36 @@
+{
+  "read_at": "2026-10-19T17:17:54.742143+00:00",
+  "production_version": 2,
+  "v1_labels": [
+    "v1"
+  ],
+  "v2_labels": [
+    "v2",
+    "development",
+    "latest",
+    "production"
+  ],
+  "baseline_false_unchanged": true,
+  "checks": {
+    "candidate": {
+      "exact_four_observations": true,
+      "exact_names": true,
+      "one_usage_record": true,
+      "one_generation": true,
+      "managed_prompt_v2": true,
+      "one_native_true_agent_score": true,
+      "exact_rule": true,
+      "decision_and_amounts_correct": true
+    },
+    "control": {
+      "exact_four_observations": true,
+      "exact_names": true,
+      "one_usage_record": true,
+      "one_generation": true,
+      "managed_prompt_v2": true,
+      "one_native_true_agent_score": true,
+      "exact_rule": true,
+      "decision_and_amounts_correct": true
+    }
+  }
+}

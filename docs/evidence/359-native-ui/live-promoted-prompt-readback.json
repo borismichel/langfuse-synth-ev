@@ -1,0 +1,230 @@
+{
+  "1": {
+    "id": "65d68f84-fef8-4954-b4ab-c9f96704a3b2",
+    "createdAt": "2026-10-19T16:53:30.655Z",
+    "updatedAt": "2026-10-19T17:16:17.479Z",
+    "projectId": "cmvfhtkwo0dw0ad0e3t9ybrvm",
+    "createdBy": "API",
+    "prompt": [
+      {
+        "role": "system",
+        "content": "You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\n"
+      },
+      {
+        "role": "user",
+        "content": "Application:\n{{application}}\n\nLending handbook:\n{{handbook}}"
+      }
+    ],
+    "name": "credit_decision",
+    "version": 1,
+    "type": "chat",
+    "isActive": false,
+    "config": {
+      "model": "claude-sonnet-4-6",
+      "max_tokens": 512,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "credit_decision",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "approve",
+                  "reject"
+                ]
+              }
+            },
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "tags": [],
+    "labels": [
+      "v1"
+    ],
+    "commitMessage": "application and handbook",
+    "resolutionGraph": null
+  },
+  "2": {
+    "id": "ed60bdd5-b8bf-4f39-8417-2388c8c668ab",
+    "createdAt": "2026-10-19T16:53:31.395Z",
+    "updatedAt": "2026-10-19T17:16:17.479Z",
+    "projectId": "cmvfhtkwo0dw0ad0e3t9ybrvm",
+    "createdBy": "API",
+    "prompt": [
+      {
+        "role": "system",
+        "content": "You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\n"
+      },
+      {
+        "role": "user",
+        "content": "Application:\n{{application}}\n\nLending handbook:\n{{handbook}}\n\nPolicy updates:\n{{policy_updates}}"
+      }
+    ],
+    "name": "credit_decision",
+    "version": 2,
+    "type": "chat",
+    "isActive": true,
+    "config": {
+      "model": "claude-sonnet-4-6",
+      "max_tokens": 512,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "credit_decision",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "approve",
+                  "reject"
+                ]
+              }
+            },
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "tags": [],
+    "labels": [
+      "v2",
+      "development",
+      "latest",
+      "production"
+    ],
+    "commitMessage": "bind retrieved policy updates",
+    "resolutionGraph": null
+  },
+  "production": {
+    "id": "ed60bdd5-b8bf-4f39-8417-2388c8c668ab",
+    "createdAt": "2026-10-19T16:53:31.395Z",
+    "updatedAt": "2026-10-19T17:16:17.479Z",
+    "projectId": "cmvfhtkwo0dw0ad0e3t9ybrvm",
+    "createdBy": "API",
+    "prompt": [
+      {
+        "role": "system",
+        "content": "You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant programmes.\nDetermine applicable purchase grants from the supplied policy evidence, calculate the amount financed, and then compare it with the applicant's preapproved credit line. Apply provisions only when the application date and vehicle meet their conditions.\nReturn the purchase price, grant applied, financed principal, approved line, a one-sentence explanation, and a decision. The decision is approve when financed principal is at or below the approved line, and reject when it exceeds the line. The decision must agree with the amounts.\n"
+      },
+      {
+        "role": "user",
+        "content": "Application:\n{{application}}\n\nLending handbook:\n{{handbook}}\n\nPolicy updates:\n{{policy_updates}}"
+      }
+    ],
+    "name": "credit_decision",
+    "version": 2,
+    "type": "chat",
+    "isActive": true,
+    "config": {
+      "model": "claude-sonnet-4-6",
+      "max_tokens": 512,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "credit_decision",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "list_price_eur": {
+                "type": "integer"
+              },
+              "applied_grant_eur": {
+                "type": "integer"
+              },
+              "financed_principal_eur": {
+                "type": "integer"
+              },
+              "approved_line_eur": {
+                "type": "integer"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "approve",
+                  "reject"
+                ]
+              }
+            },
+            "required": [
+              "list_price_eur",
+              "applied_grant_eur",
+              "financed_principal_eur",
+              "approved_line_eur",
+              "reason",
+              "decision"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "tags": [],
+    "labels": [
+      "v2",
+      "development",
+      "latest",
+      "production"
+    ],
+    "commitMessage": "bind retrieved policy updates",
+    "resolutionGraph": null
+  }
+}

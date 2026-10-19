@@ -1,0 +1,63 @@
+{
+  "data": [
+    {
+      "id": "cmvfi27l90dwqad0e5eahdx62",
+      "name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+      "description": "Identical fixed eight-case snapshot, model, max_tokens 512, schema and evaluator as baseline. Only managed prompt version changes to v2, which binds policy_updates.",
+      "startTime": "2026-10-19T16:59:51.486Z",
+      "endTime": "2026-10-19T17:00:20.468Z",
+      "itemCount": 8,
+      "datasetId": "cmvfhehyc0dnmad0ea6l3y621",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "8813e98a-ca02-42d6-acb9-0d85bee0ede1",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T16:41:25.849Z",
+        "experiment_name": "EV policy candidate v2 \u2014 native 2026-10-19",
+        "experiment_run_name": "EV policy candidate v2 \u2014 native 2026-10-19 - 2026-10-19T16:59:47.431Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    },
+    {
+      "id": "cmvfi0qk00c7zad0ghluo5bp4",
+      "name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+      "description": "Fixed eight-case cohort; managed prompt v1; Claude Sonnet 4.6; max_tokens 512; ev_credit_decision schema; policy_correctness evaluator. Captured retrieval replay.",
+      "startTime": "2026-10-19T16:58:42.818Z",
+      "endTime": "2026-10-19T16:59:09.410Z",
+      "itemCount": 8,
+      "datasetId": "cmvfhehyc0dnmad0ea6l3y621",
+      "metadata": {
+        "model": "claude-sonnet-4-6",
+        "provider": "Anthropic",
+        "prompt_id": "4ed687e9-0dbe-4a58-8a75-aeb73a76a24f",
+        "model_params.max_tokens": "512",
+        "dataset_version": "2026-10-19T16:41:25.849Z",
+        "experiment_name": "EV policy baseline v1 \u2014 native 2026-10-19",
+        "experiment_run_name": "EV policy baseline v1 \u2014 native 2026-10-19 - 2026-10-19T16:58:38.124Z",
+        "structured_output_schema.type": "object",
+        "structured_output_schema.required": "[\"list_price_eur\",\"applied_grant_eur\",\"financed_principal_eur\",\"approved_line_eur\",\"reason\",\"decision\"]",
+        "structured_output_schema.properties.reason.type": "string",
+        "structured_output_schema.properties.decision.enum": "[\"approve\",\"reject\"]",
+        "structured_output_schema.properties.decision.type": "string",
+        "structured_output_schema.properties.list_price_eur.type": "integer",
+        "structured_output_schema.properties.applied_grant_eur.type": "integer",
+        "structured_output_schema.properties.approved_line_eur.type": "integer",
+        "structured_output_schema.properties.financed_principal_eur.type": "integer",
+        "structured_output_schema.additionalProperties": "false"
+      },
+      "scores": []
+    }
+  ],
+  "meta": {}
+}

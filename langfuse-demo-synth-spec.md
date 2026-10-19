@@ -51,7 +51,7 @@ The shared structured-output schema requires one object with integer `list_price
 
 The Companion validates exactly one answer, field types, unchanged application amounts, principal arithmetic and decision/line agreement. Contradictions or multiple answers are errors; no silent answer repair is allowed. Native UI experiments invoke the provider directly and do not run the Companion parser. Their independently configured policy evaluator must expose malformed or incorrect output.
 
-The core model client is pinned to immutable commit `8372f442e51e12234cb8b18ebd73c01b6cf0ff5a` (package version 5.0.0), which adds optional provider-native `response_schema` support. Workflow reuse remains independently pinned to core v5.0.0. No provider client fork lives in this kit.
+The core model client is pinned to immutable commit `501519ec77ed885d594fb8270c44890ced40abd6` (package version 5.0.0), which adds optional provider-native `response_schema` support and suppresses duplicate provider telemetry when the application owns the generation. Workflow reuse remains independently pinned to core v5.0.0. No provider client fork lives in this kit.
 
 ## Historical data and live instrumentation
 

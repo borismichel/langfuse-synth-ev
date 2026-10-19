@@ -1,0 +1,301 @@
+Browser tab: 508524247, Title: "Experiments | Langfuse", URL: "https://cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments/results?baseline=cmvfiby6j0djtad0emyczprwi&c=cmvfie26t0cmdad0jj1z90uym".
+1 AXWebArea Experiments | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments/results?baseline=cmvfiby6j0djtad0emyczprwi&c=cmvfie26t0cmdad0jj1z90uym
+	2 container
+		3 link Description: Langfuse Logo, Value: cloud.langfuse.com/
+		4 pop up button (collapsed) v4.63.0, ID: radix-_r_3_, Secondary Actions: Expand
+			5 text v4.63.0
+		6 content list
+			7 button Go to... ⌘ K
+				8 text Go to...
+				9 text ⌘
+				10 text K
+			11 link Description: Home, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr
+			12 link Description: Dashboards, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/dashboards
+		13 container
+			14 text Observability
+			15 content list
+				16 link Description: Tracing, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/traces
+				17 link Description: Sessions, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/sessions
+				18 link Description: Users, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/users
+				19 link Description: Alerts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/alerts
+		20 container
+			21 text Context Management
+			22 content list
+				23 link Description: Skills Beta, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/skills
+				24 link Description: Prompts, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/prompts
+				25 link Description: Playground, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/playground
+		26 container
+			27 text Evaluation
+			28 content list
+				29 link Description: Scores, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/scores
+				30 link Description: Evaluators, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/evals
+				31 link Description: Human Annotation, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/annotation-queues
+				32 link Description: Datasets, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/datasets
+				33 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments
+		34 content list
+			35 link Description: Settings, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/settings
+			36 link Description: Book a call, Value: cal.com/team/langfuse/welcome-to-langfuse
+			37 button Support
+		38 content list
+			39 pop up button (collapsed) Boris Michel, boris.michel@clickhouse.com Boris Michel boris.michel@clickhouse.com, ID: radix-_r_k_, Secondary Actions: Expand
+				40 container Boris Michel, boris.michel@clickhouse.com
+				41 text Boris Michel
+				42 text boris.michel@clickhouse.com
+		43 button Toggle Sidebar
+		44 container page
+			45 container page-header
+				46 button Toggle Sidebar
+				47 container breadcrumb
+					48 content list
+						49 pop up button (collapsed) Boris Demo Enterprise Enterprise, Secondary Actions: Expand
+							50 text Boris Demo Enterprise
+							51 text Enterprise
+						52 pop up button (collapsed) ev-context-rehearsal-20261019, Secondary Actions: Expand
+						53 link (disabled) Experiments
+							54 link Description: Experiments, Value: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments
+				55 checkbox Description: Open Halo, Value: 0
+					56 text Halo
+					57 text ⌘
+					58 text I
+				59 image Experiment
+				60 heading 2
+				61 text Baseline
+				62 combo box (collapsed) Value: EV Halo cohort v1 - 2026-10-19T17:07:20.272Z 3m ago, Secondary Actions: Expand
+					63 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+					117 text 3m ago
+				64 button Clear baseline
+				65 container
+					66 text Compare
+					67 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+					68 button Remove EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+					118 text field (settable)
+				69 button Show details
+			70 container resizable-layout-experiment-detail-cmvfiby6j0djtad0emyczprwi
+				71 container
+					72 container
+						73 text Search — e.g. level:ERROR, scores.quality:>0.8
+						74 combo box (collapsed) Description: Search, Secondary Actions: Expand
+					75 pop up button (collapsed) My Views 0, Help: My Views, Secondary Actions: Expand
+						76 text My Views
+						77 text 0
+					78 pop up button (collapsed) Display, ID: radix-_r_1d_, Secondary Actions: Expand
+					79 pop up button (collapsed) Columns 4/10, Help: Show/hide columns, Secondary Actions: Expand
+						80 text Columns
+						81 text 4/10
+					82 pop up button (collapsed) Description: Row height, ID: radix-_r_1g_, Secondary Actions: Expand
+					83 container resizable-layout-filter-layout-experiment-items
+						84 container Experiment filters
+							85 text Filters
+							86 button Collapse filters
+							87 container
+								88 checkbox Description: Show only active, Value: 1
+								89 text Show only active
+							90 text No active filters.
+							91 pop up button (collapsed) Description: Add filter, Secondary Actions: Expand
+						92 splitter 15.642000198364258
+						93 container
+							119 table
+								120 row
+									121 cell
+										122 checkbox Description: Select all, Value: 0
+									123 cell
+										124 text Input
+									125 cell
+										126 container
+											127 text Ⓑ
+											128 text policy_correctness (eval) · Observation
+											129 text 44% true
+											130 text vs 
+											131 text 100% true
+											132 text -
+											133 text 0.56
+											134 container 5 regressed
+												135 text ↘ 5
+										136 pop up button (collapsed) Description: Filter items by this score, ID: radix-_r_cf_, Secondary Actions: Expand
+									137 cell
+										138 text Trace Scores
+									139 cell
+										140 text Experiment
+								141 row
+									142 cell
+										143 checkbox Description: Select row, Value: 0
+										144 slider Description: Row height, Value: 96
+									145 cell
+										146 container
+											147 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									148 cell
+										149 container
+											150 text false
+											151 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											152 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										153 container
+											154 text true
+											155 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											156 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											157 text false → true
+									158 cell
+										159 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										160 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								161 row
+									162 cell
+										163 checkbox Description: Select row, Value: 0
+									164 cell
+										165 container
+											166 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									167 cell
+										168 container
+											169 text true
+											170 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											171 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										172 container
+											173 text true
+											174 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											175 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									176 cell
+										177 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										178 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								179 row
+									180 cell
+										181 checkbox Description: Select row, Value: 0
+									182 cell
+										183 container
+											184 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									185 cell
+										186 container
+											187 text true
+											188 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											189 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										190 container
+											191 text true
+											192 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											193 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									194 cell
+										195 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										196 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								197 row
+									198 cell
+										199 checkbox Description: Select row, Value: 0
+									200 cell
+										201 container
+											202 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									203 cell
+										204 container
+											205 text true
+											206 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											207 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										208 container
+											209 text true
+											210 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											211 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									212 cell
+										213 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										214 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								215 row
+									216 cell
+										217 checkbox Description: Select row, Value: 0
+									218 cell
+										219 container
+											220 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									221 cell
+										222 container
+											223 text false
+											224 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											225 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										226 container
+											227 text true
+											228 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											229 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											230 text false → true
+									231 cell
+										232 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										233 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								234 row
+									235 cell
+										236 checkbox Description: Select row, Value: 0
+									237 cell
+										238 container
+											239 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									240 cell
+										241 container
+											242 text false
+											243 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											244 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										245 container
+											246 text true
+											247 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											248 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											249 text false → true
+									250 cell
+										251 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										252 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								253 row
+									254 cell
+										255 checkbox Description: Select row, Value: 0
+									256 cell
+										257 container
+											258 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									259 cell
+										260 container
+											261 text false
+											262 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											263 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										264 container
+											265 text true
+											266 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											267 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											268 text false → true
+									269 cell
+										270 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										271 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								272 row
+									273 cell
+										274 checkbox Description: Select row, Value: 0
+									275 cell
+										276 container
+											277 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									278 cell
+										279 container
+											280 text true
+											281 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											282 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										283 container
+											284 text true
+											285 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											286 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+									287 cell
+										288 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										289 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+								290 row
+									291 cell
+										292 checkbox Description: Select row, Value: 0
+									293 cell
+										294 container
+											295 text " [{"role":"system","content":"You assess vehicle-loan applications for a lender using the supplied policy documents.\nThese documents define a fictional policy; do not use outside knowledge of grant pr "
+									296 cell
+										297 container
+											298 text false
+											299 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											300 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+										301 container
+											302 text true
+											303 pop up button (collapsed) Description: View score comment, Secondary Actions: Expand
+											304 pop up button (collapsed) Description: View score metadata, Secondary Actions: Expand
+											305 text false → true
+									306 cell
+										307 text EV Halo cohort v1 - 2026-10-19T17:07:20.272Z
+										308 text EV Halo cohort v2 - 2026-10-19T17:08:58.211Z
+							309 text Rows per page
+							310 combo box (collapsed) Value: 20, Secondary Actions: Expand
+								311 text 20
+							312 text Page
+							313 stepper (settable, integer) 1
+							314 text of  1
+							315 button (disabled) Go to first page
+							316 button (disabled) Go to previous page
+							317 button (disabled) Go to next page
+							318 button (disabled) Go to last page
+	114 container
+		115 container Notifications alt+T
+	116 text Langfuse
+
+The focused UI element is 1 AXWebArea Experiments | Langfuse, URL: cloud.langfuse.com/project/cmvfgzsjr0au6ad0m520aiumr/experiments/results?baseline=cmvfiby6j0djtad0emyczprwi&c=cmvfie26t0cmdad0jj1z90uym
