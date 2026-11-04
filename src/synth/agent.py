@@ -134,13 +134,14 @@ def _decide_live(
     prompt = lf.get_prompt(prompt_name, label=prompt_label, type="chat", cache_ttl_seconds=0)
     from .policy import policy_variables
     from .decision_request import prepare_decision_request
+    from .decision_metadata import decision_metadata
     variables = variables if variables is not None else policy_variables(app, rule)
     request = prepare_decision_request(prompt, variables, llm.provider)
     # The SDK experiment owns this observation; Companion uses its live emitter.
     with lf.start_as_current_observation(
         as_type="generation", name="decision", model=llm.model, input=request.messages,
         model_parameters=request.parameters, prompt=prompt,
-        metadata={"prompt_variables": variables, "response_schema": request.kwargs["response_schema"]},
+        metadata=decision_metadata(variables, request.kwargs["response_schema"]),
     ) as gen:
         result = llm.complete(**request.kwargs)
         gen.update(output=result.text, usage_details={"input": result.input_tokens, "output": result.output_tokens})

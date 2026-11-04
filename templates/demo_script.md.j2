@@ -132,7 +132,7 @@ For assistant-led dataset creation, ask Halo to create a fresh named dataset wit
 
 Approve only the reviewed dataset/item actions. If rehearsal already added this source observation, inspect it instead of duplicating it. If Halo cannot perform an intended action on the target, record the concrete missing permission or unsupported action and obtain a scope decision; do not silently replace this beat with an external script.
 
-Use the source trace link above and the decision observation ID to retain provenance in the saved item. The complete input is an object with three JSON-string values. The generation's user content is a compiled Application/Lending handbook envelope, not the application alone. Use the captured `decision.metadata.prompt_variables` or the retrieval evidence to preserve all three fields, including the update omitted from the baseline model input:
+Use the source trace link above and the decision observation ID to retain provenance in the saved item. The complete input is an object with three JSON-string values. The generation's user content is a compiled Application/Lending handbook envelope, not the application alone. Use the captured decision metadata keys `prompt_variables.application`, `prompt_variables.handbook` and `prompt_variables.policy_updates`, or the retrieval evidence to preserve all three fields, including the update omitted from the baseline model input:
 
 ```json
 {{ reserved_input_json }}
@@ -302,7 +302,7 @@ Create and activate the incoming-observation rule only after reviewing these mat
 ### Recovery and evidence
 
 - If Halo cannot read an object or perform an approved write, retain its answer and permission error. If a multi-item write becomes empty, inspect the current dataset and continue with reviewed single-item writes; never repeat an uncertain write blindly. Correct the project access or record the missing beat; a script-run action does not verify the integrated assistant.
-- If a prompt variable is unresolved, reopen the saved item and restore all three string inputs. Use captured `metadata.prompt_variables`, not the compiled baseline user message.
+- If a prompt variable is unresolved, reopen the saved item and restore all three string inputs. Use the literal metadata keys `prompt_variables.application`, `prompt_variables.handbook` and `prompt_variables.policy_updates`, not the compiled baseline user message.
 - If a model output contradicts its amounts or contains multiple answers, retain the output as a failure. Do not repair it into a passing result.
 - If a score is pending, inspect execution state and allow ingestion to settle. An execution error, missing score and false policy score are separate outcomes.
 - Record every attempt in rehearsal, including five flagship comparisons per version and the genuine rejection controls. A retry does not replace an earlier failure. Record project/version, kit/core/SDK/model, dataset timestamp, prompt versions, settings, schema, rule/evaluator URLs and actual outputs. Link screenshots only after capturing those exact objects.

@@ -18,9 +18,40 @@ For a disputed historical case, inspect the amendment in `retrieve_policy`, the 
 
 ## Native and live verification
 
+Seeded, companion and SDK experiment `decision` generations use metadata contract
+`decision_metadata_version = 1`. These are literal keys in the persisted metadata:
+
+| Evidence | JSONPath on observation metadata |
+| --- | --- |
+| Application | `$['prompt_variables.application']` |
+| Lending handbook | `$['prompt_variables.handbook']` |
+| Policy updates | `$['prompt_variables.policy_updates']` |
+
+The writers use the same builder before either raw OTLP or SDK ingestion. The
+prompt-variable values remain the original JSON strings at the writer interface;
+Langfuse's observation read API exposes their parsed objects/array. Response-schema
+properties use explicit dotted keys as well. An explicit empty policy-update array
+means no document was published at the application date; a missing metadata key
+is invalid evidence, not proof that no grant exists. Actual model input remains
+the compiled prompt, including the baseline's deliberately omitted amendment.
+
+Verify one marked synthetic trace and one fresh live request in each target
+project: read both back through the observations API, assert the same evidence
+key names and value types, and check the deployment's own policy dates and amounts.
+Check the live generation's managed prompt version against the production label.
+The offline seed-versus-SDK export regression is necessary but does not replace
+this persisted-data check.
+
+Existing imported history retains the old nested format. Updating a companion
+does not migrate historical records. Do not re-import an existing spool: OTLP
+appends duplicate observations. Rebuild history only in a fresh target, or after
+explicit approval to clear and regenerate the affected deployment data. Keep
+prompt labels, curated datasets, evaluators and feedback out of any automatic
+cleanup. Evaluator configuration is not changed by this producer fix.
+
 Follow the delivered Presenter Runbook. Save actual Halo investigation/approval evidence, the selected project connection/model, shared output schema, fixed prompt versions and frozen dataset version. Check both experiments' complete score coverage and monetary outputs, including rejection controls.
 
-A fresh successful Companion trace contains root, agent, real bundled retrieval and one real decision generation. Confirm the generation's exact compiled input, native prompt version, actual output/usage and all three `metadata.prompt_variables`. After enabling the scoped incoming rule, verify a new undisputed agent observation is automatically scored. Following promotion, verify both an eligible approval and a genuine rejection.
+A fresh successful Companion trace contains root, agent, real bundled retrieval and one real decision generation. Confirm the generation's exact compiled input, native prompt version, actual output/usage and all three literal `prompt_variables.*` metadata keys. After enabling the scoped incoming rule, verify a new undisputed agent observation is automatically scored. Following promotion, verify both an eligible approval and a genuine rejection.
 
 Record missing/pending scores, execution errors, malformed output and policy failures separately. No HTTP-success, local test or SDK decision-agreement card substitutes for native policy-score evidence.
 

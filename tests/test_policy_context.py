@@ -101,7 +101,9 @@ def test_live_generation_receives_context_only_when_binding_is_promoted():
     assert retrieved[0] == retrieved[1]
     assert calls[0]["response_schema"] == calls[1]["response_schema"]
     generations=[r.kw for r in records if r.name=="decision"]
-    assert generations[0]["metadata"]["prompt_variables"] == generations[1]["metadata"]["prompt_variables"]
+    for name in ("application", "handbook", "policy_updates"):
+        key = f"prompt_variables.{name}"
+        assert generations[0]["metadata"][key] == generations[1]["metadata"][key]
     assert generations[0]["usage_details"] == {"input":100,"output":40}
     assert not any(r.name in ("check_subsidy_eligibility","extract_fields","explain") for r in records)
 
@@ -122,7 +124,8 @@ def test_history_exposes_retrieved_update_and_exact_baseline_input_without_fake_
     variables=policy_variables(spec.application,spec.grant_rule)
     prompt=ChatPromptClient(ChatPrompt(name="credit_decision",version=1,prompt=chat_prompt("v1"),config={},labels=[],tags=[]))
     assert json.loads(generation['langfuse.observation.input']) == prompt.compile(**variables)
-    assert json.loads(generation['langfuse.observation.metadata.prompt_variables']) == variables
+    for name, value in variables.items():
+        assert generation[f'langfuse.observation.metadata.prompt_variables.{name}'] == value
     assert 'ignored_by_agent' not in json.dumps(spans)
     assert 'vector_search' not in json.dumps(spans)
 
@@ -181,7 +184,9 @@ def test_sdk_experiment_and_companion_record_the_same_effective_model_request():
             for trace, request in zip(recorded, calls):
                 assert trace["model_parameters"] == expected_parameters
                 assert {key:request[key] for key in expected_parameters} == expected_parameters
-                assert trace["metadata"]["response_schema"] == request["response_schema"]
+                assert trace["metadata"]["response_schema.required"] == request["response_schema"]["required"]
+                assert trace["metadata"]["response_schema.properties.decision.enum"] == ["approve", "reject"]
+                assert trace["metadata"]["response_schema.additionalProperties"] is False
                 assert request["provider_tracing"] is False
                 assert [m for m in trace["input"] if m["role"]!="system"] == request["messages"]
                 assert "\n\n".join(m["content"] for m in trace["input"] if m["role"]=="system") == request["system"]

@@ -7,6 +7,7 @@ from ..evaluation.production import live_scope
 from ..models import Application, Decision
 from ..policy import lookup_policy, policy_variables
 from ..decision_request import prepare_decision_request
+from ..decision_metadata import decision_metadata
 
 TRACE_NAME = "credit_agent.assess_application"
 
@@ -33,8 +34,8 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application,
             request = prepare_decision_request(prompt, variables, llm.provider)
             with agent.generation("decision", model=llm.model, input=request.messages,
                     model_parameters=request.parameters, prompt=prompt,
-                    metadata={"execution": "live_model_call", "prompt_variables": variables,
-                              "response_schema": request.kwargs["response_schema"]}) as generation:
+                    metadata=decision_metadata(variables, request.kwargs["response_schema"],
+                                               execution="live_model_call")) as generation:
                 result = llm.complete(**request.kwargs)
                 generation.update(output=result.text,
                                   usage_details={"input": result.input_tokens, "output": result.output_tokens})

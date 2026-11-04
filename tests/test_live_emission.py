@@ -168,6 +168,8 @@ def test_fresh_submission_uses_promoted_version_and_replays_the_same_context(mon
     assert (fixed["prompt_version"], fixed["decision"].financed_principal_eur)==(2,39000)
     assert all(r["label"]=="production" and r["cache_ttl_seconds"]==0 for r in reads)
     generations=[s.kw for s in client.spans if s.kw["name"]=="decision"]
-    assert generations[0]["metadata"]["prompt_variables"]==generations[1]["metadata"]["prompt_variables"]
+    for name in ("application", "handbook", "policy_updates"):
+        key = f"prompt_variables.{name}"
+        assert generations[0]["metadata"][key] == generations[1]["metadata"][key]
     assert [g["prompt"].version for g in generations]==[1,2]
     assert client.flushes==2
