@@ -31,6 +31,7 @@ from langfuse_synth_core.rng import Rng
 from langfuse_synth_core.seed.events import event_event, generation_event, observation_event, span_event, trace_event
 from .prompts import chat_prompt, decision_schema
 from ..policy import lookup_policy, policy_variables
+from ..decision_metadata import decision_metadata
 from langfuse.api import ChatPrompt
 from langfuse.model import ChatPromptClient
 
@@ -226,8 +227,7 @@ def build_trace_events(rng: Rng, cfg: Config, spec: TraceSpec, prompt_v1_version
         usage_details=usage_details(ti, ot, cr, cc), cost_details=cost_details(sonnet, ti, ot, cr, cc),
         environment=env, input=decision_input, output=spec.decision.model_dump(),
         model_parameters={"max_tokens": 512},
-        metadata={"execution": "generated_history", "prompt_variables": variables,
-                  "response_schema": decision_schema()},
+        metadata={"execution": "generated_history", **decision_metadata(variables, decision_schema())},
         prompt_name=cfg.golden_path.prompt_name if prompt_v1_version else None,
         prompt_version=prompt_v1_version))
 

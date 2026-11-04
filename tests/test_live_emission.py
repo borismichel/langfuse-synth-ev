@@ -167,6 +167,7 @@ def test_fresh_submission_uses_promoted_version_and_replays_the_same_context(mon
     assert (baseline["prompt_version"], baseline["decision"].decision)==(1,"reject")
     assert (fixed["prompt_version"], fixed["decision"].financed_principal_eur)==(2,39000)
     assert all(r["label"]=="production" and r["cache_ttl_seconds"]==0 for r in reads)
+    assert all("version" not in r for r in reads)
     generations=[s.kw for s in client.spans if s.kw["name"]=="decision"]
     assert generations[0]["metadata"]["prompt_variables"]==generations[1]["metadata"]["prompt_variables"]
     assert [g["prompt"].version for g in generations]==[1,2]
