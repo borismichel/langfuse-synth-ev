@@ -68,3 +68,16 @@ def test_readback_accepts_explicit_empty_updates(tmp_path):
     result = verify(tmp_path, item)
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)[0]["policy_update_count"] == 0
+
+
+@pytest.mark.parametrize("field", ["handbook", "policy_updates"])
+@pytest.mark.parametrize("content", ["   ", 1, ["policy"]])
+def test_readback_requires_actual_policy_text(tmp_path, field, content):
+    item = observation()
+    document = {"document_id": "policy", "content": content}
+    item["metadata"]["prompt_variables"][field] = json.dumps(
+        [document] if field == "policy_updates" else document,
+    )
+    result = verify(tmp_path, item)
+    assert result.returncode != 0
+    assert "policy text" in result.stderr

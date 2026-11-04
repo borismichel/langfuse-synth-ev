@@ -32,12 +32,12 @@ def check_observation(observation: dict[str, Any]) -> dict[str, Any]:
     application = Application.model_validate(decoded["application"])
     handbook = decoded["handbook"]
     updates = decoded["policy_updates"]
-    if not isinstance(handbook, dict) or not handbook.get("content"):
-        raise ValueError("handbook must contain policy text")
     if not isinstance(updates, list):
         raise ValueError("policy_updates must encode an array; only [] means no published updates")
-    if any(not isinstance(update, dict) or not update.get("content") for update in updates):
-        raise ValueError("each policy update must contain policy text")
+    for document in [handbook, *updates]:
+        if (not isinstance(document, dict) or not isinstance(document.get("content"), str)
+                or not document["content"].strip()):
+            raise ValueError("each handbook or update must contain nonblank policy text")
     schema = metadata.get("response_schema")
     if not isinstance(schema, dict) or schema.get("type") != "object":
         raise ValueError("response_schema must be a nested JSON Schema object")
