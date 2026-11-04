@@ -58,6 +58,10 @@ The Companion's **presenter tools** offers SDK fallback runs by `production` or 
 
 ## Verification and evidence
 
+The [decision metadata contract and rollout gate](docs/decision-metadata.md) cover
+historical, live and SDK-experiment evidence with Python SDK 5.0.1. Version 0.8.2
+is prepared for release; publishing and companion replacement remain deferred.
+
 [Current verification status](docs/ev-context-verification.md) records the completed **v0.8.0** signed release, admission, catalog publication and ordinary Depot deployment. In one final Cloud **4.64.0** project, Halo identified the missing binding and curated the ninth case; five valid Playground pairs showed the contrast; native experiments scored **4/9 → 9/9**, with all 18 policy scores verified. Fresh live decisions showed baseline false, promoted eligible true and PHEV rejection true, each with one automatic agent score.
 
 ![Native experiment comparison from the released demo](https://raw.githubusercontent.com/borismichel/langfuse-synth-ev/caa03ff6b0432098f2e4f9036f2c93fcc14c01b2/docs/img/presenter-20261019/native-comparison.png)
