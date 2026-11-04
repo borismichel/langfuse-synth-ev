@@ -21,6 +21,7 @@ The baseline template omits that field; the candidate binds it.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, dataclass
 from typing import TYPE_CHECKING
 
@@ -140,7 +141,9 @@ def _decide_live(
     with lf.start_as_current_observation(
         as_type="generation", name="decision", model=llm.model, input=request.messages,
         model_parameters=request.parameters, prompt=prompt,
-        metadata={"prompt_variables": variables, "response_schema": request.kwargs["response_schema"]},
+        # Preserve the same metadata shape as historical raw-OTLP decisions.
+        metadata={"prompt_variables": json.dumps(variables),
+                  "response_schema": json.dumps(request.kwargs["response_schema"])},
     ) as gen:
         result = llm.complete(**request.kwargs)
         gen.update(output=result.text, usage_details={"input": result.input_tokens, "output": result.output_tokens})

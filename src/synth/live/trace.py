@@ -1,5 +1,6 @@
 """Instrument the work actually executed: local lookup, compilation and model call."""
 from __future__ import annotations
+import json
 from typing import Any
 from ..agent import GrantRule, parse_decision
 from ..config import Config
@@ -33,8 +34,9 @@ def emit_live_trace(emitter: Any, cfg: Config, *, application: Application,
             request = prepare_decision_request(prompt, variables, llm.provider)
             with agent.generation("decision", model=llm.model, input=request.messages,
                     model_parameters=request.parameters, prompt=prompt,
-                    metadata={"execution": "live_model_call", "prompt_variables": variables,
-                              "response_schema": request.kwargs["response_schema"]}) as generation:
+                    # Preserve historical JSON metadata leaves through SDK-v5 ingestion.
+                    metadata={"execution": "live_model_call", "prompt_variables": json.dumps(variables),
+                              "response_schema": json.dumps(request.kwargs["response_schema"])}) as generation:
                 result = llm.complete(**request.kwargs)
                 generation.update(output=result.text,
                                   usage_details={"input": result.input_tokens, "output": result.output_tokens})
